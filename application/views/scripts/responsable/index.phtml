@@ -1,0 +1,48 @@
+<?php
+// Titre de la page
+$this->title = "Mon Compte";
+// Titre de la section
+$this->headTitle($this->title);
+?>
+
+	<div class="grid_6" id="formulaireInformation">			
+		<h3>Mon compte</h3>
+		<div class="grid_6">	  
+			<?php
+				// Recupere le formulaire dans une variable 
+				$formInformation = $this->formInformation;
+				// Affiche le formulaire
+				echo $formInformation; 
+			?>
+		</div>
+	</div>	
+	
+	<div class="grid_5" id="formulaireMdpUpdate">			
+		<h3>Modifier mot de passe</h3>
+		<div class="grid_5">	  
+			<?php
+				// Recupere le formulaire dans une variable 
+				$formMdpUpdate = $this->formMdpUpdate;
+				$formMdpUpdate->setAction($this->url(array('controller'=>'membre', 'action'=>'mdpupdate')))->setMethod('post');
+				// Affiche le formulaire
+				echo $formMdpUpdate; 
+			?>
+		</div>
+	</div>	
+	
+	<div class="grid_5" id="suivre_mes_commandes">			
+		<h3><img src="<?php echo $this->baseUrl(); ?>/images/icone/ss.png" alt="suivre les commandes" />Suivre mes commandes</h3>
+		<b><a href="<?php echo $this->url(array('controller'=>'membre','action'=>'commandes','cde'=>'1'),"default", true); ?>" class="lib_liste">Commandes en cours</a> <a href="<?php echo $this->url(array('controller'=>'membre','action'=>'commandes','cde'=>'0'),"default", true); ?>" class="lib_liste">Commandes archivées</a></b>					
+	</div>		
+	
+							
+	<!-- DIVERS -->
+	<div class="grid_5" id="mon_compte_divers">	
+		<h3>Divers:</h3> 		
+		<div class="grid_5">
+			<div class="grid_divers"><a href="<?php echo $this->url(array('controller'=>'index','action'=>'cgv'),"default", true); ?>#condition_paiement"><b>Paiement</b></a></div>
+			<div class="grid_divers"><a href="<?php echo $this->url(array('controller'=>'index','action'=>'cgv'),"default", true); ?>#condition_garantie"><b>Rembourssement</b></a></div>
+			<div class="grid_divers"><a href="<?php echo $this->url(array('controller'=>'membre','action'=>'desactiver'),"default", true); ?>" onclick= "return confirm('Etes vous sur de vouloir désactiver votre compte ?');"><b>Désactiver le compte ?</b></a></div>
+			<div class="grid_divers"><a href="<?php echo $this->url(array('controller'=>'membre','action'=>'supprimer'),"default", true); ?>" onclick= "return confirm('Etes vous sur de vouloir supprimer votre compte ?');"><b>Supprimer le compte ?</b></a></div>
+		</div>
+	</div>
