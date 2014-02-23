@@ -1,5 +1,23 @@
+/**
+	body
+	helper (flash messager)
+	index/mld
+*/
+
 /* BODY (Navbar fixée a 50px) */
 body {
   padding-top: 50px;
   padding-bottom: 20px;
 }
+
+/* FLASH MESSAGER */
+.flahsMessager {
+  padding: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+/* INDEX/MLD */
+#mldText { font-size: 13px; }
