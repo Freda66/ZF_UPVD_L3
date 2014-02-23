@@ -6,6 +6,7 @@ class IndexController extends Zend_Controller_Action
     public function init()
     {
         // Initialize action controller here
+        var_dump(Zend_Auth::getInstance()->getStorage()->read());
     }
 
     public function indexAction()
@@ -26,8 +27,14 @@ class IndexController extends Zend_Controller_Action
     public function connexionAction()
     {
     	if(isset($_POST['submitConnexion'])){
-    		// Message Flash Success
-    		if($_POST['login'] == "frederic.cano.66@gmail.com"){
+    		// Instancie la class metier connexion
+    		$modelUtilisater = new Application_Model_Metier_Utilisateur();
+    		 
+    		// Appel la fonction qui retourne true s'il est connecté et false s'il ne l'est pas
+    		$isConnect = $modelUtilisater->connexionUser($_POST['login'], $_POST['mdp']);
+    		
+    		if($isConnect){
+    			// Message Flash Success
     			$this->_helper->flashMessenger->addMessage(array('success'=>'Vous êtes connecté.'));
     		} else {
 				// Message Flash Error
@@ -42,6 +49,13 @@ class IndexController extends Zend_Controller_Action
     		// Redirection
     		$this->redirect('/index/index/');
     	}
+    }
+    
+    public function deconnexionAction(){
+    	// Vide la session
+    	Zend_Auth::getInstance()->clearIdentity();
+    	// Redirection vers l'index
+    	$this->redirect('/index/index/');
     }
 	
 }

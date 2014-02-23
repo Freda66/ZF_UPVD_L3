@@ -38,8 +38,8 @@ echo $this->headScript()->appendFile($this->baseUrl().'/js/jquery.js')
 	echo $this->partial('common/header.phtml');
 	
 	// Contenu des pages
-	echo $this->flashMessages();
-	echo $this->layout()->content;
+	echo $this->flashMessages(); // Flash Messager
+	echo $this->layout()->content; // Contenu de la page (view)
 	
 	// Footer
 	echo $this->partial('common/footer.phtml');	

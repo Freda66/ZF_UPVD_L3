@@ -33,6 +33,7 @@ $controller = $instance->getRequest()->getControllerName();
 	            </li>
           	</ul>
           	
+          	<?php if(!Zend_Auth::getInstance()->hasIdentity()) { ?>
           	<form action="<?php echo $this->url(array('controller'=>'index', 'action'=>'connexion'),"default", true); ?>" method="post" class="navbar-form navbar-right" role="form">
 	            <div class="form-group">
 	              <input type="text" name="login" placeholder="Identifiant" required="required" class="form-control">
@@ -42,6 +43,11 @@ $controller = $instance->getRequest()->getControllerName();
             	</div>
             	<button type="submit" name="submitConnexion" class="btn btn-success">Connexion</button>
 			</form>
+			<?php } else { ?>
+				<div class="navbar-form navbar-right">
+					<a class="btn btn-primary" href="<?php echo $this->url(array('controller'=>'index', 'action'=>'deconnexion'),"default", true); ?>" role="button">&nbsp;Déconnexion&nbsp;</a>
+				</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>
