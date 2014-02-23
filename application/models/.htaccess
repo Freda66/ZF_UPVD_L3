@@ -1,0 +1,23 @@
+# Modification de l'url
+RewriteEngine On
+# Only apply to URLs on this domain
+RewriteCond %{HTTP_HOST} ^(www.)?domain.tld$
+
+# Only apply to URLs that aren't already under folder.
+RewriteCond %{REQUEST_URI} !^/public/
+
+# Don't apply to URLs that go to existing files or folders.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite all those to insert /folder.
+RewriteRule ^(.*)$ /public/$1
+
+# Also redirect the root folder.
+RewriteCond %{HTTP_HOST} ^(www.)?domain.tld$
+RewriteRule ^(/)?$ public/index.php [L]
+
+# Erreur de page
+ErrorDocument 403 "<h1>Permission refusée</h1>Vous n'avez pas accès à ce dossier sur le serveur."
+ErrorDocument 404 "<h1>Fichier non trouvé</h1>Aucun fichier de ce nom n'a été trouvé."
+ErrorDocument 500 "<h1>Erreur interne</h1>Le serveur a rencontré une erreur interne."
