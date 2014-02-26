@@ -18,10 +18,10 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
   	public function getStage($code){
   		// Recupere les informations d'un stage
   		// Jointure sur personne pour recuperer le nom et prenom du tuteur de l'entreprise
-  		$result = $this	->select()->setIntegrityCheck(false)
-  						->from(array('s' => $this->_name), array('*'))
-  						->joinLeft(array('p'=>'personne'), 's.idTuteur = p.idPersonne', array('*'))
-  						->where('codeStage = ?', $code);
+  		$result = 	$this	->select()->setIntegrityCheck(false)
+  							->from(array('s' => $this->_name), array('*'))
+  							->joinLeft(array('p'=>'personne'), 's.idTuteur = p.idPersonne', array('*'))
+  							->where('codeStage = ?', $code);
   		return $this->fetchRow($result);
   	}
     
