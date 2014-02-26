@@ -48,8 +48,11 @@ class StageController extends Zend_Controller_Action
     	// Recupere l'id du stage
     	$codeStage = $this->getRequest()->getParam('code');
     	
-    	// Détails d'un stage
+    	// Crée un objet dbtable Stage
+    	$modelStage = new Application_Model_DbTable_Stage();
     	
+    	// Recupere les informations d'un stage
+    	$this->view->stage = $modelStage->getStage($codeStage);
     }
     
     public function depotAction()

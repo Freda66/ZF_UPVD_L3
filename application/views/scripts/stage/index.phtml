@@ -1,3 +1,33 @@
 <?php $this->headTitle($this->title); // Titre de la page ?>
 
-<?php var_dump($this->lesStages); ?>
+<div class="container">
+	<div class="row">
+	
+		<div class="panel panel-default">
+			<div class="panel-heading">
+              <h2 class="panel-title">Liste des stages</h2>
+            </div>
+            
+            <div class="panel-body">
+            	<p class="list-group">
+            		<span class="btn list-group-item-success">&nbsp;&nbsp; Validé &nbsp;&nbsp;</span>
+            		<span class="btn list-group-item-info">&nbsp;&nbsp; En attente &nbsp;&nbsp;</span>
+            		<span class="btn list-group-item-danger">&nbsp;&nbsp; Refusé &nbsp;&nbsp;</span>
+            	</p>
+            
+	            <?php foreach($this->lesStages as $unStage) { ?>          
+					<div class="list-group">
+						<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage->codeStage),"default", true); ?>" 
+						   class="list-group-item <?php if($unStage->etatStage == 1) { ?>list-group-item-success<?php }
+						   						  		else if($unStage->etatStage == 0) { ?>list-group-item-info<?php }
+						   						  		else if($unStage->etatStage == -1) { ?>list-group-item-danger<?php } ?>">
+							<h4 class="list-group-item-heading"><?php echo $unStage->libelleStage; ?></h4>
+							<p class="list-group-item-text"><?php echo $unStage->descriptionStage; ?></p>
+					  	</a>
+					</div>
+				<?php } ?>
+            </div>
+		</div>
+		
+	</div>
+</div>

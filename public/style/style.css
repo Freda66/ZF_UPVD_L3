@@ -2,6 +2,7 @@
 	body
 	helper (flash messager)
 	index/mld
+	stage/index
 */
 
 /* BODY (Navbar fixée a 50px) */

@@ -1,1 +1,41 @@
 <?php $this->headTitle($this->title); // Titre de la page ?>
+<?php $unStage = $this->stage; ?>
+
+<div class="container">
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title"><?php echo $unStage->libelleStage; ?></h2>
+            </div>
+            <div class="panel-body">
+				<?php echo $unStage->descriptionStage; ?>
+		  	</div>
+		  	
+		  	 <!-- Table -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tuteur entreprise</th>
+						<th>Date début</th>
+						<th>Date fin</th>
+						<th>État</th>
+	          		</tr>
+        		</thead>
+        		
+        		<tbody>
+					<tr>
+	            		<td><?php echo $unStage->nomPersonne.' '.$unStage->prenomPersonne; ?></td>
+			            <td><?php echo $unStage->dateDebutStage; ?></td>
+			            <td><?php echo $unStage->dateFinStage; ?></td>
+			            <td><?php 
+			            	if($unStage->etatStage == 1) echo "Validé"; 
+			            	if($unStage->etatStage == 0) echo "En attente de validation";
+			            	else if($unStage->etatStage == -1) echo "Refusé";
+			            ?></td>
+					</tr>
+        		</tbody>
+      		</table>
+      		
+		</div>
+	</div>
+</div>
