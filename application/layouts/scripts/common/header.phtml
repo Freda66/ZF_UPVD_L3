@@ -18,7 +18,7 @@ $controller = $instance->getRequest()->getControllerName();
         </div>
         <div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-	            <li <?php if($controller == "stage") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'index'),"default", true); ?>">Offre de stage</a></li>
+	            <li <?php if($controller == "stage") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>">Stage</a></li>
 	            <li <?php if($controller == "soutenance") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'index'),"default", true); ?>">Soutenance</a></li>
 	            <li <?php if($controller == "entreprise") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'index'),"default", true); ?>">Entreprise</a></li>
 	            <li class="dropdown <?php if($controller == "index" && $action != "index") { ?>active<?php } ?>">

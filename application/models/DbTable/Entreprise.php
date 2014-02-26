@@ -68,5 +68,4 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		if($result->isValid()) return true;
     	else return false;	
 	}
-		
 }
