@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Dim 23 Février 2014 à 09:53
+-- Généré le: Jeu 27 Février 2014 à 09:43
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -31,6 +31,7 @@ USE `upvdl3`;
 CREATE TABLE IF NOT EXISTS `concernerformationstage` (
   `idFormation` int(11) NOT NULL,
   `idStage` int(11) NOT NULL,
+  PRIMARY KEY (`idFormation`,`idStage`),
   KEY `foreignFormation` (`idFormation`),
   KEY `foreignStage` (`idStage`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -40,9 +41,11 @@ CREATE TABLE IF NOT EXISTS `concernerformationstage` (
 --
 
 INSERT INTO `concernerformationstage` (`idFormation`, `idStage`) VALUES
-(1, 1),
-(4, 1),
-(5, 1);
+(1, 6),
+(2, 6),
+(2, 7),
+(3, 8),
+(5, 8);
 
 -- --------------------------------------------------------
 
@@ -107,6 +110,7 @@ INSERT INTO `enseignerformationenseignant` (`idFormation`, `idEnseignant`) VALUE
 --
 
 CREATE TABLE IF NOT EXISTS `entreprise` (
+  `idEntreprise` int(11) NOT NULL AUTO_INCREMENT,
   `siretEntreprise` bigint(14) NOT NULL,
   `idPersonneDirigeant` int(11) DEFAULT NULL COMMENT 'Clé étrangère de la table Personne',
   `rsEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -117,18 +121,19 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `emailEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
   `loginEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
   `mdpEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`siretEntreprise`),
-  KEY `idPersonneDirigeant` (`idPersonneDirigeant`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  PRIMARY KEY (`idEntreprise`),
+  KEY `idPersonneDirigeant` (`idPersonneDirigeant`),
+  KEY `siretEntreprise` (`siretEntreprise`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `entreprise`
 --
 
-INSERT INTO `entreprise` (`siretEntreprise`, `idPersonneDirigeant`, `rsEntreprise`, `adrRueEntreprise`, `adrCpEntreprise`, `adrVilleEntreprise`, `telEntreprise`, `emailEntreprise`, `loginEntreprise`, `mdpEntreprise`) VALUES
-(32467680800045, 1, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', 'infoverte'),
-(33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'pyrescom'),
-(42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', 'squarepartners');
+INSERT INTO `entreprise` (`idEntreprise`, `siretEntreprise`, `idPersonneDirigeant`, `rsEntreprise`, `adrRueEntreprise`, `adrCpEntreprise`, `adrVilleEntreprise`, `telEntreprise`, `emailEntreprise`, `loginEntreprise`, `mdpEntreprise`) VALUES
+(1, 32467680800045, 1, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', 'infoverte'),
+(2, 33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'pyrescom'),
+(3, 42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', 'squarepartners');
 
 -- --------------------------------------------------------
 
@@ -191,7 +196,7 @@ INSERT INTO `formation` (`codeFormation`, `idEnseignantResponsable`, `libelleFor
 
 CREATE TABLE IF NOT EXISTS `personne` (
   `idPersonne` int(11) NOT NULL AUTO_INCREMENT,
-  `idEntrepriseTravail` bigint(14) DEFAULT NULL,
+  `idEntrepriseTravail` int(11) DEFAULT NULL,
   `nomPersonne` varchar(250) COLLATE utf8_bin NOT NULL,
   `prenomPersonne` varchar(250) COLLATE utf8_bin NOT NULL,
   `fonctionPersonne` varchar(250) COLLATE utf8_bin DEFAULT NULL,
@@ -199,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `telPostePersonne` varchar(20) COLLATE utf8_bin DEFAULT NULL,
   `emailPersonne` varchar(250) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`idPersonne`),
-  KEY `EntrepriseTravail` (`idEntrepriseTravail`)
+  KEY `idEntrepriseTravail` (`idEntrepriseTravail`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
 
 --
@@ -207,8 +212,8 @@ CREATE TABLE IF NOT EXISTS `personne` (
 --
 
 INSERT INTO `personne` (`idPersonne`, `idEntrepriseTravail`, `nomPersonne`, `prenomPersonne`, `fonctionPersonne`, `telPortPersonne`, `telPostePersonne`, `emailPersonne`) VALUES
-(1, 33092574400097, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com'),
-(7, 42188379400032, 'SESE', 'Stephane', 'President', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com');
+(1, 1, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com'),
+(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com');
 
 -- --------------------------------------------------------
 
@@ -232,7 +237,9 @@ CREATE TABLE IF NOT EXISTS `realiseretudiantstage` (
 --
 
 INSERT INTO `realiseretudiantstage` (`idEtudiant`, `idStage`, `idEnseignantTuteur`, `idSoutenance`) VALUES
-('A48154G454', 1, NULL, NULL);
+('A48154G454', 6, 1, NULL),
+('F14784A454', 6, NULL, NULL),
+('F14784A454', 8, 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `soutenance` (
 
 CREATE TABLE IF NOT EXISTS `stage` (
   `codeStage` int(11) NOT NULL AUTO_INCREMENT,
-  `idEntreprise` bigint(14) NOT NULL,
+  `idEntreprise` int(11) NOT NULL,
   `idTuteur` int(11) NOT NULL,
   `libelleStage` varchar(250) COLLATE utf8_bin NOT NULL,
   `descriptionStage` text COLLATE utf8_bin NOT NULL,
@@ -265,14 +272,16 @@ CREATE TABLE IF NOT EXISTS `stage` (
   PRIMARY KEY (`codeStage`),
   KEY `EntrepriseStage` (`idEntreprise`),
   KEY `TuteurStage` (`idTuteur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
 
 --
 -- Contenu de la table `stage`
 --
 
 INSERT INTO `stage` (`codeStage`, `idEntreprise`, `idTuteur`, `libelleStage`, `descriptionStage`, `dateDebutStage`, `dateFinStage`, `etatStage`) VALUES
-(1, 33092574400097, 1, 'Développeur Web', 'Stage pour du développement web, afin de réaliser un site e-commerce pour la vente de livre, musique et film. Module de paiement en ligne (Paypal).', '2014-03-02', '2014-05-30', 0);
+(6, 2, 1, 'Développeur Windev', 'Stage pour du développement applicatif, afin de réaliser un logiciel de traçabilité pour la gestion des décheteries des PO.', '2014-03-01', '2014-03-31', 1),
+(7, 2, 1, 'Développeur Delphi', 'Stage pour du développement applicatif, afin de réaliser un logiciel de traçabilité pour la gestion des décheteries des PO en Delphi.', '2014-04-01', '2014-05-31', 1),
+(8, 3, 7, 'Développeur Web', 'Stage pour du développement web, afin de réaliser un site e-commerce pour la vente de livre, musique et film. Module de paiement en ligne (Paypal).', '2014-05-01', '2014-06-30', 0);
 
 --
 -- Contraintes pour les tables exportées
@@ -314,23 +323,23 @@ ALTER TABLE `formation`
 -- Contraintes pour la table `personne`
 --
 ALTER TABLE `personne`
-  ADD CONSTRAINT `EntreprisePersonneTravailler` FOREIGN KEY (`idEntrepriseTravail`) REFERENCES `entreprise` (`siretEntreprise`);
+  ADD CONSTRAINT `fk_entreprise_travail` FOREIGN KEY (`idEntrepriseTravail`) REFERENCES `entreprise` (`idEntreprise`);
 
 --
 -- Contraintes pour la table `realiseretudiantstage`
 --
 ALTER TABLE `realiseretudiantstage`
-  ADD CONSTRAINT `foreignSoutenance` FOREIGN KEY (`idSoutenance`) REFERENCES `soutenance` (`idSoutenance`),
   ADD CONSTRAINT `foreignEnseignantTuteur` FOREIGN KEY (`idEnseignantTuteur`) REFERENCES `enseignant` (`idEnseignant`),
   ADD CONSTRAINT `foreignIneEtudiant` FOREIGN KEY (`idEtudiant`) REFERENCES `etudiant` (`ineEtudiant`),
+  ADD CONSTRAINT `foreignSoutenance` FOREIGN KEY (`idSoutenance`) REFERENCES `soutenance` (`idSoutenance`),
   ADD CONSTRAINT `foreignStageEtudiant` FOREIGN KEY (`idStage`) REFERENCES `stage` (`codeStage`);
 
 --
 -- Contraintes pour la table `stage`
 --
 ALTER TABLE `stage`
-  ADD CONSTRAINT `TuteurStage` FOREIGN KEY (`idTuteur`) REFERENCES `personne` (`idPersonne`),
-  ADD CONSTRAINT `EntrepriseStage` FOREIGN KEY (`idEntreprise`) REFERENCES `entreprise` (`siretEntreprise`);
+  ADD CONSTRAINT `fk_entreprise_stage` FOREIGN KEY (`idEntreprise`) REFERENCES `entreprise` (`idEntreprise`),
+  ADD CONSTRAINT `TuteurStage` FOREIGN KEY (`idTuteur`) REFERENCES `personne` (`idPersonne`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
