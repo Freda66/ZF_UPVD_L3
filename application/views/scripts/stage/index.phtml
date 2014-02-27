@@ -17,23 +17,28 @@
 					  ?>
 		              
 		              <?php // FILTRE ETUDIANT RIGHT ?>
-		              <?php if($this->typeSession == "Etudiant" && $this->param == "stage") { ?> 
-		              			<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'demande'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes demandes &raquo;</a> 
-		              			<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right">Tous les stages &raquo;</a>
-		              <?php }
-		              		else if($this->typeSession == "Etudiant" && $this->param == "demande") { ?>
-		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'stage'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a>
-		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right">Tous les stages &raquo;</a> 
-		              <?php } else if($this->typeSession == "Etudiant" && $this->param == null) { ?>
-		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'stage'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a>
-		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'demande'),"default", true); ?>" class="btn btn-default navbar-right">Mes demandes &raquo;</a> 
-		              <?php } ?>
-					  
-					  <?php if($this->typeSession == "Enseignant" && $this->param == "tuteur" && $this->isResponsable == 1) { ?> 
-								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Tous les stages &raquo;</a> 
-					  <?php } else if($this->typeSession == "Enseignant" && $this->param == null && $this->isResponsable == 1) { ?>
-								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'tuteur'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a> 
-					  <?php } ?>
+		              <?php 
+		              if($this->typeSession == "Etudiant") {
+						// DEMANDE
+		              	if($this->param != "demande") { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'demande'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes demandes</a><?php }
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Mes demandes</span><?php }
+		              	
+		              	// MES STAGES
+		              	if($this->param != "stage") { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'stage'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages</a><?php }
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Mes stages</span><?php }
+		              	
+		              	// TOUS LES STAGES
+		              	if($this->param != null) { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right">Tous les stages</a><?php } 
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Tous les stages</span><?php }
+					  }
+					  ?>
+						
+					  <?php // FILTRE ENSEIGNANT RIGHT ?>
+					  <?php if($this->typeSession == "Enseignant" && $this->param == "tuteur" && $this->isResponsable == 1) { ?>
+  								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Tous les stages &raquo;</a> 
+  					  <?php } else if($this->typeSession == "Enseignant" && $this->param == null && $this->isResponsable == 1) { ?>
+  								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'tuteur'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a> 
+  					  <?php } ?>
 	              </h2>
 	            </div>
 	            
