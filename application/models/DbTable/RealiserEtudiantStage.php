@@ -40,8 +40,7 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 					  		->from(array('res' => $this->_name), array('*'))
 					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'));
   		if($idFormation != null) {
-  			$result			->from(array('s' => $this->_name), array('*'))
-  							->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+  			$result			->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   							->where('idFormation = ?', $idFormation);
   		}
 		$result		  		->where('idEtudiant = ?', $ineEtudiant);
@@ -107,5 +106,35 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 		// Retourne true si le resultat existe					
 		if($this->fetchRow($result) != null) return true;
 		else return false;
+	}
+	
+	/**
+	 * Fonction qui insert la demande de stage d'un etudiant dans la table
+	 * @param integer $codeEtudiant
+	 * @param integer $codeStage
+	 * @return boolean
+	 */
+	public function insertRES($codeEtudiant, $codeStage){
+		try{
+			if($this->insert(array('idEtudiant'=>$codeEtudiant, 'idStage'=>$codeStage))) return true;
+			else return false;
+		} catch(Exception $e){
+			return false;
+		}
+	}
+	
+	/**
+	 * Fonction qui supprime la demande de stage d'un etudiant 
+	 * @param integer $codeStage
+	 * @param integer $codeEtudiant : -1 si enseignant responsable
+	 */
+	public function deleteRES($codeStage, $codeEtudiant = -1){
+		if($codeEtudiant == -1) {
+			if($this->delete(array('idStage = '.$codeStage))) return true;
+			else return false;
+		} else {
+			if($this->delete(array('idStage = '.$codeStage, 'idEtudiant = "'.$codeEtudiant.'"', 'idEnseignantTuteur is null'))) return true;
+			else return false;
+		}
 	}
 }

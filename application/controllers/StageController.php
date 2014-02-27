@@ -83,22 +83,30 @@ class StageController extends Zend_Controller_Action
     	// Recupere l'id du stage
     	$codeStage = $this->getRequest()->getParam('code');
     	
-    	// Crée un objet dbtable Stage
-    	$modelStage = new Application_Model_DbTable_Stage();
-    	
-    	// Recupere la session
-    	$session = Zend_Auth::getInstance()->getStorage()->read();
-    	
-    	// Recupere les informations d'un stage
-    	$unStage = $modelStage->getStage($codeStage, $session->infoUser);
-    	
-    	if($unStage == null){
+    	if($codeStage != null){
+	    	// Crée un objet dbtable Stage
+	    	$modelStage = new Application_Model_DbTable_Stage();
+	    	
+	    	// Recupere la session
+	    	$session = Zend_Auth::getInstance()->getStorage()->read();
+	    	
+	    	// Recupere les informations d'un stage
+	    	$unStage = $modelStage->getStage($codeStage, $session->infoUser);
+	    	
+	    	if($unStage == null || ($session->infoUser->type == "Etudiant" && $unStage->etatStage != 1)){
+	    		// Message flash + Redirection
+	    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
+	    		$this->redirect('/stage/index/');
+	    	} else {
+		    	// Envoi le detail d'un stage a la vue
+		    	$this->view->stage = $unStage;
+	    	}
+	    	
+	    	$this->view->typeSession = $session->infoUser->type;
+    	} else {
     		// Message flash + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
     		$this->redirect('/stage/index/');
-    	} else {
-	    	// Envoi le detail d'un stage a la vue
-	    	$this->view->stage = $unStage;
     	}
     }
     
@@ -106,31 +114,140 @@ class StageController extends Zend_Controller_Action
     {
     	$this->view->title = "Depot d'un stage"; // Titre de la page
     	
+    	// Recupere le code du stage passé en param (si exist)
     	$codeStage = $this->getRequest()->getParam('code');
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Crée un objet dbtable Stage
+    	$modelStage = new Application_Model_DbTable_Stage();
     	
-    	if($codeStage == null){
-	    	// Formulaire de depot d'un stage
+    	if($session->infoUser->type == "Entreprise" || ($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true)){
+	    	if($codeStage == null){
+		    	// Formulaire de depot d'un stage
+	    		$formDepotStage = new Application_Form_DepotStage();
+	    		$formDepotStage->setTranslator(Bootstrap::_initTranslate());
+	    	} else {
+	    		// Recupere les informations d'un stage
+	    		$unStage = $modelStage->getStage($codeStage, $session->infoUser);
+	    			
+	    		if($unStage == null){
+	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
+	    			$this->redirect('/stage/index/');
+	    		} else if($unStage->etatStage == 1){
+	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Le stage ne peut pas être modifié.'));
+	    			$this->redirect('/stage/index/');
+	    		} else {
+	    			// Envoi le detail d'un stage a la vue
+	    			$formDepotStage = new Application_Form_DepotStage();
+	    			$formDepotStage->setTranslator(Bootstrap::_initTranslate());
+	    			$formDepotStage->populate($unStage->toArray());
+	    		}
+	    	}
 	    	
+	    	// Traitement du formulaire
+	    	// Si le formulaire a été posté
+	    	if($this->getRequest()->isPost()) {
+	    		// Recupere les informations du formulaire
+	    		$formData = $this->getRequest()->getPost();
+	    	
+	    		// Si les informations sont valides par rapport au formulaire init (initiale)
+	    		if($formDepotStage->isValid($formData)) {
+	    			// Recupere les attributs dans des variables
+	    			$libelleStage = $formDepotStage->getValue('libelleStage');
+	    			$dateDebutStage = $formDepotStage->getValue('dateDebutStage');
+	    			$dateFinStage = $formDepotStage->getValue('dateFinStage');
+	    			$idTuteur = $formDepotStage->getValue('idTuteur');
+	    			$descriptionStage = $formDepotStage->getValue('descriptionStage');
+	    			
+	    			// Insert
+	    			if($codeStage == null) {
+	    				if($modelStage->insertStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant)){
+	    					// Message + Redirection
+	    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été déposé avec succès.'));
+	    					$this->redirect("/stage/index/");
+	    				} else {
+	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion du stage.'));
+	    					$formDepotStage->populate($formData);
+	    				}
+	    			}
+	    			// Update
+	    			else {
+	    				if($modelStage->updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant, $codeStage)) {
+	    					// Message + Redirection
+	    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été modifié avec succès.'));
+	    					$this->redirect("/stage/index/");
+	    				} else {
+	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification du stage.'));
+	    					$formDepotStage->populate($formData);
+	    				}
+	    			}
+	    		} else $formDepotStage->populate($formData);
+	    	}
+	    	
+	    	// Envoie a la vue le formulaire de depot de stage
+	    	$this->view->formDepotStage = $formDepotStage;
     	} else {
-    		// Recupere le stage
-    		
-    		// Formulaire de modification d'un stage
-    		
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
+    		$this->redirect("/index/index/");
     	}
     }
     
-    public function demanderAction()
+    public function demandeAction()
     {
     	// Recupere la session en cours
     	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
     	
     	// Si c'est un étudiant 
-    	if($session->type == "Etudiant"){
-    		// Recupere le code du stage
-    		$codeStage = $this->getRequest()->getParam('code');
-    		
+    	if($session->infoUser->type == "Etudiant"){
+    		// Cree un objet dbTable RealiserEtudiantStage
+    		$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
 			// Fait la demande de stage pour l'etudiant    		
-			
+			if($modelRES->insertRES($session->infoUser->identifiant, $codeStage)){
+				$this->_helper->flashMessenger->addMessage(array('success'=>'Votre demande de stage a été enregistré, elle est en attente de validation par un enseignant responsable.'));
+			} else {
+				$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de l\'insertion de la demande de stage.'));
+			} 
+			$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas faire de demande de stage.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    public function canceldemandeAction()
+    {
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
+    	 
+    	// Si c'est un étudiant ou enseignant responsable
+    	if($session->infoUser->type == "Etudiant" || ($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true)){
+    		// Cree un objet dbTable RealiserEtudiantStage
+    		$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
+    		// Annule la demande de stage pour l'etudiant
+    		if($session->infoUser->type == "Enseignant"){
+    			if($modelRES->deleteRES($codeStage)){
+    				$this->_helper->flashMessenger->addMessage(array('success'=>'Votre annulation de demande de stage a été prise en compte.'));
+    			} else {
+    				$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de l\'annulation de la demande de stage.'));
+    			}
+    		} else {
+	    		if($modelRES->deleteRES($codeStage, $session->infoUser->identifiant)){
+	    			$this->_helper->flashMessenger->addMessage(array('success'=>'Votre annulation de demande de stage a été prise en compte.'));
+	    		} else {
+	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de l\'annulation de la demande de stage.'));
+	    		}
+    		}
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas annuler de demande de stage.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
     	}
     }
     

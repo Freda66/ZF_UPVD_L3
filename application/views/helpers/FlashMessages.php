@@ -8,7 +8,7 @@ class Zend_View_Helper_FlashMessages extends Zend_View_Helper_Abstract
         
         if (!empty($messages)) {
             foreach ($messages as $message) {
-                $output .= '<div class="flahsMessager alert-' . key($message) . '">' . current($message) . '</div>';
+                $output .= '<div class="text-center flashMessager alert-' . key($message) . '">' . current($message) . '</div>';
             }
         }
         

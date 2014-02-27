@@ -136,4 +136,30 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		// Retourne le resultat
 		return $paginator;
 	}
+	
+	/**
+	 * Fonction qui insert un stage avec son etat a 0
+	 * @param string $libelleStage
+	 * @param date $dateDebutStage
+	 * @param date $dateFinStage
+	 * @param int $idTuteur
+	 * @param string $descriptionStage
+	 * @param int $codeEntreprise
+	 * @return boolean
+	 */
+	public function insertStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $codeEntreprise){
+		try {
+			// Récupere dans un tableau les valeurs de la ligne a inserer
+			$data = array('idEntreprise'=>$codeEntreprise, 'idTuteur'=>$idTuteur,'libelleStage'=>$libelleStage,'descriptionStage'=>$descriptionStage,'dateDebutStage'=>$dateDebutStage,'dateFinStage'=>$dateFinStage, 'etatStage'=>0);
+			if($this->insert($data)) return true;	
+		} catch(Exeception $e) { return false; }
+	}
+	
+	public function updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $codeEntreprise, $codeStage){
+		try {
+			$data = array('idTuteur'=>$idTuteur,'libelleStage'=>$libelleStage,'descriptionStage'=>$descriptionStage,'dateDebutStage'=>$dateDebutStage,'dateFinStage'=>$dateFinStage);
+			if($this->update($data, 'codeStage = '. (int)$codeStage)) return true;
+			else return false;
+		} catch(Exeception $e) { return false; }
+	}
 }

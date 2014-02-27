@@ -18,15 +18,15 @@
 					<br /><br />
 					
 				  	<!-- Table -->
-					<table class="table">
+					<table class="table text-center">
 						<thead>
 							<tr>
-								<?php if($unStage->idEtudiant != null) { ?><th>Étudiant</th><?php } ?>
-								<?php if($unStage->idEnseignantTuteur != null) { ?><th>Tuteur enseignant</th><?php } ?>
-								<th>Tuteur entreprise</th>
-								<th>Date début</th>
-								<th>Date fin</th>
-								<th>État</th>
+								<?php if($unStage->idEtudiant != null) { ?><th class="text-center">Étudiant</th><?php } ?>
+								<?php if($unStage->idEnseignantTuteur != null) { ?><th class="text-center">Tuteur enseignant</th><?php } ?>
+								<th class="text-center">Tuteur entreprise</th>
+								<th class="text-center">Date début</th>
+								<th class="text-center">Date fin</th>
+								<th class="text-center">État</th>
 			          		</tr>
 		        		</thead>
 		        		
@@ -38,16 +38,85 @@
 					            <td><?php echo $unStage->dateDebutStage; ?></td>
 					            <td><?php echo $unStage->dateFinStage; ?></td>
 					            <td><?php 
-					            	if($unStage->etatStage == 1) echo "Validé"; 
-					            	if($unStage->etatStage == 0) echo "En attente de validation";
+					            	if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur != null) echo "Validé"; 
+					            	else if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) echo "En attente de validation";
+					            	else if($unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null && $unStage->etatStage == 1) echo "Disponible";
+					            	else if($unStage->etatStage == 0) echo "En attente d'activation par l'administration";
 					            	else if($unStage->etatStage == -1) echo "Refusé";
 					            ?></td>
 							</tr>
 		        		</tbody>
 	      			</table>
+	      			
+	      			<?php 
+	      			if($this->typeSession == "Etudiant" && $unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null) { ?><a id="confirmDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Faire la demande de stage &raquo;</a><?php }
+	      			else if($this->typeSession == "Etudiant" && $unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) { ?><a id="cancelDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'canceldemande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">&laquo; Annuler la demande de stage</a><?php } ?>
+	      			<?php if($this->typeSession == "Entreprise" && $unStage->etatStage != 1) { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier le stage &raquo;</a><?php } ?>
 	      		</div>
 	      		
 			</div>
 		</div>
 	</div>
 </div>
+
+<?php // DIALOG DE CONFIRMATION ?>
+<p id="dialog-confirm-accept" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment faire cette demande de stage ?</p>
+<p id="dialog-confirm-cancel" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment annuler cette demande de stage ?</p>
+
+<?php // SCRIPT JS UI POUR LE DIALOG ?>
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-accept").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 475,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#dialog-confirm-cancel").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 485,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#confirmDemande").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-accept").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$("#cancelDemande").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-cancel").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>
+ 
