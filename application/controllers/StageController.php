@@ -28,21 +28,29 @@ class StageController extends Zend_Controller_Action
     	// Recupere la session
     	$session = Zend_Auth::getInstance()->getStorage()->read();
     	
+    	// Pagination
+    	$page = $this->_request->getParam('page');
+    	if(empty($page)){ $page=1; }
+    	
     	// Liste des stages déposés par l'entreprise
     	if($session->infoUser->type == "Entreprise"){
-    		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant); // Recupere les stages
+    		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant, $page); // Recupere les stages
     		// Parcour les stages et recupere un bool si le stage existe dans la table realiseretudiantstage
-    		for($i = 0; $i < count($lesStages); $i++){
-    			$lesStages[$i]["isFindEtudiant"] = $modelRealiserEtudiantStage->isExist($lesStages[$i]["codeStage"]);
+    		$stageAffect = Array();
+    		$i = 0;
+    		foreach($lesStages as $unStage) {
+    			$stageAffect[$i]["isFindEtudiant"] = $modelRealiserEtudiantStage->isExist($unStage["codeStage"]);
+    			$i++;
     		}
+    		$this->view->stageAffect = $stageAffect;
     	} 
     	// Liste des stages dont il est tuteur
     	else if($session->infoUser->type == "Enseignant"){
 			// Recupere le parametre url
     		$myParam = $this->getRequest()->getParam('my');
 			// Recupere les stages
-			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant); // Recupere les stages
-			else $lesStages = $modelStage->getStages(); // Recupere les stages
+			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant, $page); // Recupere les stages
+			else $lesStages = $modelStage->getStages($page); // Recupere les stages
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myParam;
 			$this->view->isResponsable = $session->infoUser->isResponsable;
@@ -52,9 +60,9 @@ class StageController extends Zend_Controller_Action
     		// Recupere le param de l'url
     		$myStage = $this->getRequest()->getParam('my');
     		// Recupere les stages en fonction du param
-    		if($myStage == "stage" || $myStage == "demande") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage);
+    		if($myStage == "stage" || $myStage == "demande") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage, $page);
     		// Recupere les stages validé
-    		else $lesStages = $modelStage->getStagesAllValidORAttente(); 
+    		else $lesStages = $modelStage->getStagesAllValidORAttente($page); 
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myStage;
     	}
@@ -110,7 +118,7 @@ class StageController extends Zend_Controller_Action
     public function demanderAction()
     {
     	// Recupere la session en cours
-    	$session = Zend_Auth::getInstance()->ge-tStorage()->read();
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
     	
     	// Si c'est un étudiant 
     	if($session->type == "Etudiant"){

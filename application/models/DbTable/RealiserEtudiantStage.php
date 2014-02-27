@@ -9,7 +9,9 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 {
 	// Nom de la table qu'on va gérer, on déclare une propriété protégée
     protected $_name = 'realiseretudiantstage';
-
+    private $_nbItemByPage = 1;
+    private $_nbPagePrint = 20;
+    
 	/**
 	 * Fonction qui retourne les informations d'un stage qui va etre realisé
 	 * @param integer $codeStage
@@ -30,9 +32,10 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   	 * Fonction qui retourne les stages d'un etudiant
   	 * @param integer $ineEtudiant
   	 * @param string $param
-  	 * @return Ambigous <Zend_Db_Table_Row_Abstract, NULL, unknown>
+  	 * @param integer $page
+  	 * @return Zend_Paginator
   	 */
-  	public function getMyStages($ineEtudiant, $param){
+  	public function getMyStages($ineEtudiant, $param, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
 					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
@@ -42,20 +45,44 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   		// Filtre sur ses demande de stage (sans enseignant tuteur renseigné => en attente de validation par le responsable
   		else if($param == "demande") $result->where('idEnseignantTuteur is null');
   		// Retourne le resultat sql
-  		return $this->fetchAll($result)->toArray();
+  		//return $this->fetchAll($result)->toArray();
+
+  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+  		// Détermine le nombre d'item par page
+  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+  		// Détermine la page en courrante
+  		$paginator ->setCurrentPageNumber($page);
+  		// Indique le nombre de numéro de page qu'on affiche
+  		$paginator->setPageRange($this->_nbPagePrint);
+  		// Retourne le resultat
+  		return $paginator;
   	}
   	
   	/**
   	 * Fonction qui renvoie la liste des stages pour un enseignant tuteur
   	 * @param integer $idEnseignantTuteur
+  	 * @param integer $page
+  	 * @return Zend_Paginator
   	 */
-  	public function getStagesTuteur($idEnseignantTuteur){
+  	public function getStagesTuteur($idEnseignantTuteur, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
 					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
 					  		->where('idEnseignantTuteur = ?', $idEnseignantTuteur);
   		// Retourne le resultat sql
-  		return $this->fetchAll($result)->toArray();
+  		//return $this->fetchAll($result)->toArray();
+  		
+  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+  		// Détermine le nombre d'item par page
+  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+  		// Détermine la page en courrante
+  		$paginator ->setCurrentPageNumber($page);
+  		// Indique le nombre de numéro de page qu'on affiche
+  		$paginator->setPageRange($this->_nbPagePrint);
+  		// Retourne le resultat
+  		return $paginator;
   	}
     
 	/**

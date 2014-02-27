@@ -46,19 +46,26 @@
 		            		<?php if($this->typeSession == "Entreprise") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
 		            	</div>
 	            
-		            	<?php foreach($this->lesStages as $unStage) { ?>          
+		            	<?php 
+		            		$i = 0;
+		            		foreach($this->lesStages as $unStage) { ?>          
 							<div class="list-group">
 								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage["codeStage"]),"default", true); ?>" 
 								   class="list-group-item <?php if($unStage["etatStage"] == 1) { ?>list-group-item-success<?php }
 								   						  		else if($unStage["etatStage"] == 0) { ?>list-group-item-info<?php }
 								   						  		else if($unStage["etatStage"] == -1) { ?>list-group-item-danger<?php } ?>">
 									<h4 class="list-group-item-heading"><?php echo $unStage["libelleStage"]; ?>
-										<?php if(isset($unStage["isFindEtudiant"]) && $unStage["isFindEtudiant"] == true) { ?><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="iconEtudiantLibStage"/><?php } ?>
+										<?php if(isset($this->stageAffect[$i]["isFindEtudiant"]) && $this->stageAffect[$i]["isFindEtudiant"] == true) { ?><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="iconEtudiantLibStage"/><?php } ?>
 									</h4>
 									<div class="list-group-item-text"><?php echo $unStage["descriptionStage"]; ?></div>
 							  	</a>
 							</div>
-						<?php }
+						<?php 
+							$i++;
+							}
+							
+							// Pagination
+							echo $this->paginationControl($this->lesStages,'Sliding','pagination.phtml'); 
 						}
 						// Liste de stage vide 
 						else { 
@@ -68,6 +75,7 @@
 						<?php 
 							} 
 						} ?>
+						
 	            </div>
 			</div>
 			
