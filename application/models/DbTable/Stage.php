@@ -54,13 +54,19 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	/**
 	 * Fonction qui retourne les stages d'une entreprise à partir d'un numéro de siret
 	 * @param string $idEntreprise
+	 * @param integer $formation
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getStagesEntreprise($idEntreprise, $page){
+	public function getStagesEntreprise($idEntreprise, $idFormation, $page){
 		// Requete qui recupere les stages d'un entreprise
-		$result = $this	->select()
-						->where('idEntreprise = ?', $idEntreprise);
+		$result = $this	->select()->setIntegrityCheck(false);
+		if($idFormation != null) {
+  			$result		->from(array('s' => $this->_name), array('*'))
+						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+						->where('idFormation = ?', $idFormation);
+		}
+		$result			->where('idEntreprise = ?', $idEntreprise);
 
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
 		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
@@ -80,11 +86,16 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getStagesAllValidORAttente($etat = 1, $page){
+	public function getStagesAllValidORAttente($etat, $formation, $page){
 		$result = $this	->select()->setIntegrityCheck(false)
   						->from(array('s' => $this->_name), array('*'))
-						->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
-						->where('etatStage = ?', $etat)
+						->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'));
+		if($idFormation != null) {
+			$result		->from(array('s' => $this->_name), array('*'))
+						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+						->where('idFormation = ?', $idFormation);
+		}
+		$result 		->where('etatStage = ?', $etat)
 						->where('res.idStage is null');
 		
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
@@ -104,9 +115,14 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getStages($page){
+	public function getStages($page, $idFormation){
 		// Requete qui recupere les stages d'un entreprise
-		$result = $this->select();
+		$result = $this->select()->setIntegrityCheck(false);
+		if($idFormation != null) {
+  			$result		->from(array('s' => $this->_name), array('*'))
+  						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+  						->where('idFormation = ?', $idFormation);
+  		}
 		
 		// Retourne tout les stages
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator

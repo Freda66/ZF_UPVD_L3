@@ -35,11 +35,16 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   	 * @param integer $page
   	 * @return Zend_Paginator
   	 */
-  	public function getMyStages($ineEtudiant, $param, $page){
+  	public function getMyStages($ineEtudiant, $param, $idFormation, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
-					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
-					  		->where('idEtudiant = ?', $ineEtudiant);
+					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'));
+  		if($idFormation != null) {
+  			$result			->from(array('s' => $this->_name), array('*'))
+  							->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+  							->where('idFormation = ?', $idFormation);
+  		}
+		$result		  		->where('idEtudiant = ?', $ineEtudiant);
   		// Filtre sur ses stages (avec un tuteur) => validé par le responsable
   		if($param == "stage") $result->where('idEnseignantTuteur is not null');
   		// Filtre sur ses demande de stage (sans enseignant tuteur renseigné => en attente de validation par le responsable
@@ -65,11 +70,15 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   	 * @param integer $page
   	 * @return Zend_Paginator
   	 */
-  	public function getStagesTuteur($idEnseignantTuteur, $page){
+  	public function getStagesTuteur($idEnseignantTuteur, $idFormation, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
-					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
-					  		->where('idEnseignantTuteur = ?', $idEnseignantTuteur);
+					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'));
+  		if($idFormation != null) {
+  			$result		->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+  						->where('idFormation = ?', $idFormation);
+  		}
+		$result		  	->where('idEnseignantTuteur = ?', $idEnseignantTuteur);
   		// Retourne le resultat sql
   		//return $this->fetchAll($result)->toArray();
   		

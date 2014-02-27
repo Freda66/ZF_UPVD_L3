@@ -18,9 +18,10 @@ class StageController extends Zend_Controller_Action
     {
     	$this->view->title = "Liste des stages"; // Titre de la page
     	
-    	// Crée un objet dbtable Stage et RealiserEtudiantStage
+    	// Crée un objet dbtable Stage, RealiserEtudiantStage et Formation
     	$modelStage = new Application_Model_DbTable_Stage();
     	$modelRealiserEtudiantStage = new Application_Model_DbTable_RealiserEtudiantStage();
+    	$modelFormation = new Application_Model_DbTable_Formation();
     	
     	// Initialise la variable lesStages et bool isFindEtudiant 
     	$lesStages = null;
@@ -30,11 +31,12 @@ class StageController extends Zend_Controller_Action
     	
     	// Pagination
     	$page = $this->_request->getParam('page');
+    	$formation = $this->_request->getParam('formation');
     	if(empty($page)){ $page=1; }
     	
     	// Liste des stages déposés par l'entreprise
     	if($session->infoUser->type == "Entreprise"){
-    		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant, $page); // Recupere les stages
+    		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant, $formation, $page); // Recupere les stages
     		// Parcour les stages et recupere un bool si le stage existe dans la table realiseretudiantstage
     		$stageAffect = Array();
     		$i = 0;
@@ -49,8 +51,8 @@ class StageController extends Zend_Controller_Action
 			// Recupere le parametre url
     		$myParam = $this->getRequest()->getParam('my');
 			// Recupere les stages
-			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant, $page); // Recupere les stages
-			else $lesStages = $modelStage->getStages($page); // Recupere les stages
+			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant, $formation, $page); // Recupere les stages
+			else $lesStages = $modelStage->getStages($page, $formation); // Recupere les stages
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myParam;
 			$this->view->isResponsable = $session->infoUser->isResponsable;
@@ -60,16 +62,18 @@ class StageController extends Zend_Controller_Action
     		// Recupere le param de l'url
     		$myStage = $this->getRequest()->getParam('my');
     		// Recupere les stages en fonction du param
-    		if($myStage == "stage" || $myStage == "demande") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage, $page);
+    		if($myStage == "stage" || $myStage == "demande") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage, $formation, $page);
     		// Recupere les stages validé
-    		else $lesStages = $modelStage->getStagesAllValidORAttente($page); 
+    		else $lesStages = $modelStage->getStagesAllValidORAttente(1, $formation, $page); 
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myStage;
     	}
     	
-    	// Envoi a la vue les stages et le boolean isFindEtudiant
+    	// Envoi a la vue les formations, stages et le boolean isFindEtudiant
+    	$this->view->lesFormations = $modelFormation->getFormations();
     	$this->view->lesStages = $lesStages;
     	$this->view->typeSession = $session->infoUser->type;
+    	$this->view->formation = $formation;
     }
     
 	public function ficheAction()

@@ -39,6 +39,20 @@
   					  <?php } else if($this->typeSession == "Enseignant" && $this->param == null && $this->isResponsable == 1) { ?>
   								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'tuteur'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a> 
   					  <?php } ?>
+  					  
+  					  <?php // LISTE DEROULANTE DES FORMATIONS ?>
+  					  <?php //var_dump($this->lesFormations); ?>
+  					  <li class="dropdown navbar-collapse collapse navbar-right">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: black; font-size: 18px;">Formation <b class="caret"></b></a>
+	  					  <ul class="dropdown-menu">
+	  					  		<li <?php if($this->formation == null) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>null)); ?>">Toutes</a></li>
+			                	<li class="divider"></li>
+		                	<?php foreach($this->lesFormations as $uneFormation) { ?>
+			                	<li <?php if($this->formation == $uneFormation->codeFormation) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>$uneFormation->codeFormation)); ?>"><?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation?></a></li>
+			                	<li class="divider"></li>
+		                	<?php } ?>
+		              	  </ul>
+		              </li>
 	              </h2>
 	            </div>
 	            
@@ -55,7 +69,7 @@
 		            		$i = 0;
 		            		foreach($this->lesStages as $unStage) { ?>          
 							<div class="list-group">
-								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage["codeStage"]),"default", true); ?>" 
+								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage["codeStage"])); ?>" 
 								   class="list-group-item <?php if($unStage["etatStage"] == 1) { ?>list-group-item-success<?php }
 								   						  		else if($unStage["etatStage"] == 0) { ?>list-group-item-info<?php }
 								   						  		else if($unStage["etatStage"] == -1) { ?>list-group-item-danger<?php } ?>">
@@ -68,7 +82,6 @@
 						<?php 
 							$i++;
 							}
-							
 							// Pagination
 							echo $this->paginationControl($this->lesStages,'Sliding','pagination.phtml'); 
 						}
