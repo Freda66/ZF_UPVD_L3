@@ -27,8 +27,6 @@ $controller = $instance->getRequest()->getControllerName();
 	                	<li <?php if($controller == "index" && $action == "mcd") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mcd'),"default", true); ?>">Modèle conceptuel des données [MCD]</a></li>
 	                	<li class="divider"></li>
 	                	<li <?php if($controller == "index" && $action == "mld") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mld'),"default", true); ?>">Modèle logique des données [MLD]</a></li>
-	                	<li class="divider"></li>
-	                	<li <?php if($controller == "index" && $action == "contact") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'contact'),"default", true); ?>">Contact</a></li>
 	              	</ul>
 	            </li>
           	</ul>

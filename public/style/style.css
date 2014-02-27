@@ -22,3 +22,9 @@ body {
 
 /* INDEX/MLD */
 #mldText { font-size: 13px; }
+
+/* STAGE/INDEX */
+#btnLegendStage { cursor: default; }
+.legendeEtudiantAffecteStage { margin-top: -1px; margin-left: 3px; }
+.iconEtudiantLibStage { height: 16px; margin-top: -7px; margin-left: 10px; }
+.stageEtudiantBtnLeft { margin-left: 5px; }

@@ -55,7 +55,7 @@ class Application_Model_Metier_Utilisateur
 				// Insert dans la session les informations de l'utilisateur
 				$uneEntreprise = $modelEntreprise->getEntrepriseByLoginMdp($login, $mdp);
 				$session->infoUser->type = "Entreprise";
-				$session->infoUser->identifiant = $uneEntreprise->siretEntreprise;
+				$session->infoUser->identifiant = $uneEntreprise->idEntreprise;
 			}
 		}
 		

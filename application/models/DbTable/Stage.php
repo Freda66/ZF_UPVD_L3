@@ -15,14 +15,38 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
      * @param integer $code
      * @return Ambigous <Zend_Db_Table_Row_Abstract, NULL, unknown>
      */
-  	public function getStage($code){
+  	public function getStage($code, $session){
   		// Recupere les informations d'un stage
-  		// Jointure sur personne pour recuperer le nom et prenom du tuteur de l'entreprise
+  		// Jointure sur personne pour recuperer le nom et prenom du tuteur de l'entreprise,...
   		$result = 	$this	->select()->setIntegrityCheck(false)
   							->from(array('s' => $this->_name), array('*'))
   							->joinLeft(array('p'=>'personne'), 's.idTuteur = p.idPersonne', array('*'))
+  							->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+  							->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'))
+  							->joinLeft(array('en'=>'enseignant'), 'res.idEnseignantTuteur = en.idEnseignant', array('*'))
   							->where('codeStage = ?', $code);
-  		return $this->fetchRow($result);
+  		// Entreprise
+  		if($session->type == "Entreprise") $result->where('idEntreprise = ?', $session->identifiant);
+  		// Enseignant tuteur
+  		if($session->type == "Enseignant" && !$session->isResponsable) $result->where('res.idEnseignantTuteur = ?', $session->identifiant);
+  		
+  		// Etudiant
+  		if($session->type == "Etudiant") {
+  			$result = $this->fetchAll($result);
+  			
+  			foreach($result as $unStage){
+  				if($unStage->idEtudiant == $session->identifiant || $unStage->idEtudiant == null) return $unStage;
+  			}
+  			
+  			// Pas de return avant donc return null
+  			return null;  
+  		} 
+  		else {
+  			$result = $this->fetchRow($result);
+  		}
+  		
+  		// Retourne le resultat
+  		return $result;
   	}
     
 	/**
@@ -34,7 +58,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		$result = $this	->select()
 						->where('idEntreprise = ?', $siret);
 		// Retourne le resultat de la requete						
-		return $this->fetchAll($result);
+		return $this->fetchAll($result)->toArray();
 	}
 	
 	/**
@@ -43,8 +67,11 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	 * @return Zend_Db_Table_Rowset_Abstract
 	 */
 	public function getStagesAllValidORAttente($etat = 1){
-		$result = $this	->select()
-						->where('etatStage = ?', $etat);
+		$result = $this	->select()->setIntegrityCheck(false)
+  						->from(array('s' => $this->_name), array('*'))
+						->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+						->where('etatStage = ?', $etat)
+						->where('res.idStage is null');
 		// Retourne le resultat de la requete						
 		return $this->fetchAll($result);
 	}
