@@ -75,4 +75,13 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		// Retourne le resultat de la requete						
 		return $this->fetchAll($result);
 	}
+	
+	/**
+	 * Retourne la liste des stages (enseignant responsable)
+	 * @return Zend_Db_Table_Rowset_Abstract
+	 */
+	public function getStages(){
+		// Retourne tout les stages
+		return $this->fetchAll();
+	}
 }

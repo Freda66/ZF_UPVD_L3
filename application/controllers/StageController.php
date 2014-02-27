@@ -38,8 +38,14 @@ class StageController extends Zend_Controller_Action
     	} 
     	// Liste des stages dont il est tuteur
     	else if($session->infoUser->type == "Enseignant"){
-			if($session->infoUser->isResponsable == 0) $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant); // Recupere les stages
-			else $lesStages = $modelRealiserEtudiantStage->getStagesAllValidORAttente(); // Recupere les stages
+			// Recupere le parametre url
+    		$myParam = $this->getRequest()->getParam('my');
+			// Recupere les stages
+			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant); // Recupere les stages
+			else $lesStages = $modelStage->getStages(); // Recupere les stages
+    		// Envoi a la vue le param de l'url
+    		$this->view->param = $myParam;
+			$this->view->isResponsable = $session->infoUser->isResponsable;
     	} 
     	// Liste des stages disponible + filtre possible sur les siens
     	else if($session->infoUser->type == "Etudiant"){

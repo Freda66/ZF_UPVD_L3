@@ -10,7 +10,11 @@
 	              	  <?php if($this->typeSession == "Etudiant" && $this->param == null) { echo "Liste des stages disponible"; }
 	              	  		else if($this->typeSession == "Etudiant" && $this->param == "stage") { echo "Liste de mes stages"; }
 	              	  		else if($this->typeSession == "Etudiant" && $this->param == "demande") { echo "Liste de mes demandes de stage"; }
-	              	  		else { echo "Liste des stages"; } ?>
+							
+							else if($this->typeSession == "Enseignant" && $this->param == "tuteur" && $this->isResponsable == 1) { echo "Liste de mes stages"; }
+							
+							else { echo "Liste des stages"; } 
+					  ?>
 		              
 		              <?php // FILTRE ETUDIANT RIGHT ?>
 		              <?php if($this->typeSession == "Etudiant" && $this->param == "stage") { ?> 
@@ -24,6 +28,12 @@
 		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'stage'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a>
 		              		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'demande'),"default", true); ?>" class="btn btn-default navbar-right">Mes demandes &raquo;</a> 
 		              <?php } ?>
+					  
+					  <?php if($this->typeSession == "Enseignant" && $this->param == "tuteur" && $this->isResponsable == 1) { ?> 
+								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Tous les stages &raquo;</a> 
+					  <?php } else if($this->typeSession == "Enseignant" && $this->param == null && $this->isResponsable == 1) { ?>
+								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'tuteur'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a> 
+					  <?php } ?>
 	              </h2>
 	            </div>
 	            
