@@ -49,9 +49,27 @@
 	      			</table>
 	      			
 	      			<?php 
+	      			// ETUDIANT 
 	      			if($this->typeSession == "Etudiant" && $unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null) { ?><a id="confirmDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Faire la demande de stage &raquo;</a><?php }
-	      			else if($this->typeSession == "Etudiant" && $unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) { ?><a id="cancelDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'canceldemande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">&laquo; Annuler la demande de stage</a><?php } ?>
-	      			<?php if($this->typeSession == "Entreprise" && $unStage->etatStage != 1) { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier le stage &raquo;</a><?php } ?>
+	      			else if($this->typeSession == "Etudiant" && $unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) { ?><a id="cancelDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'canceldemande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">&laquo; Annuler la demande de stage</a><?php }
+	      			// ENTREPRISE
+	      			if($this->typeSession == "Entreprise" && $unStage->etatStage != 1) { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier le stage &raquo;</a><?php }
+	      			// ENSEIGNANT RESPONSABLE
+	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>-1),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft" id="confirmDesactiveStage">Désactiver le stage &raquo;</a>
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>1),"default", true); ?>" class="btn btn-success navbar-right stageEtudiantBtnLeft">Activer le stage &raquo;</a>
+	      				
+	      				<?php if($unStage->idEnseignantTuteur != null) { ?>
+	      					<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'retirerenseignant', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft" id="confirmRetirerEnseignant">Retirer enseignant tuteur &raquo;</a>
+	      				<?php } if($unStage->idEtudiant != null) { ?>
+	      					<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'retireretudiant', 'code'=>$unStage->codeStage, 'etudiant'=>$unStage->idEtudiant),"default", true); ?>" class="btn btn-info navbar-right stageEtudiantBtnLeft" id="confirmRetirerEtudiant">Retirer étudiant &raquo;</a>
+	      				<?php } ?>
+	      			<?php 
+	      				if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) {
+							
+						}
+					} 
+					?>
 	      		</div>
 	      		
 			</div>
@@ -62,6 +80,11 @@
 <?php // DIALOG DE CONFIRMATION ?>
 <p id="dialog-confirm-accept" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment faire cette demande de stage ?</p>
 <p id="dialog-confirm-cancel" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment annuler cette demande de stage ?</p>
+
+<p id="dialog-confirm-desactive-stage" title="Etat du stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment désactiver le stage ?</p>
+<p id="dialog-confirm-retirer-enseignant" title="Retirer enseignant tuteur"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment retirer l'enseignant tuteur ?</p>
+<p id="dialog-confirm-retirer-etudiant" title="Retirer étudiant"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment retirer l'étudiant ?</p>
+
 
 <?php // SCRIPT JS UI POUR LE DIALOG ?>
 <script>
@@ -106,6 +129,63 @@ $(function() {
 		},
     });
 
+	$("#dialog-confirm-desactive-stage").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 395,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#dialog-confirm-retirer-enseignant").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 445,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#dialog-confirm-retirer-etudiant").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 365,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
 	$("#confirmDemande").click(function(){
 		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
         $("#dialog-confirm-accept").dialog("open"); // Ouvre la fenetre de dialog
@@ -115,6 +195,24 @@ $(function() {
 	$("#cancelDemande").click(function(){
 		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
         $("#dialog-confirm-cancel").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$("#confirmDesactiveStage").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-desactive-stage").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$("#confirmRetirerEnseignant").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-retirer-enseignant").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$("#confirmRetirerEtudiant").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-retirer-etudiant").dialog("open"); // Ouvre la fenetre de dialog
         return false;
 	});
 });

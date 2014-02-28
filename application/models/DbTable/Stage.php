@@ -162,4 +162,27 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 			else return false;
 		} catch(Exeception $e) { return false; }
 	}
+	
+	/**
+	 * Modifie l'etat du stage (-1 refuser (desactivé) / 0 en attente(d'activation) / 1 validé (activé)
+	 * @param int $codeStage
+	 * @param int $etatStage
+	 * @return boolean
+	 */
+	public function updateEtat($codeStage, $etatStage){
+		try {
+			$isOk = true;
+			// Si on desactive le stage, on commence par supprimer les lignes
+			if($etatStage == -1){
+				$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
+				if(!$modelRES->deleteRESByResponsable($codeStage)) $isOk = false;
+			}
+			
+			if($isOk){
+				$data = array('etatStage'=>$etatStage);
+				if($this->update($data, 'codeStage = '. (int)$codeStage)) return true;
+				else return false;
+			} else return false;
+		} catch(Exeception $e) { return false; }
+	}
 }

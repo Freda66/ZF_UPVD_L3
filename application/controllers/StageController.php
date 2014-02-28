@@ -103,6 +103,7 @@ class StageController extends Zend_Controller_Action
 	    	}
 	    	
 	    	$this->view->typeSession = $session->infoUser->type;
+	    	if($session->infoUser->type == "Enseignant") $this->view->isResponsable = $session->infoUser->isResponsable;
     	} else {
     		// Message flash + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
@@ -247,6 +248,90 @@ class StageController extends Zend_Controller_Action
     	} else {
     		// Message + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas annuler de demande de stage.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    public function updateetatAction()
+    {
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
+    	// Recupere l'etat du stage
+    	$etatStage = $this->getRequest()->getParam('etat');
+    
+    	// Si c'est un enseignant responsable
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		// Cree un objet dbTable Stage
+    		$modelStage = new Application_Model_DbTable_Stage();
+    		
+    		// Active le stage
+    		if($etatStage == 1){
+    			if($modelStage->updateEtat($codeStage, 1)) $this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été activé.'));
+    			else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la modification de l\'etat du stage.')); 
+    		} 
+    		// Desactive le stage
+    		else if($etatStage == -1){
+    			if($modelStage->updateEtat($codeStage, -1)) $this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été désactivé.'));
+    			else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la modification de l\'etat du stage.'));
+    		}
+    		
+    		// Redirection
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas modifier l\'etat du stage.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    public function retireretudiantAction()
+    {
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
+    	// Recupere le code etudiant
+    	$codeEtudiant = $this->getRequest()->getParam('etudiant');
+    
+    	// Si c'est un enseignant responsable
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		// Cree un objet dbTable Stage
+    		$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
+    
+    		// Retire l'etudiant
+    		if($modelRES->deleteRESByResponsable($codeStage, $codeEtudiant)) $this->_helper->flashMessenger->addMessage(array('success'=>'L\'etudiant a été retiré.'));
+    		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression de l\'etudiant.'));
+    
+	    	$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    public function retirerenseignantAction()
+    {
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
+    
+    	// Si c'est un enseignant responsable
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		// Cree un objet dbTable Stage
+    		$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
+    
+    		// Retire l'enseignant tuteur
+    		if($modelRES->retirerenseignant($codeStage)) $this->_helper->flashMessenger->addMessage(array('success'=>'L\'enseignant tuteur a été retiré.'));
+    		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression de l\'enseignant tuteur.'));
+    
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));
     		$this->redirect("/stage/fiche/code/$codeStage");
     	}
     }

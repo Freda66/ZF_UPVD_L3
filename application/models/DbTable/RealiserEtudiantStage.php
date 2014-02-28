@@ -137,4 +137,31 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 			else return false;
 		}
 	}
+	
+	/**
+	 * Fonction qui supprime la demande de stage d'un etudiant
+	 * @param integer $codeStage
+	 * @param integer $codeEtudiant : -1 si enseignant responsable
+	 */
+	public function deleteRESByResponsable($codeStage, $codeEtudiant = -1){
+		try {
+			if($codeEtudiant == -1) $this->delete(array('idStage = '.$codeStage));
+			else $this->delete(array('idStage = '.$codeStage, 'idEtudiant = "'.$codeEtudiant.'"'));
+			return true;
+		} catch(Exception $e){ return false; }
+	}
+	
+	/**
+	 * Fonction qui retire un enseignant tuteur
+	 * @param integer $codeStage
+	 * @param integer $codeEtudiant
+	 * @return boolean
+	 */
+	public function retirerenseignant($codeStage){
+		try {
+			$data = array('idEnseignantTuteur'=>NULL);
+			if($this->update($data, 'idStage = '.(int)$codeStage)) return true;
+			else return false;
+		} catch(Exeception $e) { return false; }
+	}
 }
