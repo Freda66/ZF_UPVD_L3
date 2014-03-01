@@ -6,8 +6,7 @@ class Application_Form_DepotStage extends Zend_Form
 	
    	public function init()
 	{
-		$this->setName('formDepot')
-			 ->setAttrib('id','');
+		$this->setName('formDepot');
 		
 		// Ajoute des elements au formulaire
 		
