@@ -9,7 +9,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 {
 	// Nom de la table qu'on va gérer, on déclare une propriété protégée
     protected $_name = 'stage';
-	private $_nbItemByPage = 1;
+	private $_nbItemByPage = 2;
 	private $_nbPagePrint = 20;
     
     /**
@@ -52,8 +52,8 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
   	}
     
 	/**
-	 * Fonction qui retourne les stages d'une entreprise à partir d'un numéro de siret
-	 * @param string $idEntreprise
+	 * Fonction qui retourne les stages d'une entreprise à partir
+	 * @param integer $idEntreprise
 	 * @param integer $formation
 	 * @param integer $page
 	 * @return Zend_Paginator
@@ -68,16 +68,20 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		}
 		$result			->where('idEntreprise = ?', $idEntreprise);
 
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+		if($page == null){
+			return $this->fetchAll($result);
+		} else {
+			// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+			$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+			// Détermine le nombre d'item par page
+			$paginator ->setItemCountPerPage($this->_nbItemByPage);
+			// Détermine la page en courrante
+			$paginator ->setCurrentPageNumber($page);
+			// Indique le nombre de numéro de page qu'on affiche
+			$paginator->setPageRange($this->_nbPagePrint);
+			// Retourne le resultat
+			return $paginator;
+		}
 	}
 	
 	/**

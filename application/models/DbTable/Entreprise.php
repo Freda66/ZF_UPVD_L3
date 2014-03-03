@@ -9,16 +9,21 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 {
 	// Nom de la table qu'on va gérer, on déclare une propriété protégée
     protected $_name = 'entreprise';
+	private $_nbItemByPage = 5;
+	private $_nbPagePrint = 20;
 
     /**
      * Fonction qui retourne les informations d'une entreprise
-     * @param string $siret
+     * @param integer $id
      * @return Object, Array, NULL
      */
-	public function getEntreprise($siret, $isArray = false)
+	public function getEntreprise($id, $isArray = false)
 	{
-		// Cherche une ligne qui correspond au siret récuperé dans la bdd
-		$result = $this->fetchRow('siretEntreprise = ' . $siret);
+		$result = 	$this	->select()->setIntegrityCheck(false)
+							->from(array('e' => $this->_name), array('*'))
+							->joinLeft(array('p'=>'personne'), 'e.idPersonneDirigeant = p.idPersonne', array('*'))
+							->where('idEntreprise = ?', $id);
+		$result = $this->fetchRow($result);
 		// Si on ne la trouve pas on return null
 		if($result) {
 			if($isArray) return $result->toArray();
@@ -67,5 +72,23 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		// Vérifie que le résultat est valide
 		if($result->isValid()) return true;
     	else return false;	
+	}
+	
+	/**
+	 * Retourne sous pagination la liste des entreprise du site
+	 * @param integer $page
+	 * @return Zend_Paginator
+	 */
+	public function getListeEntreprise($page){
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($this->select()));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
 	}
 }

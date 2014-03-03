@@ -48,19 +48,21 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   		if($param == "stage") $result->where('idEnseignantTuteur is not null');
   		// Filtre sur ses demande de stage (sans enseignant tuteur renseigné => en attente de validation par le responsable
   		else if($param == "demande") $result->where('idEnseignantTuteur is null');
-  		// Retourne le resultat sql
-  		//return $this->fetchAll($result)->toArray();
 
-  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-  		// Détermine le nombre d'item par page
-  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-  		// Détermine la page en courrante
-  		$paginator ->setCurrentPageNumber($page);
-  		// Indique le nombre de numéro de page qu'on affiche
-  		$paginator->setPageRange($this->_nbPagePrint);
-  		// Retourne le resultat
-  		return $paginator;
+  		if($page == null){
+  			return $this->fetchAll($result);
+  		} else {
+	  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+	  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+	  		// Détermine le nombre d'item par page
+	  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+	  		// Détermine la page en courrante
+	  		$paginator ->setCurrentPageNumber($page);
+	  		// Indique le nombre de numéro de page qu'on affiche
+	  		$paginator->setPageRange($this->_nbPagePrint);
+	  		// Retourne le resultat
+	  		return $paginator;
+  		}
   	}
   	
   	/**
@@ -72,27 +74,45 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   	public function getStagesTuteur($idEnseignantTuteur, $idFormation, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
-					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'));
+					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
+  							->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'));
   		if($idFormation != null) {
   			$result		->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   						->where('idFormation = ?', $idFormation);
   		}
 		$result		  	->where('idEnseignantTuteur = ?', $idEnseignantTuteur);
-  		// Retourne le resultat sql
-  		//return $this->fetchAll($result)->toArray();
-  		
-  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-  		// Détermine le nombre d'item par page
-  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-  		// Détermine la page en courrante
-  		$paginator ->setCurrentPageNumber($page);
-  		// Indique le nombre de numéro de page qu'on affiche
-  		$paginator->setPageRange($this->_nbPagePrint);
-  		// Retourne le resultat
-  		return $paginator;
+		
+		if($page == null){
+			return $this->fetchAll($result);
+		} else {
+	  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+	  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+	  		// Détermine le nombre d'item par page
+	  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+	  		// Détermine la page en courrante
+	  		$paginator ->setCurrentPageNumber($page);
+	  		// Indique le nombre de numéro de page qu'on affiche
+	  		$paginator->setPageRange($this->_nbPagePrint);
+	  		// Retourne le resultat
+	  		return $paginator;
+		}
   	}
-    
+  	
+  	/**
+  	 * Fonction qui renvoie la liste des stages pour une entreprise avec le détails (edutiant, tuteur enseignant)
+  	 * @param integer $idEntreprise
+  	 * @return Zend_Paginator
+  	 */
+  	public function getStagesEntreprise($idEntreprise){
+  		$result = 	$this	->select()->setIntegrityCheck(false)
+	  		->from(array('res' => $this->_name), array('*'))
+	  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
+	  		->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'))
+  			->where('s.idEntreprise = ?', $idEntreprise);
+  	
+  		return $this->fetchAll($result);
+  	}
+  	    
 	/**
 	 * Fonction qui si le stage existe dans la table
 	 * @param integer $codeStage

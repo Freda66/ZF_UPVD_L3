@@ -9,6 +9,8 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 {
 	// Nom de la table qu'on va gérer, on déclare une propriété protégée
     protected $_name = 'etudiant';
+	private $_nbItemByPage = 5;
+	private $_nbPagePrint = 20;
 
     /**
      * Fonction qui retourne les informations d'un etudiant
@@ -17,8 +19,12 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
      */
 	public function getEtudiant($ine, $isArray = false)
 	{
-		// Cherche une ligne qui correspond a l'ine récuperé dans la bdd
-		$result = $this->fetchRow('ineEtudiant = ' . $ine);
+		// Recupere les informations d'un etudiant
+		$result = 	$this	->select()->setIntegrityCheck(false)
+							->from(array('e' => $this->_name), array('*'))
+							->joinLeft(array('f'=>'formation'), 'e.idFormation = f.codeFormation', array('*'))
+							->where('ineEtudiant = ?', $ine);
+		$result = $this->fetchRow($result);
 		// Si on ne la trouve pas on return null
 		if($result) {
 			if($isArray) return $result->toArray();
@@ -67,6 +73,24 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 		// Vérifie que le résultat est valide
 		if($result->isValid()) return true;
     	else return false;	
+	}
+	
+	/**
+	 * Retourne sous pagination la liste des etudiants du site
+	 * @param integer $page
+	 * @return Zend_Paginator
+	 */
+	public function getListeEtudiant($page){
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($this->select()));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
 	}
 		
 }
