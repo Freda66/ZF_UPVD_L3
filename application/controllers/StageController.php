@@ -3,6 +3,9 @@
 class StageController extends Zend_Controller_Action
 {
 
+	/**
+	 * Init au chargement du controller
+	 */
     public function init()
     {
     	// Recupere la session
@@ -14,6 +17,10 @@ class StageController extends Zend_Controller_Action
 		}
     }
 
+    /**
+     * Liste des stages
+     * Différente vue en fonction de l'utilisateur
+     */
     public function indexAction()
     {
     	$this->view->title = "Liste des stages"; // Titre de la page
@@ -31,8 +38,8 @@ class StageController extends Zend_Controller_Action
     	
     	// Pagination
     	$page = $this->_request->getParam('page');
-    	$formation = $this->_request->getParam('formation');
     	if(empty($page)){ $page=1; }
+    	$formation = $this->_request->getParam('formation');
     	
     	// Liste des stages déposés par l'entreprise
     	if($session->infoUser->type == "Entreprise"){
@@ -76,6 +83,9 @@ class StageController extends Zend_Controller_Action
     	$this->view->formation = $formation;
     }
     
+    /**
+     * Fiche détaillée d'un stage
+     */
 	public function ficheAction()
     {
     	$this->view->title = "Stage"; // Titre de la page
@@ -111,6 +121,10 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Formulaire de dépot d'un stage
+     * Ajouter/Modifier
+     */
     public function depotAction()
     {
     	$this->view->title = "Depot d'un stage"; // Titre de la page
@@ -194,6 +208,9 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Fonction qui effectue la demande de stage d'un etudiant pour un stage en particulier
+     */
     public function demandeAction()
     {
     	// Recupere la session en cours
@@ -219,6 +236,9 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Annule la demande de stage d'un etudiant (si pas encore validé avec un enseignant tuteur)
+     */
     public function canceldemandeAction()
     {
     	// Recupere la session en cours
@@ -252,6 +272,9 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Modifie l'etat d'un stage (Validé, Refusé) administrativement
+     */
     public function updateetatAction()
     {
     	// Recupere la session en cours
@@ -286,6 +309,10 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Retirer l'etudiant d'un stage
+     * Accéssible par un responsable
+     */
     public function retireretudiantAction()
     {
     	// Recupere la session en cours
@@ -312,6 +339,10 @@ class StageController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Retiter l'enseignant tuteur d'un stage
+     * Accéssible par un responsable
+     */
     public function retirerenseignantAction()
     {
     	// Recupere la session en cours

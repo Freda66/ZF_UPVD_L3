@@ -3,27 +3,42 @@
 class IndexController extends Zend_Controller_Action
 {
 
+	/**
+	 * Init au chargement du controller
+	 */
     public function init()
     {
         // Initialize action controller here
         //var_dump(Zend_Auth::getInstance()->getStorage()->read());
     }
 
+    /**
+     * Accueil du site
+     */
     public function indexAction()
     {
     	$this->view->title = "Accueil"; // Titre de la page
     }
     
+    /**
+     * Affiche le mcd de la bdd
+     */
 	public function mcdAction()
     {
     	$this->view->title = "Modèle conceptuel des données"; // Titre de la page
     }
     
+    /**
+     * Affiche le mld de la bdd
+     */
     public function mldAction()
     {
     	$this->view->title = "Modèle logique des données"; // Titre de la page
     }
     
+    /**
+     * Connexion d'un utilisateur
+     */
     public function connexionAction()
     {
     	if(isset($_POST['submitConnexion'])){
@@ -51,6 +66,9 @@ class IndexController extends Zend_Controller_Action
     	}
     }
     
+    /**
+     * Deconnexion d'un utilisateur
+     */
     public function deconnexionAction(){
     	// Vide la session
     	Zend_Auth::getInstance()->clearIdentity();
