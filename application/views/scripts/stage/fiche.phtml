@@ -64,7 +64,12 @@
 						// Activer le stage					
 						} else if($unStage->etatStage == -1) { ?>
 		      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>1),"default", true); ?>" class="btn btn-success navbar-right stageEtudiantBtnLeft">&nbsp;&nbsp; Activer le stage &raquo; &nbsp;&nbsp;</a>
-	      				<?php 
+      					<?php  				
+      					// Desactiver le stage
+      					} else { ?>
+      						<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>-1),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft" id="confirmDesactiveStage">Désactiver le stage &raquo;</a>
+      						<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>1),"default", true); ?>" class="btn btn-success navbar-right stageEtudiantBtnLeft">&nbsp;&nbsp; Activer le stage &raquo; &nbsp;&nbsp;</a>
+      					<?php 
 						// Retirer enseignant tuteur
 						} if($unStage->idEnseignantTuteur != null) { ?>
 	      					<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'retirerenseignant', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft" id="confirmRetirerEnseignant">Retirer enseignant tuteur &raquo;</a>
