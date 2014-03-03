@@ -1,10 +1,12 @@
 /**
 	body
 	helper (flash messager)
+	form
 	index/mld
 	stage/index
 	stage/fiche
 	stage/depot
+	responsable/index
 */
 
 /* BODY (Navbar fixée a 50px) */
@@ -12,6 +14,9 @@ body { padding-top: 50px; padding-bottom: 20px; }
 
 /* FLASH MESSAGER */
 .flashMessager { padding: 15px; margin-right: auto; margin-left: auto; border: 1px solid transparent; border-radius: 4px; }
+
+/* FORM */
+.errors { font-size: 1.2em; color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 5px; list-style: none; border-radius: 4px; }
 
 /* INDEX/MLD */
 #mldText { font-size: 13px; }
@@ -30,5 +35,5 @@ body { padding-top: 50px; padding-bottom: 20px; }
 #submitDepotStage { height: 35px; }
 .cursorHand { cursor: Pointer; }
 
-
-.errors { font-size: 1.2em; color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 5px; list-style: none; border-radius: 4px; }
+/* RESPONSABLE/INDEX */
+.btnCrudResponsable { width : 32px; margin-top: -6px; margin-right: 5px; }
