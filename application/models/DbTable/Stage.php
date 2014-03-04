@@ -85,6 +85,22 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	}
 	
 	/**
+	 * Fonction qui retourne les stages d'une entreprise avec les etudiants
+	 * @param integer $idEntreprise
+	 * @return ListArray<DbTable>
+	 */
+	public function getStagesEntrepriseANDRealiser($idEntreprise){
+		// Requete qui recupere les stages d'un entreprise
+		$result = $this	->select()->setIntegrityCheck(false)
+						->from(array('s' => $this->_name), array('*'))
+				  		->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+				  		->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'))
+					  	->joinLeft(array('en'=>'enseignant'), 'en.idEnseignant = res.idEnseignantTuteur', array('*'))
+			  			->where('s.idEntreprise = ?', $idEntreprise);
+		return $this->fetchAll($result);
+	}
+	
+	/**
 	 * Retourne la liste des stages qui sont disponible (etat = 1) ou en attente (etat = 0)
 	 * @param int $etat : 1 valid default, 0 en attente (responsable)
 	 * @param integer $page

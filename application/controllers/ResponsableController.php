@@ -49,7 +49,7 @@ class ResponsableController extends Zend_Controller_Action
     }
     
     /**
-     * Fiche détaillée d'un utilisateur
+     * Fiche détaillée d'un utilisateur + liste des stages
      */
     public function ficheAction()
     {
@@ -60,7 +60,7 @@ class ResponsableController extends Zend_Controller_Action
     	$typeUtilisateur = $this->getRequest()->getParam('type');
     	 
     	if($codeUtilisateur != null){
-    		// Crée un objet dbTable Stage
+    		// Crée un objet dbTable RealiserEtudiantStage
     		$modelStage = new Application_Model_DbTable_RealiserEtudiantStage();
     		
     		if($typeUtilisateur == "Enseignant") {
@@ -78,12 +78,14 @@ class ResponsableController extends Zend_Controller_Action
 	    		// Recupere les stages qu'il a ou va réaliser
 	    		$lesStages = $modelStage->getMyStages($codeUtilisateur, null, null, null);
     		} else if($typeUtilisateur == "Entreprise") {
+	    		// Crée un objet dbTable Stage
+	    		$modelStage = new Application_Model_DbTable_Stage();
 	    		// Crée un objet dbtable entreprise
 	    		$modelEntreprise = new Application_Model_DbTable_Entreprise();
 	    		// Recupere les informations d'une entreprise
 	    		$unUtilisateur = $modelEntreprise->getEntreprise($codeUtilisateur);
 	    		// Recupere les stages déposés
-	    		$lesStages = $modelStage->getStagesEntreprise($codeUtilisateur);
+	    		$lesStages = $modelStage->getStagesEntrepriseANDRealiser($codeUtilisateur);
     		} 
     
     		if($unUtilisateur == null){
@@ -101,6 +103,38 @@ class ResponsableController extends Zend_Controller_Action
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucune fiche ne correspond.'));
     		$this->redirect('/responsable/index/');
     	}
+    }
+    
+    /**
+     * Supprime un utilisateur (passe son etat a -1)
+     */
+    public function deleteAction(){
+    	// Recupere son type et son id
+    	$codeUtilisateur = $this->getRequest()->getParam('code');
+    	$typeUtilisateur = $this->getRequest()->getParam('type');
+    	$isOk = false;
+    	
+    	if($typeUtilisateur == "Enseignant"){
+    		// Crée un objet dbTable Enseignant
+    		$modelEnseignant = new Application_Model_DbTable_Enseignant();
+    		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
+    		
+    	} else if($typeUtilisateur == "Etudiant"){
+    		// Crée un objet dbTable Etudiant
+    		$modelEtudiant = new Application_Model_DbTable_Etudiant();
+    		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
+    		
+    	} else if($typeUtilisateur == "Entreprise"){
+    		// Crée un objet dbTable Entreprise
+    		$modelEntreprise = new Application_Model_DbTable_Entreprise();
+    		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
+    		
+    	} 
+    	
+    	// Message + Redirection 
+    	if($isOk) $this->_helper->flashMessenger->addMessage(array('success'=>'L\'enregistrement a été supprimé.'));
+    	else $this->_helper->flashMessenger->addMessage(array('danger'=>'Impossible de supprimer l\'enregistrement correspondant.'));
+    	$this->redirect('/responsable/index/');
     }
     
 }

@@ -38,7 +38,9 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   	public function getMyStages($ineEtudiant, $param, $idFormation, $page){
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
-					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'));
+					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
+					  		->joinLeft(array('e'=>'enseignant'), 'e.idEnseignant = res.idEnseignantTuteur', array('*'))
+					  		->joinLeft(array('en'=>'entreprise'), 'en.idEntreprise = s.idEntreprise', array('*'));
   		if($idFormation != null) {
   			$result			->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   							->where('idFormation = ?', $idFormation);
@@ -75,7 +77,8 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   		$result = 	$this	->select()->setIntegrityCheck(false)
 					  		->from(array('res' => $this->_name), array('*'))
 					  		->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
-  							->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'));
+  							->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'))
+					  		->joinLeft(array('en'=>'entreprise'), 'en.idEntreprise = s.idEntreprise', array('*'));
   		if($idFormation != null) {
   			$result		->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   						->where('idFormation = ?', $idFormation);
