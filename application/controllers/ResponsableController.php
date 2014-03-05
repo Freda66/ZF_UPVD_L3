@@ -118,17 +118,20 @@ class ResponsableController extends Zend_Controller_Action
     		// Crée un objet dbTable Enseignant
     		$modelEnseignant = new Application_Model_DbTable_Enseignant();
     		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
-    		
+    		$modelEnseignant->deleteEnseignant($codeUtilisateur);
+    		$isOk = true;
     	} else if($typeUtilisateur == "Etudiant"){
     		// Crée un objet dbTable Etudiant
     		$modelEtudiant = new Application_Model_DbTable_Etudiant();
     		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
-    		
+    		$modelEtudiant->deleteEtudiant($codeUtilisateur);
+    		$isOk = true;
     	} else if($typeUtilisateur == "Entreprise"){
     		// Crée un objet dbTable Entreprise
     		$modelEntreprise = new Application_Model_DbTable_Entreprise();
     		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
-    		
+    		$modelEntreprise->deleteEntreprise($codeUtilisateur);
+    		$isOk = true;
     	} 
     	
     	// Message + Redirection 

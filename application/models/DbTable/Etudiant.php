@@ -67,6 +67,10 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 		$authAdapter->setIdentity($login)
 				  	->setCredential($mdp);
 
+		// Récupérer l'objet select (par référence) 
+		$select = $authAdapter->getDbSelect();
+		$select->where('etatEtudiant = 1'); // Test que l'utilisateur soit actif
+		
 		// Authentification
     	$result = $authAdapter->authenticate();
 
@@ -81,8 +85,11 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 	 * @return Zend_Paginator
 	 */
 	public function getListeEtudiant($page){
+		// Liste des etudiants actif
+		$requete = $this->select()->where('etatEtudiant = ?', 1);
+		
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($this->select()));
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
 		// Détermine le nombre d'item par page
 		$paginator ->setItemCountPerPage($this->_nbItemByPage);
 		// Détermine la page en courrante
@@ -91,6 +98,21 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 		$paginator->setPageRange($this->_nbPagePrint);
 		// Retourne le resultat
 		return $paginator;
+	}
+	
+	/**
+	 * Fonction qui supprime l'etudiant de la table
+	 * Si exception (dépendance dans une autre table) on passe sont etat a -1
+	 * @param integer $idEtudiant
+	 */
+	public function deleteEtudiant($ineEtudiant){
+		try {
+			// Supprime l'etudiant
+			$this->delete("ineEtudiant = '$ineEtudiant'");
+		}catch (Exception $e){
+			// Si une erreur est déclanché (dépendance de clé étrangere), on passe sont etat a -1
+			$this->update(array('etatEtudiant'=>-1), "ineEtudiant = '$ineEtudiant'");
+		}
 	}
 		
 }
