@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 27 Février 2014 à 09:43
+-- Généré le: Sam 22 Mars 2014 à 08:21
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -62,18 +62,20 @@ CREATE TABLE IF NOT EXISTS `enseignant` (
   `loginEnseignant` varchar(250) COLLATE utf8_bin NOT NULL,
   `mdpEnseignant` varchar(250) COLLATE utf8_bin NOT NULL,
   `isResponsableSiteEnseignant` int(11) NOT NULL COMMENT '0 => Non & 1 => 1',
+  `etatEnseignant` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idEnseignant`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
 
 --
 -- Contenu de la table `enseignant`
 --
 
-INSERT INTO `enseignant` (`idEnseignant`, `nomEnseignant`, `prenomEnseignant`, `fonctionEnseignant`, `specialiteEnseignant`, `loginEnseignant`, `mdpEnseignant`, `isResponsableSiteEnseignant`) VALUES
-(1, 'MADELINE', 'Blaise', 'Enseignant', 'Informatique', 'bmadeline', 'bmadeline', 1),
-(2, 'SALVAT', 'Eric', 'Enseignant', 'Informatique', 'esalvat', 'esalvat', 0),
-(3, 'RHARMAOUI', 'Ahmed', 'Enseignant', 'Robotique', 'arharmaoui', 'arharmaoui', 1),
-(4, 'PECH-GOURG', 'Nicolas', 'Intervenant', 'Management', 'npechgourg', 'npechgourg', 0);
+INSERT INTO `enseignant` (`idEnseignant`, `nomEnseignant`, `prenomEnseignant`, `fonctionEnseignant`, `specialiteEnseignant`, `loginEnseignant`, `mdpEnseignant`, `isResponsableSiteEnseignant`, `etatEnseignant`) VALUES
+(1, 'MADELINE', 'Blaise', 'Enseignant', 'Informatique', 'bmadeline', 'bmadeline', 1, 1),
+(2, 'SALVAT', 'Eric', 'Enseignant', 'Informatique', 'esalvat', 'esalvat', 0, 1),
+(3, 'RHARMAOUI', 'Ahmed', 'Enseignant', 'Robotique', 'arharmaoui', 'arharmaoui', 1, 1),
+(4, 'PECH-GOURG', 'Nicolas', 'Intervenant', 'Management', 'npechgourg', 'npechgourg', 0, 1),
+(5, 'Janet', 'Karine', 'Administration', 'Robotique', 'kjanet', 'kjanet', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -96,12 +98,17 @@ CREATE TABLE IF NOT EXISTS `enseignerformationenseignant` (
 INSERT INTO `enseignerformationenseignant` (`idFormation`, `idEnseignant`) VALUES
 (1, 1),
 (1, 2),
+(1, 5),
 (2, 3),
+(2, 5),
 (3, 3),
+(3, 5),
 (4, 1),
 (4, 2),
+(4, 5),
 (5, 1),
-(5, 2);
+(5, 2),
+(5, 5);
 
 -- --------------------------------------------------------
 
@@ -121,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `emailEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
   `loginEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
   `mdpEntreprise` varchar(250) COLLATE utf8_bin NOT NULL,
+  `etatEntreprise` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idEntreprise`),
   KEY `idPersonneDirigeant` (`idPersonneDirigeant`),
   KEY `siretEntreprise` (`siretEntreprise`)
@@ -130,10 +138,10 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
 -- Contenu de la table `entreprise`
 --
 
-INSERT INTO `entreprise` (`idEntreprise`, `siretEntreprise`, `idPersonneDirigeant`, `rsEntreprise`, `adrRueEntreprise`, `adrCpEntreprise`, `adrVilleEntreprise`, `telEntreprise`, `emailEntreprise`, `loginEntreprise`, `mdpEntreprise`) VALUES
-(1, 32467680800045, 1, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', 'infoverte'),
-(2, 33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'pyrescom'),
-(3, 42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', 'squarepartners');
+INSERT INTO `entreprise` (`idEntreprise`, `siretEntreprise`, `idPersonneDirigeant`, `rsEntreprise`, `adrRueEntreprise`, `adrCpEntreprise`, `adrVilleEntreprise`, `telEntreprise`, `emailEntreprise`, `loginEntreprise`, `mdpEntreprise`, `etatEntreprise`) VALUES
+(1, 32467680800045, 1, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', 'infoverte', 1),
+(2, 33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'pyrescom', 1),
+(3, 42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', 'squarepartners', 1);
 
 -- --------------------------------------------------------
 
@@ -149,6 +157,7 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
   `loginEtudiant` varchar(250) COLLATE utf8_bin NOT NULL,
   `mdpEtudiant` varchar(250) COLLATE utf8_bin NOT NULL,
   `emailEtudiant` varchar(250) COLLATE utf8_bin NOT NULL,
+  `etatEtudiant` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`ineEtudiant`),
   KEY `idFormation` (`idFormation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -157,9 +166,9 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
 -- Contenu de la table `etudiant`
 --
 
-INSERT INTO `etudiant` (`ineEtudiant`, `idFormation`, `nomEtudiant`, `prenomEtudiant`, `loginEtudiant`, `mdpEtudiant`, `emailEtudiant`) VALUES
-('A48154G454', 1, 'CANO', 'Frederic', 'fcano', 'fcano', 'frederic.cano@imerir.com'),
-('F14784A454', 1, 'CAMPOY', 'Mickael', 'mcampoy', 'mcampoy', 'mickael.campoy@imerir.com');
+INSERT INTO `etudiant` (`ineEtudiant`, `idFormation`, `nomEtudiant`, `prenomEtudiant`, `loginEtudiant`, `mdpEtudiant`, `emailEtudiant`, `etatEtudiant`) VALUES
+('A48154G454', 1, 'CANO', 'Frederic', 'fcano', 'fcano', 'frederic.cano@imerir.com', 1),
+('F47856ADSS', 2, 'CAMPOY', 'Mickael', 'mcampoy', 'mcampoy', 'mickael.campoy@imerir.com', 1);
 
 -- --------------------------------------------------------
 
@@ -203,17 +212,19 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `telPortPersonne` varchar(20) COLLATE utf8_bin NOT NULL,
   `telPostePersonne` varchar(20) COLLATE utf8_bin DEFAULT NULL,
   `emailPersonne` varchar(250) COLLATE utf8_bin NOT NULL,
+  `etatPersonne` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idPersonne`),
   KEY `idEntrepriseTravail` (`idEntrepriseTravail`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
 
 --
 -- Contenu de la table `personne`
 --
 
-INSERT INTO `personne` (`idPersonne`, `idEntrepriseTravail`, `nomPersonne`, `prenomPersonne`, `fonctionPersonne`, `telPortPersonne`, `telPostePersonne`, `emailPersonne`) VALUES
-(1, 1, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com'),
-(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com');
+INSERT INTO `personne` (`idPersonne`, `idEntrepriseTravail`, `nomPersonne`, `prenomPersonne`, `fonctionPersonne`, `telPortPersonne`, `telPostePersonne`, `emailPersonne`, `etatPersonne`) VALUES
+(1, 2, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com', 1),
+(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com', 1),
+(8, 2, 'CANO', 'Frederic', 'Developpeur', '0618789548', '0478996852', 'frederic.cano@imerir.com', 1);
 
 -- --------------------------------------------------------
 
@@ -237,9 +248,7 @@ CREATE TABLE IF NOT EXISTS `realiseretudiantstage` (
 --
 
 INSERT INTO `realiseretudiantstage` (`idEtudiant`, `idStage`, `idEnseignantTuteur`, `idSoutenance`) VALUES
-('A48154G454', 6, 1, NULL),
-('F14784A454', 6, NULL, NULL),
-('F14784A454', 8, 4, NULL);
+('A48154G454', 7, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -272,16 +281,17 @@ CREATE TABLE IF NOT EXISTS `stage` (
   PRIMARY KEY (`codeStage`),
   KEY `EntrepriseStage` (`idEntreprise`),
   KEY `TuteurStage` (`idTuteur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `stage`
 --
 
 INSERT INTO `stage` (`codeStage`, `idEntreprise`, `idTuteur`, `libelleStage`, `descriptionStage`, `dateDebutStage`, `dateFinStage`, `etatStage`) VALUES
-(6, 2, 1, 'Développeur Windev', 'Stage pour du développement applicatif, afin de réaliser un logiciel de traçabilité pour la gestion des décheteries des PO.', '2014-03-01', '2014-03-31', 1),
+(6, 2, 1, 'Développeur Windev', 'Stage pour du développement applicatif, afin de réaliser un logiciel de traçabilité pour la gestion des décheteries des PO.', '2014-03-01', '2014-03-31', -1),
 (7, 2, 1, 'Développeur Delphi', 'Stage pour du développement applicatif, afin de réaliser un logiciel de traçabilité pour la gestion des décheteries des PO en Delphi.', '2014-04-01', '2014-05-31', 1),
-(8, 3, 7, 'Développeur Web', 'Stage pour du développement web, afin de réaliser un site e-commerce pour la vente de livre, musique et film. Module de paiement en ligne (Paypal).', '2014-05-01', '2014-06-30', 0);
+(8, 3, 7, 'Développeur Web', 'Stage pour du développement web, afin de réaliser un site e-commerce pour la vente en ligne de livre, musique et film. Module de paiement en ligne compris (Paypal).', '2014-05-02', '2014-06-29', 0),
+(9, 3, 7, 'Chef de projet informatique', 'Projet de gestion confié partiellement.\r\nAu seins d''une équipe de 5 collaborateurs, le chef de projet va devoir prendre en charge la totalité du management de façon optimal.', '2014-03-01', '2014-09-30', 1);
 
 --
 -- Contraintes pour les tables exportées
