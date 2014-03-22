@@ -43,7 +43,8 @@ body { padding-top: 50px; padding-bottom: 20px; }
 #navButtonAdmin .icon-bar { background: white; }
 #marginHeader { margin-bottom: -1px; }
 #paddingResponsable { padding-bottom: 0; padding-top: 15px; }
-#imageAdminResponsable { height: 50px; margin-left: 45px; margin-right: 45px; } 
+#imageAdminResponsable { height: 50px; margin-left: 46px; margin-right: 46px; } 
+.activeNavAdmin { color: #555; background-color: #e7e7e7; }
 #formResponsableDepot dl dt label { margin-top: 10px; margin-bottom: 0px; }
 #idFormation-element label { margin-right: 5px; }
 #idFormation-element input { margin-left: 5px; margin-right: 5px; }
