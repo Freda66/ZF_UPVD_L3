@@ -36,14 +36,14 @@ body { padding-top: 50px; padding-bottom: 20px; }
 .cursorHand { cursor: Pointer; }
 
 /* RESPONSABLE/INDEX */
-.btnCrudResponsable { width : 24px; margin-top: -6px; margin-right: 8px; }
-
-/* RESPONSABLE/DEPOTENSEIGNANT */
 #navButtonAdmin { background: #636363; border: 1px solid black; border-radius: 4px; }
 #navButtonAdmin .icon-bar { background: white; }
 #marginHeader { margin-bottom: -1px; }
 #paddingResponsable { padding-bottom: 0; padding-top: 15px; }
-#imageAdminResponsable { height: 50px; margin-left: 46px; margin-right: 46px; } 
+#imageAdminResponsable { height: 50px; margin-left: 46px; margin-right: 47px; } 
+.btnCrudResponsable { width : 24px; margin-top: -6px; margin-right: 8px; }
+
+/* RESPONSABLE/DEPOTENSEIGNANT */
 .activeNavAdmin { color: #555; background-color: #e7e7e7; }
 #formResponsableDepot dl dt label { margin-top: 10px; margin-bottom: 0px; }
 #idFormation-element label { margin-right: 5px; }
