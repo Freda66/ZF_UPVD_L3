@@ -110,5 +110,59 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 			$this->update(array('etatEnseignant'=>-1), 'idEnseignant = '.$idEnseignant);
 		}
 	}
+	
+
+	/**
+	 * Fonction qui insert un enseignant dans la bdd
+	 * @param string $nomEnseignant
+	 * @param string $prenomEnseignant
+	 * @param interger $fonctionEnseignant
+	 * @param interger $specialiteEnseignant
+	 * @param string $loginEnseignant
+	 * @param string $mdpEnseignant
+	 * @param integer $isResponsableSiteEnseignant
+	 * @return integer
+	 */
+	public function insertEnseignant($nomEnseignant, $prenomEnseignant, $fonctionEnseignant, $specialiteEnseignant, $loginEnseignant, $mdpEnseignant, $isResponsableSiteEnseignant){
+		try {
+			// Crée un ligne enseignant
+			$row = $this->createRow();
+			// Prepare les colonnes de la ligne
+			$row->nomEnseignant = $nomEnseignant;
+			$row->prenomEnseignant = $prenomEnseignant;
+			$row->fonctionEnseignant = $fonctionEnseignant;
+			$row->specialiteEnseignant = $specialiteEnseignant;
+			$row->loginEnseignant = $loginEnseignant;
+			$row->mdpEnseignant = $mdpEnseignant;
+			$row->isResponsableSiteEnseignant = $isResponsableSiteEnseignant;
+			$row->etatEnseignant = 1;
+
+			// Insert la ligne dans la bdd et retourne son id
+			return $row->save();
+		} catch(Exeception $e) { return -1; }
+	}
+	
+	/**
+	 * Fonction qui modifie un enseignant
+	 * @param unknown $nomEnseignant
+	 * @param unknown $prenomEnseignant
+	 * @param unknown $fonctionEnseignant
+	 * @param unknown $specialiteEnseignant
+	 * @param unknown $loginEnseignant
+	 * @param unknown $mdpEnseignant
+	 * @param unknown $isResponsableSiteEnseignant
+	 * @param unknown $codeEnseignant
+	 * @return boolean
+	 */
+	public function updateEnseignant($nomEnseignant, $prenomEnseignant, $fonctionEnseignant, $specialiteEnseignant, $loginEnseignant, $mdpEnseignant, $isResponsableSiteEnseignant, $codeEnseignant){
+		try {
+			// Param
+			if($mdpEnseignant != "") $data = array('nomEnseignant'=>$nomEnseignant, 'prenomEnseignant'=>$prenomEnseignant,'fonctionEnseignant'=>$fonctionEnseignant,'specialiteEnseignant'=>$specialiteEnseignant,'loginEnseignant'=>$loginEnseignant,'mdpEnseignant'=>$mdpEnseignant, 'isResponsableSiteEnseignant'=>$isResponsableSiteEnseignant);
+			else $data = array('nomEnseignant'=>$nomEnseignant, 'prenomEnseignant'=>$prenomEnseignant,'fonctionEnseignant'=>$fonctionEnseignant,'specialiteEnseignant'=>$specialiteEnseignant,'loginEnseignant'=>$loginEnseignant, 'isResponsableSiteEnseignant'=>$isResponsableSiteEnseignant);
+			// Update
+			$this->update($data, 'idEnseignant = '. (int)$codeEnseignant); 
+			return true;
+		} catch(Exeception $e) { return false; }
+	}
 		
 }

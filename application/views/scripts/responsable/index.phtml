@@ -1,6 +1,8 @@
 <?php $this->headTitle($this->title); // Titre de la page ?>
 
-<div class="jumbotron">
+<?php echo $this->partial('common/headerResponsable.phtml'); ?>
+
+<div class="jumbotron" id="paddingResponsable">
 	<div class="container">
 		<div class="row">
 		
@@ -9,7 +11,7 @@
 				<div class="panel-heading">
 	              <h2 class="panel-title">
 	              		Enseignant 
-  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depot', 'type'=>'Enseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
+  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
 	              </h2>
 	            </div>
 	            
@@ -20,7 +22,7 @@
 						<ul class="list-group">
 						  <li class="list-group-item list-group-item-info">
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
 								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
 						  	</a>
@@ -44,7 +46,7 @@
 				<div class="panel-heading">
 	              <h2 class="panel-title">
 	              		Étudiant 
-	              		<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depot', 'type'=>'Etudiant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter étudiant &raquo;</a>
+	              		<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotetudiant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter étudiant &raquo;</a>
 	              </h2>
 	            </div>
 	            
@@ -55,7 +57,7 @@
 						<ul class="list-group">
 						  <li class="list-group-item list-group-item-info">
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Etudiant', 'code'=>$unEtudiant->ineEtudiant)); ?>" class="pull-right confirmDeleteEtudiant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', type=>'Etudiant', 'code'=>$unEtudiant->ineEtudiant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotetudiant', type=>'Etudiant', 'code'=>$unEtudiant->ineEtudiant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEtudiant->ineEtudiant, 'type'=>'Etudiant')); ?>">
 								<?php echo $unEtudiant->nomEtudiant.' '.$unEtudiant->prenomEtudiant; ?>
 						  	</a>
@@ -78,7 +80,7 @@
 			<div class="panel col-md-4">
 				<div class="panel-heading">
 	              <h2 class="panel-title">
-	              		Entreprise <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depot', 'type'=>'Entreprise'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter entreprise &raquo;</a>
+	              		Entreprise <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotentreprise'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter entreprise &raquo;</a>
 	              </h2>
 	            </div>
 	            
@@ -89,7 +91,7 @@
 						<ul class="list-group">
 						  <li class="list-group-item list-group-item-info">
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Entreprise', 'code'=>$uneEntreprise->idEntreprise)); ?>" class="pull-right confirmDeleteEntreprise"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', type=>'Entreprise', 'code'=>$uneEntreprise->idEntreprise)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotentreprise', type=>'Entreprise', 'code'=>$uneEntreprise->idEntreprise)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
 						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$uneEntreprise->idEntreprise, 'type'=>'Entreprise')); ?>">
 								<?php echo $uneEntreprise->rsEntreprise; ?>
 						  	</a>

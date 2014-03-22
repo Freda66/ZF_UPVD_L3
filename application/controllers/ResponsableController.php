@@ -140,6 +140,117 @@ class ResponsableController extends Zend_Controller_Action
     	$this->redirect('/responsable/index/');
     }
     
+    /**
+     * Formulaire de dépot d'un enseignant
+     * Ajouter/Modifier
+     */
+    public function depotenseignantAction()
+    {
+    	$this->view->title = "Enregistrement d'un enseignant"; // Titre de la page
+    	
+    	// Recupere le code de l'enseignant passé en param (si exist)
+    	$codeEnseignant = $this->getRequest()->getParam('code');
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Crée un objet dbtable Enseignant
+    	$modelEnseignant = new Application_Model_DbTable_Enseignant();
+    	// Crée un objet dbTable model enseigner formation
+    	$modelEnseignerFormation = new Application_Model_DbTable_EnseignerFormationEnseignant();
+    	
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		if($codeEnseignant == null){
+    			// Formulaire de depot d'un enseignant
+    			$formEnseignant = new Application_Form_Enseignant();
+    			$formEnseignant->setTranslator(Bootstrap::_initTranslate());
+    			// Titre du formulaire
+    			$this->view->titreForm = "Nouvel enseignant";
+    		} else {
+    			// Recupere les informations d'un enseignant
+    			$unEnseignant = $modelEnseignant->getEnseignant($codeEnseignant);
+    
+    			if($unEnseignant == null){
+    				$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun enseignant ne correspond.'));
+    				$this->redirect('/responsable/index/');
+    			} else {
+    				// Recupere la liste des formations enseignées
+    				$lesFormationsEnseigner = $modelEnseignerFormation->getEnseignerFormation($codeEnseignant);
+    				$options = $lesFormationsEnseigner;
+    				// Envoi le detail d'un enseignant au formulaire
+    				$formEnseignant = new Application_Form_Enseignant($options);
+    				$formEnseignant->setTranslator(Bootstrap::_initTranslate());
+    				$formEnseignant->populate($unEnseignant->toArray());
+    			}
+				// Titre du formulaire
+    			$this->view->titreForm = "Modification enseignant";
+    		}
+    
+    		// Traitement du formulaire
+    		// Si le formulaire a été posté
+    		if($this->getRequest()->isPost()) {
+    			// Recupere les informations du formulaire
+    			$formData = $this->getRequest()->getPost();
+    
+    			// Si les informations sont valides par rapport au formulaire init (initiale)
+    			if($formEnseignant->isValid($formData)) {
+    				// Recupere les attributs dans des variables
+    				$nomEnseignant = $formEnseignant->getValue('nomEnseignant');
+    				$prenomEnseignant = $formEnseignant->getValue('prenomEnseignant');
+    				$fonctionEnseignant = $formEnseignant->getValue('fonctionEnseignant');
+    				$specialiteEnseignant = $formEnseignant->getValue('specialiteEnseignant');
+    				$loginEnseignant = $formEnseignant->getValue('loginEnseignant');
+    				$mdpEnseignant = $formEnseignant->getValue('mdpEnseignant');
+    				$isResponsableSiteEnseignant = $formEnseignant->getValue('isResponsableSiteEnseignant');
+    				$lesFormations = $formEnseignant->getValue('idFormation');
+    				
+    				// Insert
+    				if($codeEnseignant == null) {
+    					$idEnseignant = $modelEnseignant->insertEnseignant($nomEnseignant, $prenomEnseignant, $fonctionEnseignant, $specialiteEnseignant, $loginEnseignant, $mdpEnseignant, $isResponsableSiteEnseignant);
+    					if($idEnseignant != -1){
+    						// Vide la table
+    						$modelEnseignerFormation->deleteEnseignantFormation($idEnseignant);
+    						// Insert les formations pour l'enseignant
+    						foreach($lesFormations as $idFormation) {
+    							$modelEnseignerFormation->insertEnseignantFormation($idFormation, $idEnseignant);
+    						}
+    						
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'L\'enseignant a été enregistré avec succès.'));
+    						$this->redirect("/responsable/fiche/code/$idEnseignant/type/Enseignant/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion de l\'enseignant.'));
+    						$formEnseignant->populate($formData);
+    					}
+    				}
+    				// Update
+    				else {
+    					if($modelEnseignant->updateEnseignant($nomEnseignant, $prenomEnseignant, $fonctionEnseignant, $specialiteEnseignant, $loginEnseignant, $mdpEnseignant, $isResponsableSiteEnseignant, $codeEnseignant)) {
+    						// Vide la table
+    						$modelEnseignerFormation->deleteEnseignantFormation($codeEnseignant);
+    						// Insert les formations pour l'enseignant
+    						foreach($lesFormations as $idFormation) {
+    							$modelEnseignerFormation->insertEnseignantFormation($idFormation, $codeEnseignant);
+    						}
+    						
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'L\'enseignant a été modifié avec succès.'));
+    						$this->redirect("/responsable/index/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification de l\'enseignant.'));
+    						$formEnseignant->populate($formData);
+    					}
+    				}
+    			} else $formEnseignant->populate($formData);
+    		}
+    
+    		// Envoie a la vue le formulaire d'enseignant
+    		$this->view->formEnseignant = $formEnseignant;
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
+    		$this->redirect("/index/index/");
+    	}
+    }
+    
 }
 
 
