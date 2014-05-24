@@ -1,0 +1,166 @@
+<?php $this->headTitle($this->title); // Titre de la page
+$unUtilisateur = $this->unUtilisateur;
+$typeUtilisateur = $this->typeUtilisateur; 
+$lesStages = $this->lesStages; 
+$lesEmployes = $this->lesEmployes; 
+
+// Header ADMIN
+echo $this->partial('common/headerResponsable.phtml'); 
+?>
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-default">
+			
+				<?php 
+				// ENSEIGNANT
+				if($typeUtilisateur == "Enseignant") { 
+				?>
+					<div class="panel-heading">
+						<h2 class="panel-title"><?php echo $unUtilisateur->nomEnseignant.' '.$unUtilisateur->prenomEnseignant.' | '.$unUtilisateur->fonctionEnseignant.' | '.$unUtilisateur->specialiteEnseignant; 
+													  if($unUtilisateur->isResponsableSiteEnseignant) echo ' | Responsable'; ?>
+						 	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
+						</h2>
+		            </div>
+		      	<?php } 
+				// ETUDIANT
+				else if($typeUtilisateur == "Etudiant") { 
+				?>
+					<div class="panel-heading">
+						<h2 class="panel-title"><?php echo $unUtilisateur->nomEtudiant.' '.$unUtilisateur->prenomEtudiant.' | '.$unUtilisateur->libelleFormation.' '.$unUtilisateur->niveauFormation.' '.$unUtilisateur->specialiteFormation; ?>
+						 	<a class="navbar-right" href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index', 'code'=>null, 'type'=>null)); ?>"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></a>
+						</h2>
+		            </div>
+		        <?php }
+				// ENTREPRISE
+		        else if($typeUtilisateur == "Entreprise") {
+		        	?>
+        			<div class="panel-heading">
+        				<h2 class="panel-title"><?php echo $unUtilisateur->rsEntreprise; ?>
+        				 	<a class="navbar-right" href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index', 'code'=>null, 'type'=>null)); ?>"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></a>
+        				</h2>
+        				<?php echo "Dirigeant : <strong>$unUtilisateur->nomPersonne $unUtilisateur->prenomPersonne</strong><br />
+									Adresse : <strong>$unUtilisateur->adrRueEntreprise - $unUtilisateur->adrVilleEntreprise - $unUtilisateur->adrCpEntreprise</strong> <br />
+		        					Tél : <strong>$unUtilisateur->telEntreprise</strong> <br />
+		        					Mél : <strong>$unUtilisateur->emailEntreprise</strong>"; 
+		        		?>
+        		    </div>
+		        <?php } ?>  
+		      	
+	            <div class="panel-body">
+				  	
+				  	<?php // LISTE DES STAGES ?>
+				  	<?php if(count($lesStages) > 0) { ?>
+					  	<!-- Table -->
+						<table class="table text-center">
+						<caption><h3><span class="label label-primary">&nbsp; Liste des stages &nbsp;</span></h3></caption>
+							<thead>
+								<tr>
+									<?php if($typeUtilisateur != "Etudiant") { ?><th class="text-center">Étudiant</th><?php } ?>
+									<?php if($typeUtilisateur != "Enseignant") { ?><th class="text-center">Enseignant</th><?php } ?>
+									<?php if($typeUtilisateur != "Entreprise") { ?><th class="text-center">Entreprise</th><?php } ?>
+									<th class="text-center">Stage</th>
+									<th class="text-center">Date début stage</th>
+									<th class="text-center">Date fin stage</th>
+				          		</tr>
+			        		</thead>
+			        		<tbody>
+			        		<?php foreach($lesStages as $unStage) { ?>
+								<tr>
+									<?php if($typeUtilisateur != "Etudiant") { echo "<td>"; echo $unStage->nomEtudiant.' '.$unStage->prenomEtudiant; echo "</td>"; } ?>
+									<?php if($typeUtilisateur != "Enseignant") { echo "<td>"; echo $unStage->nomEnseignant.' '.$unStage->prenomEnseignant; echo "</td>"; } ?>
+									<?php if($typeUtilisateur != "Entreprise") { echo "<td>$unStage->rsEntreprise</td>"; } ?>
+				            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage->codeStage)); ?>"><?php echo $unStage->libelleStage; ?></a></td>
+						            <td><?php echo $unStage->dateDebutStage; ?></td>
+						            <td><?php echo $unStage->dateFinStage; ?></td>
+						            <td></td>
+								</tr>
+							<?php } ?>
+			        		</tbody>
+		      			</table>
+		      		<?php } 
+		      			else if($typeUtilisateur == "Enseignant") { echo "Aucun stage tutoré."; } 
+		        		else if($typeUtilisateur == "Etudiant") { echo "Aucun stage."; } 
+		        		else if($typeUtilisateur == "Entreprise") { echo "Aucun stage déposé."; }
+		        	?>
+		        	
+		        	
+		        	
+		        	<?php // LISTE DES EMPLOYES ?>
+		        	<?php if($typeUtilisateur == "Entreprise") { ?>
+					  	<!-- Table -->
+						<table class="table text-center">
+						<caption><h3><span class="label label-primary">&nbsp; Liste des employés &nbsp;</span></h3></caption>
+							<?php if (count($lesEmployes) > 0) { ?>
+								<thead>
+									<tr>
+										<?php if($typeUtilisateur != "Entreprise") { ?><th class="text-center">Entreprise</th><?php } ?>
+										<th class="text-center">Nom</th>
+										<th class="text-center">Prénom</th>
+										<th class="text-center">Fonction</th>
+										<th class="text-center"></th>
+					          		</tr>
+				        		</thead>
+				        	<?php } ?>
+			        		
+			        		<tbody>
+			        		<?php foreach($lesEmployes as $unEmploye) { ?>
+								<tr>
+									<td><?php echo $unEmploye->nomPersonne; ?></td>
+						            <td><?php echo $unEmploye->prenomPersonne; ?></td>
+						            <td><?php echo $unEmploye->fonctionPersonne; ?></td>
+						            <td><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Personne', 'code'=>$unEmploye->idPersonne)); ?>" class="pull-right confirmDeletePersonne"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						            	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotpersonne', type=>'Personne', 'code'=>$unEmploye->idPersonne, 'entreprise'=>$unEmploye->idEntrepriseTravail)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a></td>
+								</tr>
+							<?php } ?>
+								<?php // Ajout de la ligne "Ajouter employé" au centre (fusion des colonnes)?>
+								<tr>
+									<td colspan=4>
+										<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotpersonne', 'type'=>'Personne', 'entreprise' => $unUtilisateur->idEntreprise),"default", true); ?>">
+										<img src="<?php echo $this->baseUrl();?>/images/icone/plus.gif" alt="Ajouter" id="miniAddEmployes"/>Ajouter un employé</a>
+									</td>
+								</tr>
+			        		</tbody>
+		      			</table>
+		      		<?php } ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<p id="dialog-confirm-delete-personne" title="Supprimer Employé"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cet employé ?</p>
+
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-delete-personne").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 445,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$(".confirmDeletePersonne").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-personne").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>

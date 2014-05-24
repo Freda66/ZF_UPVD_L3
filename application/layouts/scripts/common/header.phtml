@@ -1,0 +1,53 @@
+<?php
+// Recupere le chemin 
+$instance = Zend_Controller_Front::getInstance();
+$action = $instance->getRequest()->getActionName();
+$controller = $instance->getRequest()->getControllerName();
+$session = Zend_Auth::getInstance()->getStorage()->read();
+?>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+          	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+			</button>
+          	<a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'index'),"default", true); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/logo_upvd.png" alt="UPVD" /></a>
+        </div>
+        <div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<?php if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable) { ?><li <?php if($controller == "responsable") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index'),"default", true); ?>">Administration</a></li><?php } ?>
+	            <li <?php if($controller == "stage") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>">Stage</a></li>
+	            <li <?php if($controller == "soutenance") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'index'),"default", true); ?>">Soutenance</a></li>
+	            <li <?php if($controller == "entreprise") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'index'),"default", true); ?>">Entreprise</a></li>
+	            <li class="dropdown <?php if($controller == "index" && $action != "index") { ?>active<?php } ?>">
+	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Autre <b class="caret"></b></a>
+	             	<ul class="dropdown-menu">
+	                	<li <?php if($controller == "index" && $action == "mcd") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mcd'),"default", true); ?>">Modèle conceptuel des données [MCD]</a></li>
+	                	<li class="divider"></li>
+	                	<li <?php if($controller == "index" && $action == "mld") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mld'),"default", true); ?>">Modèle logique des données [MLD]</a></li>
+	              	</ul>
+	            </li>
+          	</ul>
+          	
+          	<?php if(!Zend_Auth::getInstance()->hasIdentity()) { ?>
+          	<form action="<?php echo $this->url(array('controller'=>'index', 'action'=>'connexion'),"default", true); ?>" method="post" class="navbar-form navbar-right" role="form">
+	            <div class="form-group">
+	              <input type="text" name="login" placeholder="Identifiant" required="required" class="form-control">
+	            </div>
+	            <div class="form-group">
+	              <input type="password" name="mdp" placeholder="Mot de passe" required="required" class="form-control">
+            	</div>
+            	<button type="submit" name="submitConnexion" class="btn btn-success">Connexion</button>
+			</form>
+			<?php } else { ?>
+				<div class="navbar-form navbar-right">
+					<a class="btn btn-primary" href="<?php echo $this->url(array('controller'=>'index', 'action'=>'deconnexion'),"default", true); ?>" role="button">&nbsp;Déconnexion&nbsp;</a>
+				</div>
+			<?php } ?>
+		</div>
+	</div>
+</div>

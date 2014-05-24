@@ -1,0 +1,28 @@
+<?php
+// Recupere le chemin 
+$instance = Zend_Controller_Front::getInstance();
+$action = $instance->getRequest()->getActionName();
+$controller = $instance->getRequest()->getControllerName();
+$session = Zend_Auth::getInstance()->getStorage()->read();
+?>
+
+<div class="navbar" role="navigation" id="marginHeader">
+	<div class="container">
+        <div class="navbar-header">
+          	<button type="button" class="navbar-toggle" id="navButtonAdmin" data-toggle="collapse" data-target="#navAdmin">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+			</button>
+			<span><img src="<?php echo $this->baseUrl();?>/images/icone/admin2.1.jpg" id="imageAdminResponsable" alt="ADMIN" /></span>
+        </div>
+        <div class="navbar-collapse collapse" id="navAdmin">
+			<ul class="nav navbar-nav">
+				<li <?php if($controller == "responsable" && $action == "index") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index'),"default", true); ?>">Liste</a></li>
+	            <li <?php if($controller == "responsable" && $action == "stage") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'responsable'),"default", true); ?>">Stage</a></li>
+	            <li <?php if($controller == "responsable" && $action == "soutenance") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'responsable'),"default", true); ?>">Soutenance</a></li>
+          	</ul>
+		</div>
+	</div>
+</div>

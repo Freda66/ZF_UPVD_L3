@@ -1,0 +1,202 @@
+<?php $this->headTitle($this->title); // Titre de la page ?>
+
+<?php 
+// Header ADMIN
+echo $this->partial('common/headerResponsable.phtml');
+?>
+
+<div class="jumbotron" id="paddingResponsable">
+	<div class="container">
+		<div class="row">
+		
+			<?php // ENSEIGNANT ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Enseignant 
+  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEnseignants) > 0) {
+	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
+								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucun enseignant n'a été trouvé."; ?>
+	            </div>
+			</div>
+			
+			
+			
+			
+			<?php // ETUDIANT ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Étudiant 
+	              		<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotetudiant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter étudiant &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEtudiants) > 0) {
+	            		foreach($this->lesEtudiants as $unEtudiant) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Etudiant', 'code'=>$unEtudiant->ineEtudiant)); ?>" class="pull-right confirmDeleteEtudiant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotetudiant', type=>'Etudiant', 'code'=>$unEtudiant->ineEtudiant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEtudiant->ineEtudiant, 'type'=>'Etudiant')); ?>">
+								<?php echo $unEtudiant->nomEtudiant.' '.$unEtudiant->prenomEtudiant; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEtudiants,'Sliding','common/paginationEtudiant.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucun etudiant n'a été trouvé."; ?>
+	            </div>
+			</div>
+			
+			
+			
+			
+			<?php // ENTREPRISE ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Entreprise <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotentreprise'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter entreprise &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEntreprises) > 0) {
+	            		foreach($this->lesEntreprises as $uneEntreprise) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Entreprise', 'code'=>$uneEntreprise->idEntreprise)); ?>" class="pull-right confirmDeleteEntreprise"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotentreprise', type=>'Entreprise', 'code'=>$uneEntreprise->idEntreprise)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$uneEntreprise->idEntreprise, 'type'=>'Entreprise')); ?>">
+								<?php echo $uneEntreprise->rsEntreprise; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEntreprises,'Sliding','common/paginationEntreprise.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucune entreprise n'a été trouvé."; ?>
+	            </div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<p id="dialog-confirm-delete-enseignant" title="Supprimer Enseignant"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cet enseignant ?</p>
+<p id="dialog-confirm-delete-etudiant" title="Supprimer Étudiant"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cet étudiant ?</p>
+<p id="dialog-confirm-delete-entreprise" title="Supprimer Entreprise"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cette entreprise ?</p>
+
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-delete-enseignant").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 435,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#dialog-confirm-delete-etudiant").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 415,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#dialog-confirm-delete-entreprise").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 445,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$(".confirmDeleteEnseignant").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-enseignant").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$(".confirmDeleteEtudiant").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-etudiant").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$(".confirmDeleteEntreprise").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-entreprise").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>
+ 
