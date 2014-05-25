@@ -67,7 +67,7 @@ class Application_Form_DepotStage extends Zend_Form
 		$submitStage = new Zend_Form_Element_Submit('submitDepotStage');	
 		$submitStage	->setAttrib('class','btn btn-primary form-control')
 							->setAttrib('id','submitDepotStage')
-							->setName('Déposer');
+							->setName('Enregistrer');
 							
 		// Ajoute tout les éléments dans le formulaire	
 		$this->addElements(array($libelleStage, $dateDebutStage, $dateFinStage, $tuteurStage, $descriptionStage, $clearStage, $submitStage));

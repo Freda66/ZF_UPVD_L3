@@ -32,6 +32,7 @@ class Application_Model_Metier_Utilisateur
 				// Insert dans la session les informations de l'utilisateur
 				$unEnseignant = $modelEnseignant->getEnseignantByLoginMdp($login, $mdp);
 				$session->infoUser->type = "Enseignant";
+				$session->infoUser->libelle = $unEnseignant->nomEnseignant .' '. $unEnseignant->prenomEnseignant;
 				$session->infoUser->identifiant = $unEnseignant->idEnseignant;
 				$session->infoUser->isResponsable = $unEnseignant->isResponsableSiteEnseignant;
 			}
@@ -43,6 +44,7 @@ class Application_Model_Metier_Utilisateur
 			if($isFind){
 				// Insert dans la session les informations de l'utilisateur
 				$unEtudiant = $modelEtudiant->getEtudiantByLoginMdp($login, $mdp);
+				$session->infoUser->libelle = $unEtudiant->nomEtudiant .' '. $unEtudiant->prenomEtudiant;
 				$session->infoUser->type = "Etudiant";
 				$session->infoUser->identifiant = $unEtudiant->ineEtudiant;
 			}
@@ -55,6 +57,7 @@ class Application_Model_Metier_Utilisateur
 				// Insert dans la session les informations de l'utilisateur
 				$uneEntreprise = $modelEntreprise->getEntrepriseByLoginMdp($login, $mdp);
 				$session->infoUser->type = "Entreprise";
+				$session->infoUser->libelle = $uneEntreprise->rsEntreprise;
 				$session->infoUser->identifiant = $uneEntreprise->idEntreprise;
 			}
 		}

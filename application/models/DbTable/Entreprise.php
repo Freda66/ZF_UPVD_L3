@@ -100,6 +100,30 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 	}
 	
 	/**
+	 * Retourne sous pagination la liste des entreprise du site pour un tuteur
+	 * @param integer $page
+	 * @param integer $codeTuteur
+	 * @return Zend_Paginator
+	 */
+	public function getListeEntrepriseByTuteur($page, $codeTuteur){
+		// Liste des entreprise d'un tuteur
+		$requete = $this->select()->setIntegrityCheck(false)
+							->from(array('e' => $this->_name), array('*'))
+							->joinLeft(array('p'=>'personne'), 'e.idEntreprise = p.idEntrepriseTravail', array('*'))
+							->where('idPersonne = ?', $codeTuteur);
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
+	}
+	
+	/**
 	 * Fonction qui supprime l'entreprise de la table
 	 * Si exception (dépendance dans une autre table) on passe sont etat a -1
 	 * @param integer $idEntreprise

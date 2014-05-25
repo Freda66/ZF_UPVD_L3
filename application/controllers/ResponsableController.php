@@ -172,7 +172,7 @@ class ResponsableController extends Zend_Controller_Action
     	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
     		if($codeEnseignant == null){
     			// Formulaire de depot d'un enseignant
-    			$formEnseignant = new Application_Form_Enseignant();
+    			$formEnseignant = new Application_Form_DepotEnseignant();
     			$formEnseignant->setTranslator(Bootstrap::_initTranslate());
     			// Titre du formulaire
     			$this->view->titreForm = "Nouvel enseignant";
@@ -188,7 +188,7 @@ class ResponsableController extends Zend_Controller_Action
     				$lesFormationsEnseigner = $modelEnseignerFormation->getEnseignerFormation($codeEnseignant);
     				$options = $lesFormationsEnseigner;
     				// Envoi le detail d'un enseignant au formulaire
-    				$formEnseignant = new Application_Form_Enseignant($options);
+    				$formEnseignant = new Application_Form_DepotEnseignant($options);
     				$formEnseignant->setTranslator(Bootstrap::_initTranslate());
     				$formEnseignant->populate($unEnseignant->toArray());
     			}
@@ -284,7 +284,7 @@ class ResponsableController extends Zend_Controller_Action
     		// INSERT
     		if($codeEntreprise == null){
     			// Formulaire de depot d'une entreprise
-    			$formEntreprise = new Application_Form_Entreprise();
+    			$formEntreprise = new Application_Form_DepotEntreprise();
     			$formEntreprise->setTranslator(Bootstrap::_initTranslate());
     			// Titre du formulaire
     			$this->view->titreForm = "Nouvelle entreprise";
@@ -301,7 +301,7 @@ class ResponsableController extends Zend_Controller_Action
     				// Recupere la liste des employés
     				$lesEmployes = $modelPersonne->getPersonneByEntreprise($codeEntreprise);
     				// Envoi le detail d'une entreprise au formulaire
-    				$formEntreprise = new Application_Form_Entreprise($lesEmployes, $dirigeantDeLentreprise);
+    				$formEntreprise = new Application_Form_DepotEntreprise($lesEmployes, $dirigeantDeLentreprise);
     				$formEntreprise->setTranslator(Bootstrap::_initTranslate());
     				$formEntreprise->populate($uneEntreprise->toArray());
     			}
@@ -384,7 +384,7 @@ class ResponsableController extends Zend_Controller_Action
     		// INSERT
     		if($codePersonne == null){
     			// Formulaire de depot d'une personne
-    			$formPersonne = new Application_Form_Personne();
+    			$formPersonne = new Application_Form_DepotPersonne();
     			$formPersonne->setTranslator(Bootstrap::_initTranslate());
     			// Titre du formulaire
     			$this->view->titreForm = "Nouveau employé";
@@ -399,7 +399,7 @@ class ResponsableController extends Zend_Controller_Action
     				$this->redirect('/responsable/index/fiche/code/'.$codeEntreprise.'/type/Entreprise');
     			} else {
     				// Envoi le detail d'une personne au formulaire
-    				$formPersonne = new Application_Form_Personne();
+    				$formPersonne = new Application_Form_DepotPersonne();
     				$formPersonne->setTranslator(Bootstrap::_initTranslate());
     				$formPersonne->populate($unePersonne->toArray());
     			}
