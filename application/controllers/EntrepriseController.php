@@ -6,8 +6,12 @@ class EntrepriseController extends Zend_Controller_Action
     {
         // Initialize action controller here
     	$session = Zend_Auth::getInstance()->getStorage()->read();
-    	
-    	if($session->infoUser->type == "Etudiant"){
+
+    	// Non connecté ou Etudiant
+    	if($session == null){
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Pour accéder à Entreprise, veuillez vous connecter.'));
+    		$this->redirect('/index/index/');
+    	} else if($session->infoUser->type == "Etudiant"){
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Accès refusé.'));
     		$this->redirect('/index/index/');
     	}
@@ -21,61 +25,93 @@ class EntrepriseController extends Zend_Controller_Action
     	// Recupere la session utilisateur
     	$session = Zend_Auth::getInstance()->getStorage()->read();
     	
+    	// Recupere les informations de l'utilisateur
+    	$typeUtilisateur = $session->infoUser->type;
+    	$codeUtilisateur = $session->infoUser->identifiant;
+
+    	// Si c'est une entreprise, on le redirige vers sa fiche
+    	if($typeUtilisateur == "Entreprise"){
+	    	$codeEntreprise = $this->getRequest()->getParam('code');
+	    	$this->redirect('/entreprise/liste/');
+    	} 
+    	// Si non on affiche la liste des entreprises 
+    	else $this->redirect('/entreprise/liste/');
+    }
+    
+    /**
+     * Fiche d'une entreprise
+     */
+    public function ficheAction(){
+    	// Titre de la page
+    	$this->view->title = "Entreprise";
+    	 
+    	// Recupere la session utilisateur
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	 
     	// Recupere le code de l'entreprise
     	if($session->infoUser->type == "Entreprise") $codeEntreprise = $session->infoUser->identifiant;
     	else $codeEntreprise = $this->getRequest()->getParam('code');
+    	 
+    	$typeUtilisateur = $session->infoUser->type;
+    	$codeUtilisateur = $session->infoUser->identifiant;
+    	 
+    	/*
+    	 * FICHE ENTREPRISE
+    	*/
+    	if($codeEntreprise != null){
+    		// Crée un objet dbTable Stage
+    		$modelStage = new Application_Model_DbTable_Stage();
+    		// Crée un objet dbTable Personne
+    		$modelPersonne = new Application_Model_DbTable_Personne();
+    		// Crée un objet dbtable entreprise
+    		$modelEntreprise = new Application_Model_DbTable_Entreprise();
+    		// Recupere les informations d'une entreprise
+    		$unUtilisateur = $modelEntreprise->getEntreprise($codeEntreprise);
+    		// Recupere les stages déposés
+    		$lesStages = $modelStage->getStagesEntrepriseANDRealiser($codeEntreprise);
     	
+    		// Envoi a la vue les informations
+    		$this->view->unUtilisateur = $unUtilisateur;
+    		$this->view->lesStages = $lesStages;
+    	
+    		// Si l'utilisateur connecté est l'entreprise a afficher alors on charge les employés
+    		if($codeUtilisateur == $codeEntreprise && $typeUtilisateur == "Entreprise") {
+    			// Recupere les employes de l'entreprise
+    			$lesEmployes = $modelPersonne->getPersonneByEntreprise($codeEntreprise);
+    			$this->view->lesEmployes = $lesEmployes;
+    			$this->view->afficheEmployes = true;
+    		} else $this->view->afficheEmployes = false;
+    	} else $this->redirect('/entreprise/liste/');
+    }
+    
+    /**
+     * Liste des entreprises dont l'enseignant est tuteur
+     */
+    public function listeAction(){
+    	// Titre de la page
+    	$this->view->title = "Entreprise";
+    	 
+    	// Recupere la session utilisateur
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
     	$typeUtilisateur = $session->infoUser->type;
     	$codeUtilisateur = $session->infoUser->identifiant;
     	
-    	/*
-    	 * FICHE ENTREPRISE
-    	 */
-    	if($codeEntreprise != null){
-			// Crée un objet dbTable Stage
-			$modelStage = new Application_Model_DbTable_Stage();
-	    	// Crée un objet dbTable Personne
-	    	$modelPersonne = new Application_Model_DbTable_Personne();
-	    	// Crée un objet dbtable entreprise
+    	if($typeUtilisateur == "Enseignant") {	
+	    	// Crée un objet dbTable Entreprise
 	    	$modelEntreprise = new Application_Model_DbTable_Entreprise();
-	    	// Recupere les informations d'une entreprise
-	    	$unUtilisateur = $modelEntreprise->getEntreprise($codeEntreprise);
-	    	// Recupere les stages déposés
-	    	$lesStages = $modelStage->getStagesEntrepriseANDRealiser($codeEntreprise);
 	    	
-			// Envoi a la vue les informations
-    		$this->view->unUtilisateur = $unUtilisateur;
-	    	$this->view->fiche = true;
-	    	$this->view->lesStages = $lesStages;
-	    	
-	    	// Si l'utilisateur connecté est l'entreprise a afficher alors on charge les employés
-	    	if($codeUtilisateur == $codeEntreprise && $typeUtilisateur == "Entreprise") {
-	    		// Recupere les employes de l'entreprise
-	    		$lesEmployes = $modelPersonne->getPersonneByEntreprise($codeEntreprise);
-		    	$this->view->lesEmployes = $lesEmployes;
-		    	$this->view->afficheEmployes = true;
-	    	} else $this->view->afficheEmployes = false;
-    	} 
-    	
-    	/*
-    	 * LISTE DES ENTREPRISES
-    	 */
-    	else {
-    		// Crée un objet dbTable Entreprise
-    		$modelEntreprise = new Application_Model_DbTable_Entreprise();
-
-    		// Recupere la page courante
-    		$pageEntreprise = $this->getRequest()->getParam('pageEntreprise');
-    		if(empty($pageEntreprise))	{ $pageEntreprise = 1; }
-    		 
-    		// Recupere la liste des entreprises pour un tuteur
-    		if($session->infoUser->type == "Enseignant"){
-    			$lesEntreprises = $modelEntreprise->getListeEntrepriseByTuteur($pageEntreprise, $session->infoUser->identifiant);
-    		} //else $lesEntreprises = $modelEntreprise->getListeEntreprise($pageEntreprise);
-    		 
-    		// Envoi a la vue la liste des entreprises
-    		$this->view->lesEntreprises = $lesEntreprises;
-    	}
+	    	// Recupere la page courante
+	    	$pageEntreprise = $this->getRequest()->getParam('pageEntreprise');
+	    	if(empty($pageEntreprise))	{ $pageEntreprise = 1; }
+	    	 
+	    	// Recupere la liste des entreprises pour un tuteur
+	    	if($session->infoUser->type == "Enseignant"){
+	    		$lesEntreprises = $modelEntreprise->getListeEntrepriseByTuteur($pageEntreprise, $session->infoUser->identifiant);
+	    	} //else $lesEntreprises = $modelEntreprise->getListeEntreprise($pageEntreprise);
+	    	 
+	    	// Envoi a la vue la liste des entreprises
+	    	$this->view->lesEntreprises = $lesEntreprises;
+    	} else $this->redirect('/entreprise/fiche/code/'.$codeUtilisateur);
     }
     
     

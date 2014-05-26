@@ -1,0 +1,126 @@
+<?php $this->headTitle($this->title); // Titre de la page
+$unUtilisateur = $this->unUtilisateur;
+$lesStages = $this->lesStages; 
+$lesEmployes = $this->lesEmployes; 
+$afficheEmployes = $this->afficheEmployes;
+?>
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-default">
+			
+				<?php // ENTETE ?>
+        		<div class="panel-heading">
+        			<h2 class="panel-title"><?php echo $unUtilisateur->rsEntreprise; ?>
+        				<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
+        			</h2>
+        			<?php echo "Dirigeant : <strong>$unUtilisateur->nomPersonne $unUtilisateur->prenomPersonne</strong><br />
+								Adresse : <strong>$unUtilisateur->adrRueEntreprise - $unUtilisateur->adrVilleEntreprise - $unUtilisateur->adrCpEntreprise</strong> <br />
+		        				Tél : <strong>$unUtilisateur->telEntreprise</strong> <br />
+		        				Mél : <strong>$unUtilisateur->emailEntreprise</strong>"; 
+		        	?>
+        		</div>
+	            
+	            <div class="panel-body">
+				  	<?php // LISTE DES STAGES ?>
+				  	<?php if(count($lesStages) > 0) { ?>
+					  	<!-- Table -->
+						<table class="table text-center">
+						<caption><h3><span class="label label-primary">&nbsp; Liste des stages &nbsp;</span></h3></caption>
+							<thead>
+								<tr>
+									<th class="text-center">Étudiant</th>
+									<th class="text-center">Stage</th>
+									<th class="text-center">Date début stage</th>
+									<th class="text-center">Date fin stage</th>
+				          		</tr>
+			        		</thead>
+			        		<tbody>
+			        		<?php foreach($lesStages as $unStage) { ?>
+								<tr>
+									<td><?php echo $unStage->nomEtudiant. ' '.$unStage->prenomEtudiant; ?></td>
+				            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage->codeStage)); ?>"><?php echo $unStage->libelleStage; ?></a></td>
+						            <td><?php echo $unStage->dateDebutStage; ?></td>
+						            <td><?php echo $unStage->dateFinStage; ?></td>
+						            <td></td>
+								</tr>
+							<?php } ?>
+			        		</tbody>
+		      			</table>
+		      		<?php } else { echo "Aucun stage déposé."; } ?>
+		        	
+		        	<?php if($afficheEmployes) { ?>
+			        	<?php // LISTE DES EMPLOYES ?>
+					  	<!-- Table -->
+						<table class="table text-center">
+						<caption><h3><span class="label label-primary">&nbsp; Liste des employés &nbsp;</span></h3></caption>
+							<?php if (count($lesEmployes) > 0) { ?>
+								<thead>
+									<tr>
+										<th class="text-center">Nom</th>
+										<th class="text-center">Prénom</th>
+										<th class="text-center">Fonction</th>
+										<th class="text-center"></th>
+					          		</tr>
+				        		</thead>
+				        	<?php } ?>
+			        		
+			        		<tbody>
+			        		<?php foreach($lesEmployes as $unEmploye) { ?>
+								<tr>
+									<td><?php echo $unEmploye->nomPersonne; ?></td>
+						            <td><?php echo $unEmploye->prenomPersonne; ?></td>
+						            <td><?php echo $unEmploye->fonctionPersonne; ?></td>
+						            <td><a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'delete', 'code'=>$unEmploye->idPersonne)); ?>" class="pull-right confirmDeletePersonne"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						            	<a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'depotemploye', 'code'=>$unEmploye->idPersonne)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a></td>
+								</tr>
+							<?php } ?>
+								<?php // Ajout de la ligne "Ajouter employé" au centre (fusion des colonnes)?>
+								<tr>
+									<td colspan=4>
+										<a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'depotemploye'),"default", true); ?>">
+										<img src="<?php echo $this->baseUrl();?>/images/icone/plus.gif" alt="Ajouter" id="miniAddEmployes"/>Ajouter un employé</a>
+									</td>
+								</tr>
+			        		</tbody>
+	      				</table>
+	      				<?php } ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<p id="dialog-confirm-delete-personne" title="Supprimer Employé"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cet employé ?</p>
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-delete-personne").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 445,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$(".confirmDeletePersonne").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-personne").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>

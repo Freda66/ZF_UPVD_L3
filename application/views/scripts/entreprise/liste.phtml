@@ -1,0 +1,50 @@
+<?php $this->headTitle($this->title); // Titre de la page
+$unUtilisateur = $this->unUtilisateur;
+$fiche = $this->fiche; 
+$lesStages = $this->lesStages; 
+$lesEmployes = $this->lesEmployes; 
+$lesEntreprises = $this->lesEntreprises;
+$afficheEmployes = $this->afficheEmployes;
+?>
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-default">
+				<?php // ENTREPRISE ?>
+				<div class="panel col-md-12">
+					<div class="panel-heading">
+		              <h2 class="panel-title">
+		              		Liste des entreprises
+		              </h2>
+		            </div>
+
+		            <div class="panel-body">
+		            	<?php 
+		            	if(count($this->lesEntreprises) > 0) {
+		            		foreach($this->lesEntreprises as $uneEntreprise) { ?>          
+								<ul class="list-group">
+								  <li class="list-group-item list-group-item-info">
+									<a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'fiche', 'code'=>$uneEntreprise->idEntreprise)); ?>"><?php echo $uneEntreprise->rsEntreprise; ?>
+									</a>
+									<br />&emsp;
+									<span><?php echo $uneEntreprise->adrRueEntreprise . ' '. $uneEntreprise->adrVilleEntreprise; ?></span>
+									<br />&emsp;
+									<span><?php echo $uneEntreprise->telEntreprise;?></span>
+									<br />&emsp;
+									<span><?php echo $uneEntreprise->emailEntreprise;?></span>
+								  </li>
+								</ul>
+							<?php 
+							}
+							// Pagination
+							echo $this->paginationControl($this->lesEntreprises,'Sliding','common/paginationEntreprise.phtml'); 
+						}
+						// Liste vide 
+						else echo "Aucune entreprise n'a été trouvé."; ?>
+		            </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
