@@ -93,7 +93,7 @@ class ResponsableController extends Zend_Controller_Action
 	    		// Envoi a la vue les employes de l'entreprise
 	    		$this->view->lesEmployes = $lesEmployes;
     		} 
-    
+    		
     		if($unUtilisateur == null){
     			// Message flash + Redirection
     			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun utilisateur ne correspond.'));

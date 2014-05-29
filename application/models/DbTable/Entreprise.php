@@ -109,8 +109,9 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		// Liste des entreprise d'un tuteur
 		$requete = $this->select()->setIntegrityCheck(false)
 							->from(array('e' => $this->_name), array('*'))
-							->joinLeft(array('p'=>'personne'), 'e.idEntreprise = p.idEntrepriseTravail', array('*'))
-							->where('idPersonne = ?', $codeTuteur);
+							->joinLeft(array('s'=>'stage'), 's.idEntreprise = e.idEntreprise', array('*'))
+							->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+							->where('res.idEnseignantTuteur = ?', $codeTuteur);
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
 		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
 		// Détermine le nombre d'item par page

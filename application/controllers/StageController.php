@@ -44,14 +44,6 @@ class StageController extends Zend_Controller_Action
     	// Liste des stages déposés par l'entreprise
     	if($session->infoUser->type == "Entreprise"){
     		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant, $formation, $page); // Recupere les stages
-    		// Parcour les stages et recupere un bool si le stage existe dans la table realiseretudiantstage
-    		$stageAffect = Array();
-    		$i = 0;
-    		foreach($lesStages as $unStage) {
-    			$stageAffect[$i]["isFindEtudiant"] = $modelRealiserEtudiantStage->isExist($unStage["codeStage"]);
-    			$i++;
-    		}
-    		$this->view->stageAffect = $stageAffect;
     	} 
     	// Liste des stages dont il est tuteur
     	else if($session->infoUser->type == "Enseignant"){
@@ -75,6 +67,15 @@ class StageController extends Zend_Controller_Action
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myStage;
     	}
+    	
+    	// Parcour les stages et recupere un bool si le stage existe dans la table realiseretudiantstage
+    	$stageAffect = Array();
+    	$i = 0;
+    	foreach($lesStages as $unStage) {
+    		$stageAffect[$i]["isFindEtudiant"] = $modelRealiserEtudiantStage->isExist($unStage["codeStage"]);
+    		$i++;
+    	}
+    	$this->view->stageAffect = $stageAffect;
     	
     	// Envoi a la vue les formations, stages et le boolean isFindEtudiant
     	$this->view->lesFormations = $modelFormation->getFormations();
@@ -187,7 +188,7 @@ class StageController extends Zend_Controller_Action
 	    			}
 	    			// Update
 	    			else {
-	    				if($modelStage->updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant, $codeStage)) {
+	    				if($modelStage->updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant, $codeStage, $unStage->etatStage)) {
 	    					// Message + Redirection
 	    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été modifié avec succès.'));
 	    					$this->redirect("/stage/index/");
@@ -360,6 +361,36 @@ class StageController extends Zend_Controller_Action
     		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression de l\'enseignant tuteur.'));
     
     		$this->redirect("/stage/fiche/code/$codeStage");
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));
+    		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    /**
+     * Supprime un stage d'une entreprise
+     */
+    public function deleteAction(){
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Recupere le code stage
+    	$codeStage = $this->getRequest()->getParam('code');
+    	
+    	// Si c'est un enseignant responsable
+    	if(($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true) || $session->infoUser->type == "Entreprise"){
+    		// Cree un objet dbTable Stage
+    		$modelStage = new Application_Model_DbTable_Stage();
+    	
+    		// Recupere les informations du stage
+    		$unStage = $modelStage->getStage($codeStage, $session);
+    		
+    		// Retire le stage de la bdd si il est refusé ou en attente
+    		if($unStage->etatStage != 1 && $modelStage->deleteStage($codeStage)) $this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été supprimé.'));
+    		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression du stage.'));
+    	
+    		// Redirection
+    		$this->redirect("/stage/");
     	} else {
     		// Message + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));

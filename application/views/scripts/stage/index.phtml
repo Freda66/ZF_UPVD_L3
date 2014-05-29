@@ -46,7 +46,6 @@
   					  <?php } ?>
   					  
   					  <?php // LISTE DEROULANTE DES FORMATIONS ?>
-  					  <?php //var_dump($this->lesFormations); ?>
   					  <li class="dropdown navbar-collapse collapse navbar-right" id="listeFormationStage">
 						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: black; font-size: 18px;">Formation <b class="caret"></b></a>
 	  					  <ul class="dropdown-menu">
@@ -70,7 +69,7 @@
 		            		<span class="btn list-group-item-success" id="btnLegendStage" title="Le stage a été activé par l'administration">&nbsp;&nbsp; Activé &nbsp;&nbsp;</span>
 		            		<span class="btn list-group-item-info" id="btnLegendStage" title="Le stage est en attente d'activation par l'administration">&nbsp;&nbsp; En attente d'activation &nbsp;&nbsp;</span>
 		            		<span class="btn list-group-item-danger" id="btnLegendStage" title="Le stage a été refusé par l'administration">&nbsp;&nbsp; Désactivé &nbsp;&nbsp;</span>
-		            		<?php if($this->typeSession == "Entreprise") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
+		            		<?php if($this->typeSession != "Etudiant") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
 		            	</div>
 		            <?php 
 	            		}

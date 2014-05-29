@@ -64,7 +64,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		if($idFormation != null) {
   			$result		->from(array('s' => $this->_name), array('*'))
 						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
-						->where('idFormation = ?', $idFormation);
+						->where('idFormation = ?', (int)$idFormation);
 		}
 		$result			->where('idEntreprise = ?', $idEntreprise);
 
@@ -106,14 +106,13 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getStagesAllValidORAttente($etat, $formation, $page){
+	public function getStagesAllValidORAttente($etat, $idFormation, $page){
 		$result = $this	->select()->setIntegrityCheck(false)
   						->from(array('s' => $this->_name), array('*'))
 						->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'));
 		if($idFormation != null) {
-			$result		->from(array('s' => $this->_name), array('*'))
-						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
-						->where('idFormation = ?', $idFormation);
+				$result	->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+						->where('idFormation = ?', (int)$idFormation);
 		}
 		$result 		->where('etatStage = ?', $etat)
 						->where('res.idStage is null');
@@ -141,7 +140,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		if($idFormation != null) {
   			$result		->from(array('s' => $this->_name), array('*'))
   						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
-  						->where('idFormation = ?', $idFormation);
+  						->where('idFormation = ?', (int)$idFormation);
   		}
 		
 		// Retourne tout les stages
@@ -175,9 +174,10 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		} catch(Exeception $e) { return false; }
 	}
 	
-	public function updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $codeEntreprise, $codeStage){
+	public function updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $codeEntreprise, $codeStage, $etatStage){
 		try {
-			$data = array('idTuteur'=>$idTuteur,'libelleStage'=>$libelleStage,'descriptionStage'=>$descriptionStage,'dateDebutStage'=>$dateDebutStage,'dateFinStage'=>$dateFinStage);
+			if($etatStage == -1) $data = array('idTuteur'=>$idTuteur,'libelleStage'=>$libelleStage,'descriptionStage'=>$descriptionStage,'dateDebutStage'=>$dateDebutStage,'dateFinStage'=>$dateFinStage, 'etatStage'=>0);
+			else $data = array('idTuteur'=>$idTuteur,'libelleStage'=>$libelleStage,'descriptionStage'=>$descriptionStage,'dateDebutStage'=>$dateDebutStage,'dateFinStage'=>$dateFinStage);
 			if($this->update($data, 'codeStage = '. (int)$codeStage)) return true;
 			else return false;
 		} catch(Exeception $e) { return false; }
@@ -204,5 +204,22 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 				else return false;
 			} else return false;
 		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
+	 * Suppime un stage de la bdd
+	 * Uniquement si l'état du stage est différent de 1
+	 * @param integer $codeStage
+	 * @return boolean
+	 */
+	public function deleteStage($codeStage){
+		try {
+			// Supprime le stage
+			$this->delete('codeStage = '.$codeStage);
+		}catch (Exception $e){
+			// Si une erreur est déclanché (dépendance de clé étrangere), on passe sont etat a -1
+			$this->update(array('etatStage'=>-1), 'codeStage = '.$codeStage);
+		}
+		return true;
 	}
 }
