@@ -49,6 +49,28 @@ class ResponsableController extends Zend_Controller_Action
     }
     
     /**
+     * Affiche la liste des paramètres du site
+     * Bouton modifier disponible
+     */
+    public function paramAction()
+    {
+    	// Titre de la page
+    	$this->view->title = "Paramètres"; 
+    	 
+    	// Objet model dbTable
+    	$modelEnseignant = new Application_Model_DbTable_Enseignant();
+    	 
+    	// Recupere le numero de page des parametres
+    	$pageEnseignant = $this->getRequest()->getParam('pageLibelleFormation');
+    	if(empty($pageEnseignant))	{ $pageEnseignant = 1; }
+    	 
+    	// Recupere la liste des parametres
+    	$lesEnseignants = $modelEnseignant->getListeEnseignant($pageEnseignant);
+    	 
+    	$this->view->lesEnseignants = $lesEnseignants;
+    }
+    
+    /**
      * Fiche détaillée d'un utilisateur + liste des stages
      */
     public function ficheAction()

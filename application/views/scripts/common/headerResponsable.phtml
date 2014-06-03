@@ -1,4 +1,4 @@
-<?php /*
+<?php 
 // Recupere le chemin 
 $instance = Zend_Controller_Front::getInstance();
 $action = $instance->getRequest()->getActionName();
@@ -20,9 +20,8 @@ $session = Zend_Auth::getInstance()->getStorage()->read();
         <div class="navbar-collapse collapse" id="navAdmin">
 			<ul class="nav navbar-nav">
 				<li <?php if($controller == "responsable" && $action == "index") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index'),"default", true); ?>">Liste</a></li>
-				<li <?php if($controller == "responsable" && $action == "param") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'param'),"default", true); ?>">Paramètres</a></li>
+				<li <?php if($controller == "responsable" && $action == "param") { ?>class="activeNavAdmin"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'param'),"default", true); ?>">Paramètre</a></li>
           	</ul>
 		</div>
 	</div>
 </div>
-<?php  */ ?>

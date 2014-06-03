@@ -63,6 +63,8 @@
 	      			
 	      			// ENSEIGNANT RESPONSABLE
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
+	      				<?php // MODIFIER LE STAGE ?>
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-left stageEtudiantBtnLeft">Modfier</a>
 	      				<?php 
 						// Desactiver le stage	
 	      				if($unStage->etatStage == 1) { ?>

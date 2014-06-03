@@ -40,6 +40,7 @@ class StageController extends Zend_Controller_Action
     	$page = $this->_request->getParam('page');
     	if(empty($page)){ $page=1; }
     	$formation = $this->_request->getParam('formation');
+    	$etat = $this->_request->getParam('etat');
     	
     	// Liste des stages déposés par l'entreprise
     	if($session->infoUser->type == "Entreprise"){
@@ -51,7 +52,7 @@ class StageController extends Zend_Controller_Action
     		$myParam = $this->getRequest()->getParam('my');
 			// Recupere les stages
 			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant, $formation, $page); // Recupere les stages
-			else $lesStages = $modelStage->getStages($page, $formation); // Recupere les stages
+			else $lesStages = $modelStage->getStages($page, $formation, $etat); // Recupere les stages
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myParam;
 			$this->view->isResponsable = $session->infoUser->isResponsable;
@@ -395,6 +396,69 @@ class StageController extends Zend_Controller_Action
     		// Message + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));
     		$this->redirect("/stage/fiche/code/$codeStage");
+    	}
+    }
+    
+    /**
+     * Administration d'un stage par un responsable du site
+     * Affectation d'un etudiant, enseignant tuteur, etat du stage, formation affectée
+     */
+    public function stageresponsableAction(){
+    	$this->view->title = "Stage"; // Titre de la page
+    	 
+    	// Recupere le code du stage passé en param (si exist)
+    	$codeStage = $this->getRequest()->getParam('code');
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Crée un objet dbtable Stage, Concerner Formation Stage
+    	$modelStage = new Application_Model_DbTable_Stage();
+    	
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		// Recupere les informations d'un stage
+    		$unStage = $modelStage->getInfoStage($codeStage);
+    		//$lesFormationsDuStage = $modelConcernerFormationStage->getListeFormationStage($codeStage);
+    		
+    		if($unStage == null){
+    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
+    			$this->redirect('/stage/index/');
+    		} else {
+    			$formStage = new Application_Form_StageResponsable($unStage);
+    			$formStage->setTranslator(Bootstrap::_initTranslate());
+    			$formStage->populate($unStage[0]->toArray());
+    		}
+    	
+    		// Traitement du formulaire
+    		// Si le formulaire a été posté
+    		if($this->getRequest()->isPost()) {
+    			// Recupere les informations du formulaire
+    			$formData = $this->getRequest()->getPost();
+    	
+    			// Si les informations sont valides par rapport au formulaire init (initiale)
+    			if($formStage->isValid($formData)) {
+    				// Recupere les attributs dans des variables
+    				$idEtudiant 		= $formStage->getValue('idEtudiant');
+    				$idEnseignantTuteur = $formStage->getValue('idEnseignantTuteur');
+    				$etatStage 			= $formStage->getValue('etatStage');
+    				$lesFormations 			= $formStage->getValue('lesFormations');
+    	
+    				if($modelStage->updateStage($idEtudiant, $idEnseignantTuteur, $etatStage, $lesFormations, $codeStage)) {
+    					// Message + Redirection
+    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été modifié avec succès.'));
+    					$this->redirect("/stage/fiche/code/".$codeStage);
+    				} else {
+    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification du stage.'));
+    					$formStage->populate($formData);
+    				}
+    			} else $formStage->populate($formData);
+    		}
+    		
+    		// Envoie a la vue le formulaire de depot de stage
+    		$this->view->formStage = $formStage;
+    		$this->view->titreStage = $unStage[0]->libelleStage;
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
+    		$this->redirect("/index/index/");
     	}
     }
     

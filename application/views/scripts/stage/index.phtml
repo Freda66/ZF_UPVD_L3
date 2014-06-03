@@ -61,18 +61,25 @@
 	            </div>
 	            
 	            <div class="panel-body">
-	            	<?php 
-	            	if(count($this->lesStages) > 0) {
-						if($this->typeSession == "Enseignant" && $this->isResponsable == 1 || $this->typeSession == "Entreprise") {
-	            	?>
-		            	<div class="list-group">
+	            	
+	            	<?php // BTN ETAT DU STAGE ?>
+	            	<div class="list-group">
+						<?php if($this->typeSession == "Entreprise") { ?>
 		            		<span class="btn list-group-item-success" id="btnLegendStage" title="Le stage a été activé par l'administration">&nbsp;&nbsp; Activé &nbsp;&nbsp;</span>
 		            		<span class="btn list-group-item-info" id="btnLegendStage" title="Le stage est en attente d'activation par l'administration">&nbsp;&nbsp; En attente d'activation &nbsp;&nbsp;</span>
 		            		<span class="btn list-group-item-danger" id="btnLegendStage" title="Le stage a été refusé par l'administration">&nbsp;&nbsp; Désactivé &nbsp;&nbsp;</span>
-		            		<?php if($this->typeSession != "Etudiant") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
-		            	</div>
-		            <?php 
-	            		}
+			            <?php } else if($this->typeSession == "Enseignant" && $this->isResponsable == 1) { ?>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>1),"default", true); ?>"><span class="btn list-group-item-success" id="btnLegendStage" title="Le stage a été activé par l'administration">&nbsp;&nbsp; Activé &nbsp;&nbsp;</span></a>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>0),"default", true); ?>"><span class="btn list-group-item-info" id="btnLegendStage" title="Le stage est en attente d'activation par l'administration">&nbsp;&nbsp; En attente d'activation &nbsp;&nbsp;</span></a>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>-1),"default", true); ?>"><span class="btn list-group-item-danger" id="btnLegendStage" title="Le stage a été refusé par l'administration">&nbsp;&nbsp; Désactivé &nbsp;&nbsp;</span></a>
+						<?php } ?>
+			 			<?php if($this->typeSession != "Etudiant") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
+		            </div>
+	            	
+	            	
+	            	<?php 
+	            	// LISTE DES STAGES
+	            	if(count($this->lesStages) > 0) {
 	            		$i = 0;
 	            		foreach($this->lesStages as $unStage) { ?>          
 						<div class="list-group">

@@ -89,6 +89,7 @@ class Application_Form_DepotEnseignant extends Zend_Form
 	   foreach($lesFormations as $uneFormation){
 	   		$idFormation->addMultiOption($uneFormation->codeFormation, $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation);
 	   }
+	   
 	   // Si il y a des formations pour un enseignant
 	   if($options != null){
 		   	// Déclare un tableau

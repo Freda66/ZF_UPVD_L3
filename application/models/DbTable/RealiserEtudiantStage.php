@@ -18,13 +18,15 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 	 * @param integer $ineEtudiant
 	 * @return Ambigous <Zend_Db_Table_Row_Abstract, NULL, unknown>
 	 */
-  	public function getRealiserEtudiantStage($codeStage, $ineEtudiant){
+  	public function getRealiserEtudiantStage($codeStage, $ineEtudiant=null){
   		$result = 	$this	->select()->setIntegrityCheck(false)
   							->from(array('res' => $this->_name), array('*'))
   							->joinLeft(array('e'=>'etudiant'), 'res.idEtudiant = e.ineEtudiant', array('*'))
   							->joinLeft(array('s'=>'stage'), 'res.idStage = s.codeStage', array('*'))
-  							->where('idStage = ?', $codeStage)
-  							->where('idEtudiant = ?', $ineEtudiant);
+  							->where('idStage = ?', $codeStage);
+  		// Si ine different de nulls
+  		if($ineEtudiant != null) $result->where('idEtudiant = ?', $ineEtudiant);
+  		// Retourne le resultat
   		return $this->fetchRow($result);
   	}
   	

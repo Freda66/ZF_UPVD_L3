@@ -50,6 +50,23 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
   		// Retourne le resultat
   		return $result;
   	}
+  	
+  	
+  	/**
+  	 * Fonction qui retourne l'enregistrement d'un stage avec ses informations
+  	 * @param integer $code
+  	 * @return Object
+  	 */
+  	public function getInfoStage($code){
+  		$result = $this	->select()->setIntegrityCheck(false)
+					 	->from(array('s' => $this->_name), array('*'))
+					 	->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+					 	->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+					 	->where('codeStage = ?', $code);
+  		// Retourne le resultat
+  		return $this->fetchAll($result);
+  	}
+  	
     
 	/**
 	 * Fonction qui retourne les stages d'une entreprise à partir
@@ -132,15 +149,20 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	/**
 	 * Retourne la liste des stages (enseignant responsable)
 	 * @param integer $page
+	 * @param integer $idFormation
+	 * @param integer $etat
 	 * @return Zend_Paginator
 	 */
-	public function getStages($page, $idFormation){
+	public function getStages($page, $idFormation, $etat){
 		// Requete qui recupere les stages d'un entreprise
 		$result = $this->select()->setIntegrityCheck(false);
 		if($idFormation != null) {
   			$result		->from(array('s' => $this->_name), array('*'))
   						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   						->where('idFormation = ?', (int)$idFormation);
+  		}
+  		if($etat != null) {
+  			$result		->where('etatStage = ?', (int)$etat);
   		}
 		
 		// Retourne tout les stages
