@@ -410,14 +410,14 @@ class StageController extends Zend_Controller_Action
     	$codeStage = $this->getRequest()->getParam('code');
     	// Recupere la session en cours
     	$session = Zend_Auth::getInstance()->getStorage()->read();
-    	// Crée un objet dbtable Stage, Concerner Formation Stage
+    	// Crée un objet dbtable Stage, Realiser etudiant stage et Concerner Formation Stage
     	$modelStage = new Application_Model_DbTable_Stage();
+    	$modelRES = new Application_Model_DbTable_RealiserEtudiantStage();
+    	$modelCFS = new Application_Model_DbTable_ConcernerFormationStage();
     	
     	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
     		// Recupere les informations d'un stage
     		$unStage = $modelStage->getInfoStage($codeStage);
-    		//$lesFormationsDuStage = $modelConcernerFormationStage->getListeFormationStage($codeStage);
-    		
     		if($unStage == null){
     			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
     			$this->redirect('/stage/index/');
@@ -439,16 +439,28 @@ class StageController extends Zend_Controller_Action
     				$idEtudiant 		= $formStage->getValue('idEtudiant');
     				$idEnseignantTuteur = $formStage->getValue('idEnseignantTuteur');
     				$etatStage 			= $formStage->getValue('etatStage');
-    				$lesFormations 			= $formStage->getValue('lesFormations');
+    				$lesFormations 		= $formStage->getValue('lesFormations');
     	
-    				if($modelStage->updateStage($idEtudiant, $idEnseignantTuteur, $etatStage, $lesFormations, $codeStage)) {
+    				// Retire l'etudiant et l'enseignant
+    				
+    				// Ajoute l'etudiant et l'enseignant
+    				var_dump($lesFormations);
+    				// Affecte les formations au stage
+    				$modelCFS->deleteCFS($codeStage); // Supprime les formations du stage
+					foreach($lesFormations as $uneFormation){
+						var_dump($uneFormation->idFormation);
+						//$modelCFS->insertFormationStage($uneFormation->idFormation, $codeStage); // Insert la formation au stage
+					}  	
+					exit;
+								
+    				//if($modelStage->updateStage($idEtudiant, $idEnseignantTuteur, $etatStage, $lesFormations, $codeStage)) {
     					// Message + Redirection
     					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été modifié avec succès.'));
     					$this->redirect("/stage/fiche/code/".$codeStage);
-    				} else {
+    				/*} else {
     					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification du stage.'));
     					$formStage->populate($formData);
-    				}
+    				}*/
     			} else $formStage->populate($formData);
     		}
     		

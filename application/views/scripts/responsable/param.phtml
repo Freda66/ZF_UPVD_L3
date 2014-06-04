@@ -1,0 +1,110 @@
+<?php $this->headTitle($this->title); // Titre de la page ?>
+
+<?php 
+// Header ADMIN
+echo $this->partial('common/headerResponsable.phtml');
+?>
+
+<div class="jumbotron" id="paddingResponsable">
+	<div class="container">
+		<div class="row">
+	
+			<?php // FORMATION ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Formation 
+  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEnseignants) > 0) {
+	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
+								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucune formation n'a été trouvé."; ?>
+	            </div>
+			</div>
+
+	       	<?php // Fonction ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Fonction 
+  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEnseignants) > 0) {
+	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
+								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucune fonction n'a été trouvé."; ?>
+	            </div>
+			</div>
+		
+			<?php // Specialitee ?>
+			<div class="panel col-md-4">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Spécialitée 
+  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	<?php 
+	            	if(count($this->lesEnseignants) > 0) {
+	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
+						<ul class="list-group">
+						  <li class="list-group-item list-group-item-info">
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
+								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
+						  	</a>
+						  </li>
+						</ul>
+						<?php 
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucune spécialitée n'a été trouvé."; ?>
+	            </div>
+			</div>
+			
+		</div>
+	</div>
+</div>
