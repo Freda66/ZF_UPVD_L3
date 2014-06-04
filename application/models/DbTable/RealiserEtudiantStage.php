@@ -139,9 +139,9 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 	 * @param integer $codeStage
 	 * @return boolean
 	 */
-	public function insertRES($codeEtudiant, $codeStage){
+	public function insertRES($codeStage, $codeEtudiant, $idEnseignantTuteur = null){
 		try{
-			if($this->insert(array('idEtudiant'=>$codeEtudiant, 'idStage'=>$codeStage))) return true;
+			if($this->insert(array('idEtudiant'=>$codeEtudiant, 'idEnseignantTuteur'=>$idEnseignantTuteur, 'idStage'=>$codeStage))) return true;
 			else return false;
 		} catch(Exception $e){
 			return false;
@@ -185,6 +185,19 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 	public function retirerenseignant($codeStage){
 		try {
 			$data = array('idEnseignantTuteur'=>NULL);
+			if($this->update($data, 'idStage = '.(int)$codeStage)) return true;
+			else return false;
+		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
+	 * Fonction qui retire un etudiant
+	 * @param integer $codeStage
+	 * @return boolean
+	 */
+	public function retireretudiant($codeStage){
+		try {
+			$data = array('idEtudiant'=>NULL);
 			if($this->update($data, 'idStage = '.(int)$codeStage)) return true;
 			else return false;
 		} catch(Exeception $e) { return false; }

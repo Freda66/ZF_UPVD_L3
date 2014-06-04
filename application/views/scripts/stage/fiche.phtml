@@ -38,11 +38,11 @@
 					            <td><?php echo $unStage->dateDebutStage; ?></td>
 					            <td><?php echo $unStage->dateFinStage; ?></td>
 					            <td><?php 
-					            	if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur != null) echo "Validé"; 
+					            	if($unStage->etatStage == 0) echo "En attente d'activation par l'administration";
+					            	else if($unStage->etatStage == -1) echo "Refusé";
+					            	else if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur != null) echo "Validé";
 					            	else if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) echo "En attente de validation";
 					            	else if($unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null && $unStage->etatStage == 1) echo "Disponible";
-					            	else if($unStage->etatStage == 0) echo "En attente d'activation par l'administration";
-					            	else if($unStage->etatStage == -1) echo "Refusé";
 					            ?></td>
 							</tr>
 		        		</tbody>
@@ -64,8 +64,8 @@
 	      			// ENSEIGNANT RESPONSABLE
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
 	      				<?php // MODIFIER LE STAGE ?>
-	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-left stageEtudiantBtnLeft">Modfier le stage &raquo;</a>
-	      				<?php 
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modfier le stage &raquo;</a>
+	      				<?php /*
 						// Desactiver le stage	
 	      				if($unStage->etatStage == 1) { ?>
 	      					<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>-1),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft" id="confirmDesactiveStage">Désactiver le stage &raquo;</a>
@@ -74,7 +74,7 @@
 						} else if($unStage->etatStage == -1) { ?>
 		      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>1),"default", true); ?>" class="btn btn-success navbar-right stageEtudiantBtnLeft">&nbsp;&nbsp; Activer le stage &raquo; &nbsp;&nbsp;</a>
       					<?php  				
-      					// Desactiver le stage
+      					// Attente de validation du stage
       					} else { ?>
       						<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>-1),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft" id="confirmDesactiveStage">Désactiver le stage &raquo;</a>
       						<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'updateetat', 'code'=>$unStage->codeStage, 'etat'=>1),"default", true); ?>" class="btn btn-success navbar-right stageEtudiantBtnLeft">&nbsp;&nbsp; Activer le stage &raquo; &nbsp;&nbsp;</a>
@@ -87,7 +87,7 @@
 						} if($unStage->idEtudiant != null) { ?>
 	      					<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'retireretudiant', 'code'=>$unStage->codeStage, 'etudiant'=>$unStage->idEtudiant),"default", true); ?>" class="btn btn-info navbar-right stageEtudiantBtnLeft" id="confirmRetirerEtudiant">Retirer étudiant &raquo;</a>
 	      				<?php } ?>
-	      			<?php 
+	      			<?php */
 					} 
 					?>
 	      		</div>
