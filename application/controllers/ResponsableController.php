@@ -55,19 +55,18 @@ class ResponsableController extends Zend_Controller_Action
     public function paramAction()
     {
     	// Titre de la page
-    	$this->view->title = "Paramètres"; 
+    	$this->view->title = "Paramètre"; 
     	 
     	// Objet model dbTable
-    	$modelEnseignant = new Application_Model_DbTable_Enseignant();
+    	$modelFormation = new Application_Model_DbTable_Formation();
     	 
-    	// Recupere le numero de page des parametres
-    	$pageEnseignant = $this->getRequest()->getParam('pageLibelleFormation');
-    	if(empty($pageEnseignant))	{ $pageEnseignant = 1; }
+    	// Recupere le numero de page des formations
+    	$pageFormation = $this->getRequest()->getParam('page');
+    	if(empty($pageFormation))	{ $pageFormation = 1; }
     	 
-    	// Recupere la liste des parametres
-    	$lesEnseignants = $modelEnseignant->getListeEnseignant($pageEnseignant);
-    	 
-    	$this->view->lesEnseignants = $lesEnseignants;
+    	// Envoi a la vue le nombre d'enregistrement par page et la liste des formations
+    	$this->view->nbItemByPage = $modelFormation->_nbItemByPage;
+    	$this->view->lesFormations = $modelFormation->getListeFormations($pageFormation);
     }
     
     /**
@@ -166,12 +165,18 @@ class ResponsableController extends Zend_Controller_Action
     		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
     		$modelPersonne->deletePersonne($codeUtilisateur);
     		$isOk = true;
+    	} else if($typeUtilisateur == "Formation"){
+    		// Crée un objet dbTable Formation
+    		$modelFormation = new Application_Model_DbTable_Formation();
+    		// Supprime l'enregistrement, si error (dependance dans d'autre table) => passe son etat a -1
+    		$isOk = $modelFormation->deleteFormation($codeUtilisateur);
     	} 
     	
     	// Message + Redirection 
     	if($isOk) $this->_helper->flashMessenger->addMessage(array('success'=>'L\'enregistrement a été supprimé.'));
     	else $this->_helper->flashMessenger->addMessage(array('danger'=>'Impossible de supprimer l\'enregistrement correspondant.'));
-    	$this->redirect('/responsable/index/');
+    	if($typeUtilisateur == "Formation") $this->redirect('/responsable/param/');
+    	else $this->redirect('/responsable/index/');
     }
     
     /**
@@ -481,6 +486,98 @@ class ResponsableController extends Zend_Controller_Action
     	
     	// Envoi le code de l'entreprise a la vue
     	$this->view->codeEntreprise = $codeEntreprise;
+    }
+    
+    
+    
+    /**
+     * Formulaire de dépot d'une formation
+     * Ajouter/Modifier
+     */
+    public function depotformationAction()
+    {
+    	$this->view->title = "Enregistrement d'une formation"; // Titre de la page
+    
+    	// Recupere le code de la formation passé en param (si exist)
+    	$codeFormation = $this->getRequest()->getParam('code');
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Crée un objet dbtable Formation
+    	$modelFormation = new Application_Model_DbTable_Formation();
+    
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		// INSERT
+    		if($codeFormation == null){
+    			// Formulaire de depot d'une formation
+    			$formFormation = new Application_Form_DepotFormation();
+    			$formFormation->setTranslator(Bootstrap::_initTranslate());
+    			// Titre du formulaire
+    			$this->view->titreForm = "Nouvelle formation";
+    		}
+    		// UPDATE
+    		else {
+    			// Recupere les informations d'une formation
+    			$uneFormation = $modelFormation->getFormation($codeFormation);
+    
+    			if($uneFormation == null){
+    				$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucune formation ne correspond.'));
+    				$this->redirect('/responsable/param');
+    			} else {
+    				// Envoi le detail d'une formation au formulaire
+    				$formFormation = new Application_Form_DepotFormation();
+    				$formFormation->setTranslator(Bootstrap::_initTranslate());
+    				$formFormation->populate($uneFormation->toArray());
+    			}
+    			// Titre du formulaire
+    			$this->view->titreForm = "Modification formation";
+    		}
+    
+    		// Traitement du formulaire
+    		// Si le formulaire a été posté
+    		if($this->getRequest()->isPost()) {
+    			// Recupere les informations du formulaire
+    			$formData = $this->getRequest()->getPost();
+    
+    			// Si les informations sont valides par rapport au formulaire init (initiale)
+    			if($formFormation->isValid($formData)) {
+    				// Recupere les attributs dans des variables
+    				$idEnseignantResponsable = $formFormation->getValue('idEnseignantResponsable');
+    				$libelleFormation = $formFormation->getValue('libelleFormation');
+    				$niveauFormation = $formFormation->getValue('niveauFormation');
+    				$specialiteFormation = $formFormation->getValue('specialiteFormation');
+    
+    				// INSERT
+    				if($codeFormation == null) {
+    					if($modelFormation->insertFormation($idEnseignantResponsable, $libelleFormation, $niveauFormation, $specialiteFormation)) {
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'La formation a été enregistré avec succès.'));
+    						$this->redirect("/responsable/param/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion de la formation.'));
+    						$formFormation->populate($formData);
+    					}
+    				}
+    				// UPDATE
+    				else {
+    					if($modelFormation->updateFormation($codeFormation, $idEnseignantResponsable, $libelleFormation, $niveauFormation, $specialiteFormation)) {
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'La formation a été modifié avec succès.'));
+    						$this->redirect("/responsable/param/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification de la formation.'));
+    						$formFormation->populate($formData);
+    					}
+    				}
+    			} else $formFormation->populate($formData);
+    		}
+    
+    		// Envoie a la vue le formulaire d'une formation
+    		$this->view->formFormation = $formFormation;
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
+    		$this->redirect("/index/index/");
+    	}
     }
     
 }

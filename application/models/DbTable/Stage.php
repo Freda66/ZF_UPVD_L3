@@ -9,7 +9,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 {
 	// Nom de la table qu'on va gérer, on déclare une propriété protégée
     protected $_name = 'stage';
-	private $_nbItemByPage = 2;
+	private $_nbItemByPage = 5;
 	private $_nbPagePrint = 20;
     
     /**

@@ -23,17 +23,18 @@ $afficheEmployes = $this->afficheEmployes;
 		            	<?php 
 		            	if(count($this->lesEntreprises) > 0) {
 		            		foreach($this->lesEntreprises as $uneEntreprise) { ?>          
-								<ul class="list-group">
-								  <li class="list-group-item list-group-item-info">
-									<a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'fiche', 'code'=>$uneEntreprise->idEntreprise)); ?>"><?php echo $uneEntreprise->rsEntreprise; ?>
-									</a>
-									<br />&emsp;
-									<span><?php echo $uneEntreprise->adrRueEntreprise . ' '. $uneEntreprise->adrVilleEntreprise; ?></span>
-									<br />&emsp;
-									<span><?php echo $uneEntreprise->telEntreprise;?></span>
-									<br />&emsp;
-									<span><?php echo $uneEntreprise->emailEntreprise;?></span>
-								  </li>
+								<ul class="list-group noUnderline">
+								  <a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'fiche', 'code'=>$uneEntreprise->idEntreprise)); ?>">
+									  <li class="list-group-item list-group-item-info">
+										<span class="titre"><?php echo $uneEntreprise->rsEntreprise; ?></span>
+										<br />&emsp;
+										<span><?php echo $uneEntreprise->adrRueEntreprise . ' '. $uneEntreprise->adrVilleEntreprise; ?></span>
+										<br />&emsp;
+										<span><?php echo $uneEntreprise->telEntreprise;?></span>
+										<br />&emsp;
+										<span><?php echo $uneEntreprise->emailEntreprise;?></span>
+									  </li>
+								  </a>
 								</ul>
 							<?php 
 							}

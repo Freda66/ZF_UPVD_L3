@@ -52,3 +52,7 @@ body { padding-top: 50px; padding-bottom: 20px; }
 #formResponsableDepot dl dt label { margin-top: 10px; margin-bottom: 0px; }
 #idFormation-element label { margin-right: 5px; }
 #idFormation-element input { margin-left: 5px; margin-right: 5px; }
+
+/* ENTREPRISE */
+.noUnderline a:hover { text-decoration: none; }
+.noUnderline a:hover .titre { text-decoration: underline; }

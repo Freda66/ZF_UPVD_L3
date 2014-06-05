@@ -9,102 +9,117 @@ echo $this->partial('common/headerResponsable.phtml');
 	<div class="container">
 		<div class="row">
 	
+		<div class="panel col-md-12">
 			<?php // FORMATION ?>
-			<div class="panel col-md-4">
-				<div class="panel-heading">
-	              <h2 class="panel-title">
-	              		Formation 
-  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
-	              </h2>
-	            </div>
-	            
-	            <div class="panel-body">
-	            	<?php 
-	            	if(count($this->lesEnseignants) > 0) {
-	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
-						<ul class="list-group">
-						  <li class="list-group-item list-group-item-info">
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
-								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
-						  	</a>
-						  </li>
-						</ul>
-						<?php 
+				<div class="panel col-md-6">
+					<div class="panel-heading">
+		              <h2 class="panel-title">Formation</h2>
+		            </div>
+		            <div class="panel-body">
+		            	<?php 
+		            	if(count($this->lesFormations) > 0) {
+			            	$i = 0; $iMax = $this->nbItemByPage/2;
+		            		foreach($this->lesFormations as $uneFormation) 
+							{ 
+								if($i < $iMax) {
+								?>          
+								<ul class="list-group">
+								  <li class="list-group-item list-group-item-info">
+								   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Formation', 'code'=>$uneFormation->codeFormation)); ?>" class="pull-right confirmDeleteFormation"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+								   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotformation', type=>'Formation', 'code'=>$uneFormation->codeFormation)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+									<?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation; ?>
+								  </li>
+								</ul>
+								<?php 
+								}
+								$i++;
+							}
 						}
+						?>
+		            </div>
+				</div>
+				
+				<div class="panel col-md-6">
+					<div class="panel-heading">
+		              <h2 class="panel-title">&nbsp;<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotformation'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter formation &raquo;</a></h2>
+		            </div>
+		            
+		            <div class="panel-body">
+		            	<?php 
+		            	if(count($this->lesFormations) > 0) {
+			            	$i = 0; $iMax = $this->nbItemByPage/2;
+		            		foreach($this->lesFormations as $uneFormation) 
+							{ 
+								if($i >= $iMax) {
+								?>          
+								<ul class="list-group">
+								  <li class="list-group-item list-group-item-info">
+								   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Formation', 'code'=>$uneFormation->codeFormation)); ?>" class="pull-right confirmDeleteFormation"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
+								   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotformation', type=>'Formation', 'code'=>$uneFormation->codeFormation)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
+									<?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation; ?>
+								  </li>
+								</ul>
+								<?php 
+								}
+								$i++;
+							}
+						}				
+						
+						if($i%2 == 1) { ?>
+							<ul class="list-group">
+	  							<li class="list-group-item list-group-item-info">
+									&nbsp;
+	  							</li>
+							</ul>
+						<?php } ?>
+		            </div>
+				</div>
+				
+				<div class="panel col-md-12">
+					<?php 
+						// Aucune formation trouvée
+						if(count($this->lesFormations) <= 0) echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Aucune formation n'a été trouvé.";
 						// Pagination
-						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
-					}
-					// Liste de stage vide 
-					else echo "Aucune formation n'a été trouvé."; ?>
-	            </div>
-			</div>
-
-	       	<?php // Fonction ?>
-			<div class="panel col-md-4">
-				<div class="panel-heading">
-	              <h2 class="panel-title">
-	              		Fonction 
-  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
-	              </h2>
-	            </div>
-	            
-	            <div class="panel-body">
-	            	<?php 
-	            	if(count($this->lesEnseignants) > 0) {
-	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
-						<ul class="list-group">
-						  <li class="list-group-item list-group-item-info">
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
-								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
-						  	</a>
-						  </li>
-						</ul>
-						<?php 
-						}
-						// Pagination
-						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
-					}
-					// Liste de stage vide 
-					else echo "Aucune fonction n'a été trouvé."; ?>
-	            </div>
-			</div>
+						else echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $this->paginationControl($this->lesFormations,'Sliding','common/pagination.phtml').'';
+					?> 
+				</div>
+		</div>
 		
-			<?php // Specialitee ?>
-			<div class="panel col-md-4">
-				<div class="panel-heading">
-	              <h2 class="panel-title">
-	              		Spécialitée 
-  					  	<a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant'),"default", true); ?>" class="btn btn-success pull-right stageEtudiantBtnLeft">Ajouter enseignant &raquo;</a>
-	              </h2>
-	            </div>
-	            
-	            <div class="panel-body">
-	            	<?php 
-	            	if(count($this->lesEnseignants) > 0) {
-	            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
-						<ul class="list-group">
-						  <li class="list-group-item list-group-item-info">
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'delete', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right confirmDeleteEnseignant"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'depotenseignant', type=>'Enseignant', 'code'=>$unEnseignant->idEnseignant)); ?>" class="pull-right"><img src="<?php echo $this->baseUrl();?>/images/icone/edit.png" class="btnCrudResponsable" alt="Modifier" /></a>
-						   <a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'fiche', 'code'=>$unEnseignant->idEnseignant, 'type'=>'Enseignant')); ?>">
-								<?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
-						  	</a>
-						  </li>
-						</ul>
-						<?php 
-						}
-						// Pagination
-						echo $this->paginationControl($this->lesEnseignants,'Sliding','common/paginationEnseignant.phtml'); 
-					}
-					// Liste de stage vide 
-					else echo "Aucune spécialitée n'a été trouvé."; ?>
-	            </div>
-			</div>
-			
 		</div>
 	</div>
 </div>
+
+
+
+<p id="dialog-confirm-delete-formation" title="Supprimer Formation"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer cette formation ?</p>
+
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-delete-formation").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 450,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$(".confirmDeleteFormation").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-formation").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>

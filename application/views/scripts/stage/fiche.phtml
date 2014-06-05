@@ -1,5 +1,8 @@
-<?php $this->headTitle($this->title); // Titre de la page ?>
-<?php $unStage = $this->stage; ?>
+<?php 
+$this->headTitle($this->title); // Titre de la page 
+$unStage = $this->stage; // Information du stage
+$lesDemandes = $this->lesDemandes; // Les demandes de stages des etudiants
+?>
 
 <div class="jumbotron">
 	<div class="container">
@@ -65,6 +68,31 @@
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
 	      				<?php // MODIFIER LE STAGE ?>
 	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modfier le stage &raquo;</a>
+	      				
+	      				<?php // LISTE DES DEMANDES DE STAGES ?>
+	      				<?php if(count($lesDemandes) > 0) { ?>
+					  	<!-- Table -->
+						<table class="table text-center">
+						<caption><h3><span class="label label-primary">&nbsp; Liste des demandes d'étudiants &nbsp;</span></h3></caption>
+							<thead>
+								<tr>
+									<th class="text-center">Étudiant</th>
+									<th class="text-center">Action</th>
+				          		</tr>
+			        		</thead>
+			        		<tbody>
+			        		<?php foreach($lesDemandes as $uneDemande) { ?>
+								<tr>
+									<td><?php echo $uneDemande->nomEtudiant. ' '.$uneDemande->prenomEtudiant; ?></td>
+				            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage, 'etudiant'=>$uneDemande->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Valider la demande &raquo; &nbsp;&nbsp;</a></td>
+								</tr>
+							<?php } ?>
+								<tr><td></td><td></td></tr>
+								<tr><td colspan="2"><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage, 'etudiant'=>"delete")); ?>" class="btn btn-danger stageEtudiantBtnLeft" id="confirmerDeleteDemandes">&nbsp;&nbsp; Supprimer les demandes &raquo; &nbsp;&nbsp;</a></td></tr>
+			        		</tbody>
+		      			</table>
+		      			<?php } ?>
+	      				
 	      				<?php /*
 						// Desactiver le stage	
 	      				if($unStage->etatStage == 1) { ?>
@@ -99,6 +127,7 @@
 
 <?php // DIALOG DE CONFIRMATION ?>
 <p id="dialog-confirm-delete-stage" title="Supprimer stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer ce stage ?</p>
+<p id="dialog-confirm-delete-demandes" title="Supprimer demandes de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer les demandes pour ce stage ?</p>
 <p id="dialog-confirm-accept" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment faire cette demande de stage ?</p>
 <p id="dialog-confirm-cancel" title="Demande de stage"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment annuler cette demande de stage ?</p>
 
@@ -226,6 +255,25 @@ $(function() {
 		},
     });
 
+	$("#dialog-confirm-delete-demandes").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 545,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
 	$("#confirmDemande").click(function(){
 		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
         $("#dialog-confirm-accept").dialog("open"); // Ouvre la fenetre de dialog
@@ -259,6 +307,12 @@ $(function() {
 	$("#confirmerDeleteStage").click(function(){
 		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
         $("#dialog-confirm-delete-stage").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+
+	$("#confirmerDeleteDemandes").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-demandes").dialog("open"); // Ouvre la fenetre de dialog
         return false;
 	});
 });

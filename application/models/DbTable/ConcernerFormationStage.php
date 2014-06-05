@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class d'access a la table Enseignant
+ * Class d'access a la table ConcernerFormationStage
  * @author Fred
  *
  */
