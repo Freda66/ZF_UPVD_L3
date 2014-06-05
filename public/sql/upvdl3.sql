@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Sam 22 Mars 2014 à 08:21
+-- Généré le: Jeu 05 Juin 2014 à 23:58
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -42,10 +42,36 @@ CREATE TABLE IF NOT EXISTS `concernerformationstage` (
 
 INSERT INTO `concernerformationstage` (`idFormation`, `idStage`) VALUES
 (1, 6),
-(2, 6),
+(1, 7),
+(1, 9),
 (2, 7),
+(2, 9),
 (3, 8),
+(4, 6),
+(4, 7),
+(5, 6),
 (5, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `demandeetudiantstage`
+--
+
+CREATE TABLE IF NOT EXISTS `demandeetudiantstage` (
+  `idEtudiant` varchar(20) COLLATE utf8_bin NOT NULL,
+  `idStage` int(11) NOT NULL,
+  PRIMARY KEY (`idEtudiant`,`idStage`),
+  KEY `demandedestage` (`idStage`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Contenu de la table `demandeetudiantstage`
+--
+
+INSERT INTO `demandeetudiantstage` (`idEtudiant`, `idStage`) VALUES
+('A48154G454', 9),
+('F47856ADSS', 9);
 
 -- --------------------------------------------------------
 
@@ -64,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `enseignant` (
   `isResponsableSiteEnseignant` int(11) NOT NULL COMMENT '0 => Non & 1 => 1',
   `etatEnseignant` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idEnseignant`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
 
 --
 -- Contenu de la table `enseignant`
@@ -75,7 +101,7 @@ INSERT INTO `enseignant` (`idEnseignant`, `nomEnseignant`, `prenomEnseignant`, `
 (2, 'SALVAT', 'Eric', 'Enseignant', 'Informatique', 'esalvat', 'esalvat', 0, 1),
 (3, 'RHARMAOUI', 'Ahmed', 'Enseignant', 'Robotique', 'arharmaoui', 'arharmaoui', 1, 1),
 (4, 'PECH-GOURG', 'Nicolas', 'Intervenant', 'Management', 'npechgourg', 'npechgourg', 0, 1),
-(5, 'Janet', 'Karine', 'Administration', 'Robotique', 'kjanet', 'kjanet', 1, 1);
+(5, 'JANET', 'Karine', 'Administration', 'Robotique', 'kjanet', 'kjanet', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -184,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `formation` (
   `specialiteFormation` varchar(250) COLLATE utf8_bin NOT NULL COMMENT 'Informatique,...',
   PRIMARY KEY (`codeFormation`),
   KEY `EnseignantResponsableFormation` (`idEnseignantResponsable`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `formation`
@@ -215,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `etatPersonne` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idPersonne`),
   KEY `idEntrepriseTravail` (`idEntrepriseTravail`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
 
 --
 -- Contenu de la table `personne`
@@ -223,8 +249,7 @@ CREATE TABLE IF NOT EXISTS `personne` (
 
 INSERT INTO `personne` (`idPersonne`, `idEntrepriseTravail`, `nomPersonne`, `prenomPersonne`, `fonctionPersonne`, `telPortPersonne`, `telPostePersonne`, `emailPersonne`, `etatPersonne`) VALUES
 (1, 2, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com', 1),
-(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com', 1),
-(8, 2, 'CANO', 'Frederic', 'Developpeur', '0618789548', '0478996852', 'frederic.cano@imerir.com', 1);
+(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com', 1);
 
 -- --------------------------------------------------------
 
@@ -248,7 +273,9 @@ CREATE TABLE IF NOT EXISTS `realiseretudiantstage` (
 --
 
 INSERT INTO `realiseretudiantstage` (`idEtudiant`, `idStage`, `idEnseignantTuteur`, `idSoutenance`) VALUES
-('A48154G454', 7, 1, NULL);
+('A48154G454', 7, 1, NULL),
+('A48154G454', 9, NULL, NULL),
+('F47856ADSS', 9, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -303,6 +330,13 @@ INSERT INTO `stage` (`codeStage`, `idEntreprise`, `idTuteur`, `libelleStage`, `d
 ALTER TABLE `concernerformationstage`
   ADD CONSTRAINT `foreignFormationStage` FOREIGN KEY (`idFormation`) REFERENCES `formation` (`codeFormation`),
   ADD CONSTRAINT `foreignStage` FOREIGN KEY (`idStage`) REFERENCES `stage` (`codeStage`);
+
+--
+-- Contraintes pour la table `demandeetudiantstage`
+--
+ALTER TABLE `demandeetudiantstage`
+  ADD CONSTRAINT `demandedestage` FOREIGN KEY (`idStage`) REFERENCES `stage` (`codeStage`),
+  ADD CONSTRAINT `etudiantdemandestage` FOREIGN KEY (`idEtudiant`) REFERENCES `etudiant` (`ineEtudiant`);
 
 --
 -- Contraintes pour la table `enseignerformationenseignant`
