@@ -60,13 +60,16 @@ class StageController extends Zend_Controller_Action
     	// Liste des stages disponible + filtre possible sur les siens
     	else if($session->infoUser->type == "Etudiant"){
     		$modelDemandeEtudiantStage = new Application_Model_DbTable_DemandeEtudiantStage();
+    		$modelEtudiant = new Application_Model_DbTable_Etudiant();
+    		// Recupere les informations de l'etudiant
+    		$unEtudiant = $modelEtudiant->getEtudiant($session->infoUser->identifiant);
     		// Recupere le param de l'url
     		$myStage = $this->getRequest()->getParam('my');
     		// Recupere les stages en fonction du param
     		if($myStage == "stage") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage, $formation, $page);
     		else if($myStage == "demande") $lesStages = $modelDemandeEtudiantStage->getMyStages($session->infoUser->identifiant, $formation, $page);
     		// Recupere les stages validé
-    		else $lesStages = $modelStage->getStagesAllValidORAttente(1, $formation, $page); 
+    		else $lesStages = $modelStage->getStagesAllValidORAttente(1, $unEtudiant->idFormation, $page); 
     		// Envoi a la vue le param de l'url
     		$this->view->param = $myStage;
     	}

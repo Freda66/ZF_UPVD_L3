@@ -64,7 +64,8 @@ class Application_Model_DbTable_DemandeEtudiantStage extends Zend_Db_Table_Abstr
 			$result			->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
 							->where('idFormation = ?', $idFormation);
 		}
-		$result		  		->where('idEtudiant = ?', $ineEtudiant);
+		$result		  		->where('idEtudiant = ?', $ineEtudiant)
+							->where('s.etatStage != -1');
 	
 		if($page == null){
 			return $this->fetchAll($result);

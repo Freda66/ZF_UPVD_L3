@@ -47,7 +47,8 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   			$result			->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   							->where('idFormation = ?', $idFormation);
   		}
-		$result		  		->where('idEtudiant = ?', $ineEtudiant);
+		$result		  		->where('idEtudiant = ?', $ineEtudiant)
+							->where('s.etatStage != -1');
   		// Filtre sur ses stages (avec un tuteur) => validé par le responsable
   		if($param == "stage") $result->where('idEnseignantTuteur is not null');
   		// Filtre sur ses demande de stage (sans enseignant tuteur renseigné => en attente de validation par le responsable

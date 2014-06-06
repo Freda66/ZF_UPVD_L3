@@ -46,17 +46,19 @@
   					  <?php } ?>
   					  
   					  <?php // LISTE DEROULANTE DES FORMATIONS ?>
-  					  <li class="dropdown navbar-collapse collapse navbar-right" id="listeFormationStage">
-						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: black; font-size: 18px;">Formation <b class="caret"></b></a>
-	  					  <ul class="dropdown-menu">
-	  					  		<li <?php if($this->formation == null) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>null)); ?>">Toutes</a></li>
-			                	<li class="divider"></li>
-		                	<?php foreach($this->lesFormations as $uneFormation) { ?>
-			                	<li <?php if($this->formation == $uneFormation->codeFormation) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>$uneFormation->codeFormation)); ?>"><?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation?></a></li>
-			                	<li class="divider"></li>
-		                	<?php } ?>
-		              	  </ul>
-		              </li>
+  					  <?php if($this->typeSession != "Etudiant") { ?>
+	  					  <li class="dropdown navbar-collapse collapse navbar-right" id="listeFormationStage">
+							  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: black; font-size: 18px;">Formation <b class="caret"></b></a>
+		  					  <ul class="dropdown-menu">
+		  					  		<li <?php if($this->formation == null) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>null)); ?>">Toutes</a></li>
+				                	<li class="divider"></li>
+			                	<?php foreach($this->lesFormations as $uneFormation) { ?>
+				                	<li <?php if($this->formation == $uneFormation->codeFormation) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>$uneFormation->codeFormation)); ?>"><?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation?></a></li>
+				                	<li class="divider"></li>
+			                	<?php } ?>
+			              	  </ul>
+			              </li>
+			          <?php } ?>
 	              </h2>
 	            </div>
 	            
