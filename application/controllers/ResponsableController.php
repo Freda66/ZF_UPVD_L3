@@ -290,6 +290,99 @@ class ResponsableController extends Zend_Controller_Action
     	}
     }
     
+    
+    /**
+     * Formulaire de dépot d'un etudiant
+     * Ajouter/Modifier
+     */
+    public function depotetudiantAction()
+    {
+    	$this->view->title = "Enregistrement d'un étudiant"; // Titre de la page
+    	 
+    	// Recupere le code de l'etudiant passé en param (si exist)
+    	$codeEtudiant = $this->getRequest()->getParam('code');
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	// Crée un objet dbtable Etudiant
+    	$modelEtudiant = new Application_Model_DbTable_Etudiant();
+
+    	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true){
+    		if($codeEtudiant == null){
+    			// Formulaire de depot d'un etudiant
+    			$formEtudiant = new Application_Form_DepotEtudiant();
+    			$formEtudiant->setTranslator(Bootstrap::_initTranslate());
+    			// Titre du formulaire
+    			$this->view->titreForm = "Nouvel étudiant";
+    		} else {
+    			// Recupere les informations d'un etudiant
+    			$unEtudiant = $modelEtudiant->getEtudiant($codeEtudiant);
+    
+    			if($unEtudiant == null){
+    				$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun étudiant ne correspond.'));
+    				$this->redirect('/responsable/index/');
+    			} else {
+    				// Envoi le detail d'un etudiant au formulaire
+    				$formEtudiant = new Application_Form_DepotEtudiant(true);
+    				$formEtudiant->setTranslator(Bootstrap::_initTranslate());
+    				$formEtudiant->populate($unEtudiant->toArray());
+    			}
+    			// Titre du formulaire
+    			$this->view->titreForm = "Modification étudiant";
+    		}
+    
+    		// Traitement du formulaire
+    		// Si le formulaire a été posté
+    		if($this->getRequest()->isPost()) {
+    			// Recupere les informations du formulaire
+    			$formData = $this->getRequest()->getPost();
+    
+    			// Si les informations sont valides par rapport au formulaire init (initiale)
+    			if($formEtudiant->isValid($formData)) {
+    				// Recupere les attributs dans des variables
+    				$ineEtudiant = $formEtudiant->getValue('ineEtudiant');
+    				$idFormation = $formEtudiant->getValue('idFormation');
+    				$nomEtudiant = $formEtudiant->getValue('nomEtudiant');
+    				$prenomEtudiant = $formEtudiant->getValue('prenomEtudiant');
+    				$loginEtudiant = $formEtudiant->getValue('loginEtudiant');
+    				$mdpEtudiant = $formEtudiant->getValue('mdpEtudiant');
+    				$emailEtudiant = $formEtudiant->getValue('emailEtudiant');
+    
+    				// Insert
+    				if($codeEtudiant == null) {
+						// Insert dans la bdd la ligne d'un etudiant
+    					if($modelEtudiant->insertEtudiant($ineEtudiant, $idFormation, $nomEtudiant, $prenomEtudiant, $loginEtudiant, $mdpEtudiant, $emailEtudiant)){
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'L\'étudiant a été enregistré avec succès.'));
+    						$this->redirect("/responsable/fiche/code/$ineEtudiant/type/Etudiant/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion de l\'étudiant.'));
+    						$formEtudiant->populate($formData);
+    					}
+    				}
+    				// Update
+    				else {
+    					if($modelEtudiant->updateEtudiant($ineEtudiant, $idFormation, $nomEtudiant, $prenomEtudiant, $loginEtudiant, $mdpEtudiant, $emailEtudiant)) {
+    						// Message + Redirection
+    						$this->_helper->flashMessenger->addMessage(array('success'=>'L\'étudiant a été modifié avec succès.'));
+    						$this->redirect("/responsable/index/");
+    					} else {
+    						$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification de l\'étudiant.'));
+    						$formEtudiant->populate($formData);
+    					}
+    				}
+    			} else $formEtudiant->populate($formData);
+    		}
+    
+    		// Envoie a la vue le formulaire d'un étudiant
+    		$this->view->formEtudiant = $formEtudiant;
+    	} else {
+    		// Message + Redirection
+    		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
+    		$this->redirect("/index/index/");
+    	}
+    }
+    
+    
     /**
      * Formulaire de dépot d'une entreprise
      * Ajouter/Modifier

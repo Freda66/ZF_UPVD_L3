@@ -42,7 +42,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		// Crée un objet select
 		$result = $this	->select()
 						->where('loginEntreprise = ?', $login)
-						->where('mdpEntreprise = ?', $mdp);
+						->where('mdpEntreprise = ?', MD5($mdp));
 		// Retourne le resultat de la requete
 		return $this->fetchRow($result);
 	}
@@ -62,7 +62,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		$authAdapter->setTableName('entreprise')
 				  	->setIdentityColumn('loginEntreprise')
 				  	->setCredentialColumn('mdpEntreprise');
-					//$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
+					$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
 		$authAdapter->setIdentity($login)
 				  	->setCredential($mdp);
 
@@ -168,7 +168,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 			$row->telEntreprise = $telEntreprise;
 			$row->emailEntreprise = $emailEntreprise;
 			$row->loginEntreprise = $loginEntreprise;
-			$row->mdpEntreprise = $mdpEntreprise;
+			$row->mdpEntreprise = MD5($mdpEntreprise);
 			$row->etatEntreprise = 1;
 	
 			// Insert la ligne dans la bdd et retourne son id
@@ -194,7 +194,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 	public function updateEntreprise($rsEntreprise, $dirigeantEntreprise, $siretEntreprise, $adrRueEntreprise, $adrCpEntreprise, $adrVilleEntreprise, $telEntreprise, $emailEntreprise, $loginEntreprise, $mdpEntreprise, $codeEntreprise){
 		try {
 			// Param
-			if($mdpEntreprise != "") $data = array('siretEntreprise'=>$siretEntreprise, 'idPersonneDirigeant'=>$dirigeantEntreprise,'rsEntreprise'=>$rsEntreprise,'adrRueEntreprise'=>$adrRueEntreprise,'adrCpEntreprise'=>$adrCpEntreprise, 'adrVilleEntreprise'=>$adrVilleEntreprise, 'telEntreprise'=>$telEntreprise, 'emailEntreprise'=>$emailEntreprise, 'loginEntreprise'=>$loginEntreprise, 'mdpEntreprise'=>$mdpEntreprise);
+			if($mdpEntreprise != "") $data = array('siretEntreprise'=>$siretEntreprise, 'idPersonneDirigeant'=>$dirigeantEntreprise,'rsEntreprise'=>$rsEntreprise,'adrRueEntreprise'=>$adrRueEntreprise,'adrCpEntreprise'=>$adrCpEntreprise, 'adrVilleEntreprise'=>$adrVilleEntreprise, 'telEntreprise'=>$telEntreprise, 'emailEntreprise'=>$emailEntreprise, 'loginEntreprise'=>$loginEntreprise, 'mdpEntreprise'=>MD5($mdpEntreprise));
 			else $data = array('siretEntreprise'=>$siretEntreprise, 'idPersonneDirigeant'=>$dirigeantEntreprise,'rsEntreprise'=>$rsEntreprise,'adrRueEntreprise'=>$adrRueEntreprise,'adrCpEntreprise'=>$adrCpEntreprise, 'adrVilleEntreprise'=>$adrVilleEntreprise, 'telEntreprise'=>$telEntreprise, 'emailEntreprise'=>$emailEntreprise, 'loginEntreprise'=>$loginEntreprise);
 			// Update
 			$this->update($data, 'idEntreprise = '. (int)$codeEntreprise);

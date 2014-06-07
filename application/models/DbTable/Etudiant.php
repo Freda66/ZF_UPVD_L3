@@ -43,7 +43,7 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 		// Crée un objet select
 		$result = $this	->select()
 						->where('loginEtudiant = ?', $login)
-						->where('mdpEtudiant = ?', $mdp);
+						->where('mdpEtudiant = ?', MD5($mdp));
 		// Retourne le resultat de la requete
 		return $this->fetchRow($result);
 	}
@@ -63,7 +63,7 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 		$authAdapter->setTableName('etudiant')
 				  	->setIdentityColumn('loginEtudiant')
 				  	->setCredentialColumn('mdpEtudiant');
-					//$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
+					$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
 		$authAdapter->setIdentity($login)
 				  	->setCredential($mdp);
 
@@ -113,6 +113,59 @@ class Application_Model_DbTable_Etudiant extends Zend_Db_Table_Abstract
 			// Si une erreur est déclanché (dépendance de clé étrangere), on passe sont etat a -1
 			$this->update(array('etatEtudiant'=>-1), "ineEtudiant = '$ineEtudiant'");
 		}
+	}
+	
+	/**
+	 * Fonction qui insert une ligne dans la table
+	 * @param string $ineEtudiant
+	 * @param integer $idFormation
+	 * @param string $nomEtudiant
+	 * @param string $prenomEtudiant
+	 * @param string $loginEtudiant
+	 * @param string $mdpEtudiant
+	 * @param string $emailEtudiant
+	 * @return integer : id row, boolean
+	 */
+	public function insertEtudiant($ineEtudiant, $idFormation, $nomEtudiant, $prenomEtudiant, $loginEtudiant, $mdpEtudiant, $emailEtudiant){
+		try {
+			// Crée un ligne etudiant
+			$row = $this->createRow();
+			// Prepare les colonnes de la ligne
+			$row->ineEtudiant= $ineEtudiant;
+			$row->idFormation = $idFormation;
+			$row->nomEtudiant = $nomEtudiant;
+			$row->prenomEtudiant = $prenomEtudiant;
+			$row->loginEtudiant = $loginEtudiant;
+			$row->mdpEtudiant = MD5($mdpEtudiant);
+			$row->emailEtudiant = $emailEtudiant;
+			$row->etatEtudiant = 1;
+	
+			// Insert la ligne dans la bdd et retourne son id
+			return $row->save();
+		} catch(Exeception $e) { return -1; }
+	}
+	
+	
+	/**
+	 * Fonction qui modifie une ligne dans la table
+	 * @param string $ineEtudiant
+	 * @param integer $idFormation
+	 * @param string $nomEtudiant
+	 * @param string $prenomEtudiant
+	 * @param string $loginEtudiant
+	 * @param string $mdpEtudiant
+	 * @param string $emailEtudiant
+	 * @return boolean
+	 */
+	public function updateEtudiant($ineEtudiant, $idFormation, $nomEtudiant, $prenomEtudiant, $loginEtudiant, $mdpEtudiant, $emailEtudiant){
+		try {
+			// Param
+			if($mdpEtudiant != "") $data = array('ineEtudiant'=>$ineEtudiant, 'idFormation'=>$idFormation,'nomEtudiant' => $nomEtudiant,'prenomEtudiant' => $prenomEtudiant,'loginEtudiant' => $loginEtudiant,'mdpEtudiant' => MD5($mdpEtudiant),'emailEtudiant' => $emailEtudiant);
+			else $data = array('ineEtudiant'=>$ineEtudiant, 'idFormation'=>$idFormation,'nomEtudiant' => $nomEtudiant,'prenomEtudiant' => $prenomEtudiant,'loginEtudiant' => $loginEtudiant,'mdpEtudiant' => MD5($mdpEtudiant),'emailEtudiant' => $emailEtudiant);
+			// Update
+			$this->update($data, 'ineEtudiant = "'. $ineEtudiant.'"');
+			return true;
+		} catch(Exeception $e) { return false; }
 	}
 		
 }

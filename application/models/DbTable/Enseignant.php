@@ -39,7 +39,7 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 		// Crée un objet select
 		$result = $this	->select()
 						->where('loginEnseignant = ?', $login)
-						->where('mdpEnseignant = ?', $mdp);
+						->where('mdpEnseignant = ?', MD5($mdp));
 		// Retourne le resultat de la requete
 		return $this->fetchRow($result);
 	}
@@ -59,7 +59,7 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 		$authAdapter->setTableName('enseignant')
 				  	->setIdentityColumn('loginEnseignant')
 				  	->setCredentialColumn('mdpEnseignant');
-					//$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
+					$authAdapter->setCredentialTreatment("MD5(?)"); // Cryptage MD5
 		$authAdapter->setIdentity($login)
 				  	->setCredential($mdp);
 
@@ -133,7 +133,7 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 			$row->fonctionEnseignant = $fonctionEnseignant;
 			$row->specialiteEnseignant = $specialiteEnseignant;
 			$row->loginEnseignant = $loginEnseignant;
-			$row->mdpEnseignant = $mdpEnseignant;
+			$row->mdpEnseignant = MD5($mdpEnseignant);
 			$row->isResponsableSiteEnseignant = $isResponsableSiteEnseignant;
 			$row->etatEnseignant = 1;
 
@@ -157,7 +157,7 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 	public function updateEnseignant($nomEnseignant, $prenomEnseignant, $fonctionEnseignant, $specialiteEnseignant, $loginEnseignant, $mdpEnseignant, $isResponsableSiteEnseignant, $codeEnseignant){
 		try {
 			// Param
-			if($mdpEnseignant != "") $data = array('nomEnseignant'=>$nomEnseignant, 'prenomEnseignant'=>$prenomEnseignant,'fonctionEnseignant'=>$fonctionEnseignant,'specialiteEnseignant'=>$specialiteEnseignant,'loginEnseignant'=>$loginEnseignant,'mdpEnseignant'=>$mdpEnseignant, 'isResponsableSiteEnseignant'=>$isResponsableSiteEnseignant);
+			if($mdpEnseignant != "") $data = array('nomEnseignant'=>$nomEnseignant, 'prenomEnseignant'=>$prenomEnseignant,'fonctionEnseignant'=>$fonctionEnseignant,'specialiteEnseignant'=>$specialiteEnseignant,'loginEnseignant'=>$loginEnseignant,'mdpEnseignant'=>MD5($mdpEnseignant), 'isResponsableSiteEnseignant'=>$isResponsableSiteEnseignant);
 			else $data = array('nomEnseignant'=>$nomEnseignant, 'prenomEnseignant'=>$prenomEnseignant,'fonctionEnseignant'=>$fonctionEnseignant,'specialiteEnseignant'=>$specialiteEnseignant,'loginEnseignant'=>$loginEnseignant, 'isResponsableSiteEnseignant'=>$isResponsableSiteEnseignant);
 			// Update
 			$this->update($data, 'idEnseignant = '. (int)$codeEnseignant); 
