@@ -41,8 +41,8 @@ $afficheEmployes = $this->afficheEmployes;
 								<tr>
 									<td><?php echo $unStage->nomEtudiant. ' '.$unStage->prenomEtudiant; ?></td>
 				            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage->codeStage)); ?>"><?php echo $unStage->libelleStage; ?></a></td>
-						            <td><?php echo $unStage->dateDebutStage; ?></td>
-						            <td><?php echo $unStage->dateFinStage; ?></td>
+						            <td><?php echo $this->toDmy($unStage->dateDebutStage); ?></td>
+						            <td><?php echo $this->toDmy($unStage->dateFinStage); ?></td>
 						            <td></td>
 								</tr>
 							<?php } ?>

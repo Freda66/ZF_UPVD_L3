@@ -38,8 +38,8 @@ $lesDemandes = $this->lesDemandes; // Les demandes de stages des etudiants
 								<?php if($unStage->idEtudiant != null) { ?><td><?php echo $unStage->nomEtudiant.' '.$unStage->prenomEtudiant; ?></td><?php } ?>
 								<?php if($unStage->idEnseignantTuteur != null) { ?><td><?php echo $unStage->nomEnseignant.' '.$unStage->prenomEnseignant; ?></td><?php } ?>
 			            		<td><?php echo $unStage->nomPersonne.' '.$unStage->prenomPersonne; ?></td>
-					            <td><?php echo $unStage->dateDebutStage; ?></td>
-					            <td><?php echo $unStage->dateFinStage; ?></td>
+					            <td><?php echo $this->toDmy($unStage->dateDebutStage); ?></td>
+					            <td><?php echo $this->toDmy($unStage->dateFinStage); ?></td>
 					            <td><?php 
 					            	if($unStage->etatStage == 0) echo "En attente d'activation par l'administration";
 					            	else if($unStage->etatStage == -1) echo "Refusé";

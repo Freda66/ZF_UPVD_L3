@@ -25,43 +25,53 @@ class Application_Model_Metier_Utilisateur
 		// Recupere la session
 		$session = Zend_Auth::getInstance()->getStorage()->read();
 		
-		// Test si c'est un enseignant
-		if(!$isFind) {
-			$isFind = $modelEnseignant->authentification($login, $mdp);		
-			if($isFind){
-				// Insert dans la session les informations de l'utilisateur
-				$unEnseignant = $modelEnseignant->getEnseignantByLoginMdp($login, $mdp);
-				$session->infoUser->type = "Enseignant";
-				$session->infoUser->libelle = $unEnseignant->nomEnseignant .' '. $unEnseignant->prenomEnseignant;
-				$session->infoUser->identifiant = $unEnseignant->idEnseignant;
-				$session->infoUser->isResponsable = $unEnseignant->isResponsableSiteEnseignant;
+		// Connexion du superuser (administrateur principal)
+		if($login == "superuser" && $mdp == "superuser"){
+			// Insert dans la session les informations de l'utilisateur
+			$session->infoUser->type = "Enseignant";
+			$session->infoUser->libelle = "Superuser";
+			$session->infoUser->identifiant = 0;
+			$session->infoUser->isResponsable = true;
+			$isFind = true;
+		} else {
+			// Test si c'est un enseignant
+			if(!$isFind) {
+				$isFind = $modelEnseignant->authentification($login, $mdp);		
+				if($isFind){
+					// Insert dans la session les informations de l'utilisateur
+					$unEnseignant = $modelEnseignant->getEnseignantByLoginMdp($login, $mdp);
+					$session->infoUser->type = "Enseignant";
+					$session->infoUser->libelle = $unEnseignant->nomEnseignant .' '. $unEnseignant->prenomEnseignant;
+					$session->infoUser->identifiant = $unEnseignant->idEnseignant;
+					$session->infoUser->isResponsable = $unEnseignant->isResponsableSiteEnseignant;
+				}
+			}
+			
+			// Test si c'est un etudiant
+			if(!$isFind) {
+				$isFind = $modelEtudiant->authentification($login, $mdp);		
+				if($isFind){
+					// Insert dans la session les informations de l'utilisateur
+					$unEtudiant = $modelEtudiant->getEtudiantByLoginMdp($login, $mdp);
+					$session->infoUser->libelle = $unEtudiant->nomEtudiant .' '. $unEtudiant->prenomEtudiant;
+					$session->infoUser->type = "Etudiant";
+					$session->infoUser->identifiant = $unEtudiant->ineEtudiant;
+				}
+			}
+			
+			// Test si c'est une entreprise
+			if(!$isFind) {
+				$isFind = $modelEntreprise->authentification($login, $mdp);		
+				if($isFind){
+					// Insert dans la session les informations de l'utilisateur
+					$uneEntreprise = $modelEntreprise->getEntrepriseByLoginMdp($login, $mdp);
+					$session->infoUser->type = "Entreprise";
+					$session->infoUser->libelle = $uneEntreprise->rsEntreprise;
+					$session->infoUser->identifiant = $uneEntreprise->idEntreprise;
+				}
 			}
 		}
-		
-		// Test si c'est un etudiant
-		if(!$isFind) {
-			$isFind = $modelEtudiant->authentification($login, $mdp);		
-			if($isFind){
-				// Insert dans la session les informations de l'utilisateur
-				$unEtudiant = $modelEtudiant->getEtudiantByLoginMdp($login, $mdp);
-				$session->infoUser->libelle = $unEtudiant->nomEtudiant .' '. $unEtudiant->prenomEtudiant;
-				$session->infoUser->type = "Etudiant";
-				$session->infoUser->identifiant = $unEtudiant->ineEtudiant;
-			}
-		}
-		
-		// Test si c'est une entreprise
-		if(!$isFind) {
-			$isFind = $modelEntreprise->authentification($login, $mdp);		
-			if($isFind){
-				// Insert dans la session les informations de l'utilisateur
-				$uneEntreprise = $modelEntreprise->getEntrepriseByLoginMdp($login, $mdp);
-				$session->infoUser->type = "Entreprise";
-				$session->infoUser->libelle = $uneEntreprise->rsEntreprise;
-				$session->infoUser->identifiant = $uneEntreprise->idEntreprise;
-			}
-		}
-		
+			
 		// Sauvegarde la session
 		Zend_Auth::getInstance()->getStorage()->write($session);
 

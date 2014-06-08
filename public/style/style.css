@@ -30,6 +30,7 @@ body { padding-top: 50px; padding-bottom: 20px; }
 .iconEtudiantLibStage { height: 16px; margin-top: -7px; margin-left: 10px; }
 .stageEtudiantBtnLeft { margin-left: 5px; }
 #listeFormationStage { margin-top: -2px; }
+.dateTitreRight { float: right; }
 
 /* STAGE/FICHE*/
 #dialogConfirm { float:left; margin:3px 8px 0 0; }

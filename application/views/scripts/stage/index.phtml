@@ -91,6 +91,7 @@
 							   						  		else if($unStage["etatStage"] == -1) { ?>list-group-item-danger<?php } ?>">
 								<h4 class="list-group-item-heading"><?php echo $unStage["libelleStage"]; ?>
 									<?php if(isset($this->stageAffect[$i]["isFindEtudiant"]) && $this->stageAffect[$i]["isFindEtudiant"] == true) { ?><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="iconEtudiantLibStage"/><?php } ?>
+									<span class="dateTitreRight"><?php echo 'Du '.$this->toDmy($unStage["dateDebutStage"]).' au '.$this->toDmy($unStage["dateFinStage"]); ?></span>
 								</h4>
 								<div class="list-group-item-text"><?php echo $unStage["descriptionStage"]; ?></div>
 						  	</a>
