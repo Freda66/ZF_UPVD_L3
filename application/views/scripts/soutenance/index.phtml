@@ -1,0 +1,104 @@
+<?php $this->headTitle($this->title); // Titre de la page ?>
+
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+		
+			<div class="panel panel-default">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              	  Liste des soutenances
+
+					  <?php // FILTRE ETUDIANT RIGHT ?>
+		              <?php 
+		              if($this->typeSession == "Etudiant") {
+						// DEMANDE
+		              	if($this->param != "demande") { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'demande'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes demandes</a><?php }
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Mes demandes</span><?php }
+		              	
+		              	// MES STAGES
+		              	if($this->param != "stage") { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'stage'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages</a><?php }
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Mes stages</span><?php }
+		              	
+		              	// TOUS LES STAGES
+		              	if($this->param != null) { ?><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right">Tous les stages</a><?php } 
+		              	else { ?><span class="btn btn-default navbar-right stageEtudiantBtnLeft active">Tous les stages</span><?php }
+					  }
+					  ?>
+						
+					  <?php // FILTRE ENSEIGNANT RIGHT ?>
+					  <?php if($this->typeSession == "Enseignant" && $this->param == "tuteur" && $this->isResponsable == 1) { ?>
+  								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Tous les stages &raquo;</a> 
+  					  <?php } else if($this->typeSession == "Enseignant" && $this->param == null && $this->isResponsable == 1) { ?>
+  								<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'my'=>'tuteur'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Mes stages &raquo;</a> 
+  					  <?php } ?>
+  					  
+  					  <?php // FORM DEPOT ENTREPRISE ?>
+  					  <?php if($this->typeSession == "Entreprise") { ?>
+  					  	<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot'),"default", true); ?>" class="btn btn-default navbar-right stageEtudiantBtnLeft">Déposer un stage &raquo;</a>
+  					  <?php } ?>
+  					  
+  					  <?php // LISTE DEROULANTE DES FORMATIONS ?>
+  					  <?php if($this->typeSession != "Etudiant") { ?>
+	  					  <li class="dropdown navbar-collapse collapse navbar-right" id="listeFormationStage">
+							  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: black; font-size: 18px;">Formation <b class="caret"></b></a>
+		  					  <ul class="dropdown-menu">
+		  					  		<li <?php if($this->formation == null) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>null)); ?>">Toutes</a></li>
+				                	<li class="divider"></li>
+			                	<?php foreach($this->lesFormations as $uneFormation) { ?>
+				                	<li <?php if($this->formation == $uneFormation->codeFormation) { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'page'=>null, 'formation'=>$uneFormation->codeFormation)); ?>"><?php echo $uneFormation->libelleFormation.' '.$uneFormation->niveauFormation.' '.$uneFormation->specialiteFormation?></a></li>
+				                	<li class="divider"></li>
+			                	<?php } ?>
+			              	  </ul>
+			              </li>
+			          <?php } ?>
+	              </h2>
+	            </div>
+	            
+	            <div class="panel-body">
+	            	
+	            	<?php // BTN ETAT DU STAGE ?>
+	            	<div class="list-group">
+						<?php if($this->typeSession == "Entreprise") { ?>
+		            		<span class="btn list-group-item-success" id="btnLegendStage" title="Le stage a été activé par l'administration">&nbsp;&nbsp; Activé &nbsp;&nbsp;</span>
+		            		<span class="btn list-group-item-info" id="btnLegendStage" title="Le stage est en attente d'activation par l'administration">&nbsp;&nbsp; En attente d'activation &nbsp;&nbsp;</span>
+		            		<span class="btn list-group-item-danger" id="btnLegendStage" title="Le stage a été refusé par l'administration">&nbsp;&nbsp; Désactivé &nbsp;&nbsp;</span>
+			            <?php } else if($this->typeSession == "Enseignant" && $this->isResponsable == 1) { ?>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>1),"default", true); ?>"><span class="btn list-group-item-success" id="btnLegendStage" title="Le stage a été activé par l'administration">&nbsp;&nbsp; Activé &nbsp;&nbsp;</span></a>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>0),"default", true); ?>"><span class="btn list-group-item-info" id="btnLegendStage" title="Le stage est en attente d'activation par l'administration">&nbsp;&nbsp; En attente d'activation &nbsp;&nbsp;</span></a>
+		            		<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index', 'etat'=>-1),"default", true); ?>"><span class="btn list-group-item-danger" id="btnLegendStage" title="Le stage a été refusé par l'administration">&nbsp;&nbsp; Désactivé &nbsp;&nbsp;</span></a>
+						<?php } ?>
+			 			<?php if($this->typeSession != "Etudiant") { ?><span><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="legendeEtudiantAffecteStage" /> Étudiant affecté</span><?php } ?>
+		            </div>
+	            	
+	            	
+	            	<?php 
+	            	// LISTE DES STAGES
+	            	if(count($this->lesStages) > 0) {
+	            		$i = 0;
+	            		foreach($this->lesStages as $unStage) { ?>          
+						<div class="list-group">
+							<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'fiche', 'code'=>$unStage["codeStage"])); ?>" 
+							   class="list-group-item <?php if($unStage["etatStage"] == 1) { ?>list-group-item-success<?php }
+							   						  		else if($unStage["etatStage"] == 0) { ?>list-group-item-info<?php }
+							   						  		else if($unStage["etatStage"] == -1) { ?>list-group-item-danger<?php } ?>">
+								<h4 class="list-group-item-heading"><?php echo $unStage["libelleStage"]; ?>
+									<?php if(isset($this->stageAffect[$i]["isFindEtudiant"]) && $this->stageAffect[$i]["isFindEtudiant"] == true) { ?><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_003_user.png" alt="Etudiant" class="iconEtudiantLibStage"/><?php } ?>
+								</h4>
+								<div class="list-group-item-text"><?php echo $unStage["descriptionStage"]; ?></div>
+						  	</a>
+						</div>
+						<?php 
+						$i++;
+						}
+						// Pagination
+						echo $this->paginationControl($this->lesStages,'Sliding','common/pagination.phtml'); 
+					}
+					// Liste de stage vide 
+					else echo "Aucun stage n'a été trouvé."; ?>
+	            </div>
+			</div>
+			
+		</div>
+	</div>
+</div>
