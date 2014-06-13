@@ -31,6 +31,7 @@ $session = Zend_Auth::getInstance()->getStorage()->read();
 	                	<li <?php if($controller == "index" && $action == "mld") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mld'),"default", true); ?>">Modèle logique des données [MLD]</a></li>
 	              	</ul>
 	            </li>
+	            <li><a href="./../_Presentation/">Présentation</a></li>
           	</ul>
           	
           	<?php if(!Zend_Auth::getInstance()->hasIdentity()) { ?>
