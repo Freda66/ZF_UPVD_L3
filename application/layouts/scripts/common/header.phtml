@@ -22,7 +22,7 @@ $session = Zend_Auth::getInstance()->getStorage()->read();
 				<?php if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable) { ?><li <?php if($controller == "responsable") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'responsable', 'action'=>'index'),"default", true); ?>">Administration</a></li><?php } ?>
 	            <li <?php if($controller == "stage") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'index'),"default", true); ?>">Stage</a></li>
 	            <li <?php if($controller == "soutenance") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'index'),"default", true); ?>">Soutenance</a></li>
-	            <?php if($session->infoUser->type != "Etudiant") { ?><li <?php if($controller == "entreprise") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'index'),"default", true); ?>">Entreprise</a></li><?php } ?>
+	            <?php if($session != null && $session->infoUser->type != "Etudiant") { ?><li <?php if($controller == "entreprise") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'entreprise', 'action'=>'index'),"default", true); ?>">Entreprise</a></li><?php } ?>
 	            <li class="dropdown <?php if($controller == "index" && $action != "index") { ?>active<?php } ?>">
 	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Autre <b class="caret"></b></a>
 	             	<ul class="dropdown-menu">
