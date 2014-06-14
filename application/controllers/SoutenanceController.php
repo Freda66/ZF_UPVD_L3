@@ -25,67 +25,28 @@ class SoutenanceController extends Zend_Controller_Action
     {
     	$this->view->title = "Liste des soutenances"; // Titre de la page
     	
-    	// Crée un objet dbtable Stage, RealiserEtudiantStage et Formation
-    	$modelStage = new Application_Model_DbTable_Stage();
-    	$modelRealiserEtudiantStage = new Application_Model_DbTable_RealiserEtudiantStage();
+    	// Crée un objet dbtable Soutenance et Formation
+    	$modelSoutenance = new Application_Model_DbTable_Soutenance();
     	$modelFormation = new Application_Model_DbTable_Formation();
-    	
-    	// Initialise la variable lesStages et bool isFindEtudiant 
-    	$lesStages = null;
-    	
+
     	// Recupere la session
     	$session = Zend_Auth::getInstance()->getStorage()->read();
     	
     	// Pagination
-    	$page = $this->_request->getParam('page');
+    	$page = 		$this->_request->getParam('page');
+    	$formation = 	$this->_request->getParam('formation');
+    	$myParam = 		$this->_request->getParam('my');
     	if(empty($page)){ $page=1; }
-    	$formation = $this->_request->getParam('formation');
-    	$etat = $this->_request->getParam('etat');
     	
-    	// Liste des stages déposés par l'entreprise
-    	if($session->infoUser->type == "Entreprise"){
-    		$lesStages = $modelStage->getStagesEntreprise($session->infoUser->identifiant, $formation, $page); // Recupere les stages
-    	} 
-    	// Liste des stages dont il est tuteur
-    	else if($session->infoUser->type == "Enseignant"){
-			// Recupere le parametre url
-    		$myParam = $this->getRequest()->getParam('my');
-			// Recupere les stages
-			if($session->infoUser->isResponsable == 0 || $myParam == "tuteur") $lesStages = $modelRealiserEtudiantStage->getStagesTuteur($session->infoUser->identifiant, $formation, $page); // Recupere les stages
-			else $lesStages = $modelStage->getStages($page, $formation, $etat); // Recupere les stages
-    		// Envoi a la vue le param de l'url
-    		$this->view->param = $myParam;
-			$this->view->isResponsable = $session->infoUser->isResponsable;
-    	} 
-    	// Liste des stages disponible + filtre possible sur les siens
-    	else if($session->infoUser->type == "Etudiant"){
-    		$modelDemandeEtudiantStage = new Application_Model_DbTable_DemandeEtudiantStage();
-    		$modelEtudiant = new Application_Model_DbTable_Etudiant();
-    		// Recupere les informations de l'etudiant
-    		$unEtudiant = $modelEtudiant->getEtudiant($session->infoUser->identifiant);
-    		// Recupere le param de l'url
-    		$myStage = $this->getRequest()->getParam('my');
-    		// Recupere les stages en fonction du param
-    		if($myStage == "stage") $lesStages = $modelRealiserEtudiantStage->getMyStages($session->infoUser->identifiant, $myStage, $formation, $page);
-    		else if($myStage == "demande") $lesStages = $modelDemandeEtudiantStage->getMyStages($session->infoUser->identifiant, $formation, $page);
-    		// Recupere les stages validé
-    		else $lesStages = $modelStage->getStagesAllValidORAttente(1, $unEtudiant->idFormation, $page); 
-    		// Envoi a la vue le param de l'url
-    		$this->view->param = $myStage;
-    	}
-    	
-    	// Parcour les stages et recupere un bool si le stage existe dans la table realiseretudiantstage
-    	$stageAffect = Array();
-    	$i = 0;
-    	foreach($lesStages as $unStage) {
-    		$stageAffect[$i]["isFindEtudiant"] = $modelRealiserEtudiantStage->isExist($unStage["codeStage"]);
-    		$i++;
-    	}
-    	$this->view->stageAffect = $stageAffect;
-    	
-    	// Envoi a la vue les formations, stages et le boolean isFindEtudiant
+		// Recupere les soutenances
+		$lesSoutenances = $modelSoutenance->getSoutenances($page, $formation, $session->infoUser, $myParam);
+
+    	// Envoi a la vue le param de l'url
+    	$this->view->param = $myParam;
+		$this->view->isResponsable = $session->infoUser->isResponsable;
+    	// Envoi a la vue les formations, stages
     	$this->view->lesFormations = $modelFormation->getFormations();
-    	$this->view->lesStages = $lesStages;
+    	$this->view->lesSoutenances = $lesSoutenances;
     	$this->view->typeSession = $session->infoUser->type;
     	$this->view->formation = $formation;
     }
@@ -97,38 +58,39 @@ class SoutenanceController extends Zend_Controller_Action
     {
     	$this->view->title = "Soutenance"; // Titre de la page
     	
-    	// Recupere l'id du stage
-    	$codeStage = $this->getRequest()->getParam('code');
+    	// Recupere l'id de la soutenance
+    	$codeSoutenance = $this->getRequest()->getParam('code');
     	
-    	if($codeStage != null){
-	    	// Crée un objet dbtable Stage
-	    	$modelStage = new Application_Model_DbTable_Stage();
+    	if($codeSoutenance != null){
+	    	// Crée un objet dbtable Soutenance et Stage
+	    	$modelSoutenance = new Application_Model_DbTable_Soutenance();
+
 	    	$modelDES = new Application_Model_DbTable_DemandeEtudiantStage();
 	    	
 	    	// Recupere la session
 	    	$session = Zend_Auth::getInstance()->getStorage()->read();
 	    	
-	    	// Recupere les informations d'un stage
-	    	$unStage = $modelStage->getStage($codeStage, $session->infoUser);
-	    	// Recupere les demande du stage
-	    	$lesDemandes = $modelDES->getListeDemandeStage($codeStage);
+	    	// Recupere les informations d'une soutenance
+	    	$uneSoutenance = $modelSoutenance->getSoutenanceById($codeSoutenance, $session->infoUser);
+	    	// Recupere la liste des personnes succeptible d'etre jury
+	    	$jurys = $modelDES->getListeDemandeStage($codeSoutenance);
 	    	
-	    	if($unStage == null || ($session->infoUser->type == "Etudiant" && $unStage->etatStage != 1)){
+	    	if($uneSoutenance == null){
 	    		// Message flash + Redirection
-	    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
-	    		$this->redirect('/stage/index/');
+	    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucune soutenance ne correspond.'));
+	    		$this->redirect('/soutenance/index/');
 	    	} else {
-		    	// Envoi le detail d'un stage a la vue
-		    	$this->view->stage = $unStage;
-		    	$this->view->lesDemandes = $lesDemandes;
+		    	// Envoi le detail d'une soutenance a la vue
+		    	$this->view->soutenance = $uneSoutenance;
+		    	$this->view->jurys = $jurys;
 	    	}
 	    	
 	    	$this->view->typeSession = $session->infoUser->type;
 	    	if($session->infoUser->type == "Enseignant") $this->view->isResponsable = $session->infoUser->isResponsable;
     	} else {
     		// Message flash + Redirection
-    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
-    		$this->redirect('/stage/index/');
+    		$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucune soutenance ne correspond.'));
+    		$this->redirect('/soutenance/index/');
     	}
     }
     

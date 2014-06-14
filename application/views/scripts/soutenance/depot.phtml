@@ -12,7 +12,7 @@
 	            
 	            <div class="panel-body">
 					<?php // Affiche le formulaire de depot de stage ?>
-					<?php echo $this->formDepotStage; ?>
+					<?php echo $this->formDepotSoutenance; ?>
 				</div>
 			</div>
 		</div>
@@ -21,7 +21,6 @@
 
 <script>
 	$(function() {
-		$("#dateDebutStage").datepicker({ minDate: 0, maxDate: "+5Y +1D", dateFormat: 'yy-mm-dd' });
-		$("#dateFinStage").datepicker({ minDate: 0, maxDate: "+5Y +1D", dateFormat: 'yy-mm-dd' });
+		$("#dateHeure").datepicker({ minDate: 0, maxDate: "+1Y +1D", dateFormat: 'yy-mm-dd' });
   	});
 </script>

@@ -57,16 +57,7 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
   		if($page == null){
   			return $this->fetchAll($result);
   		} else {
-	  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-	  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-	  		// Détermine le nombre d'item par page
-	  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-	  		// Détermine la page en courrante
-	  		$paginator ->setCurrentPageNumber($page);
-	  		// Indique le nombre de numéro de page qu'on affiche
-	  		$paginator->setPageRange($this->_nbPagePrint);
-	  		// Retourne le resultat
-	  		return $paginator;
+	  		return $this->paginator($result, $page);
   		}
   	}
   	
@@ -91,16 +82,7 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 		if($page == null){
 			return $this->fetchAll($result);
 		} else {
-	  		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-	  		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-	  		// Détermine le nombre d'item par page
-	  		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-	  		// Détermine la page en courrante
-	  		$paginator ->setCurrentPageNumber($page);
-	  		// Indique le nombre de numéro de page qu'on affiche
-	  		$paginator->setPageRange($this->_nbPagePrint);
-	  		// Retourne le resultat
-	  		return $paginator;
+	  		return $this->paginator($result, $page);
 		}
   	}
   	
@@ -202,5 +184,24 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 			if($this->update($data, 'idStage = '.(int)$codeStage)) return true;
 			else return false;
 		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
+	 * Retourne le resultat de la requete sous forme de pagination
+	 * @param unknown $result
+	 * @param unknown $page
+	 * @return Zend_Paginator
+	 */
+	public function paginator($result, $page){
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
 	}
 }

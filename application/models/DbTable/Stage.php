@@ -88,16 +88,8 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		if($page == null){
 			return $this->fetchAll($result);
 		} else {
-			// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-			$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-			// Détermine le nombre d'item par page
-			$paginator ->setItemCountPerPage($this->_nbItemByPage);
-			// Détermine la page en courrante
-			$paginator ->setCurrentPageNumber($page);
-			// Indique le nombre de numéro de page qu'on affiche
-			$paginator->setPageRange($this->_nbPagePrint);
-			// Retourne le resultat
-			return $paginator;
+			// Renvoi le resultat formater en pagination
+			return $this->paginator($result, $page);
 		}
 	}
 	
@@ -134,16 +126,8 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		$result 		->where('etatStage = ?', $etat)
 						->where('res.idStage is null');
 		
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+		// Renvoi le resultat formater en pagination
+		return $this->paginator($result, $page);
 	}
 	
 	/**
@@ -165,17 +149,8 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
   			$result		->where('etatStage = ?', (int)$etat);
   		}
 		
-		// Retourne tout les stages
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+  		// Renvoi le resultat formater en pagination
+		return $this->paginator($result, $page);
 	}
 	
 	/**
@@ -243,5 +218,23 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 			$this->update(array('etatStage'=>-1), 'codeStage = '.$codeStage);
 		}
 		return true;
+	}
+	
+	/**
+	 * Retourne le resultat sous forme de pagination
+	 * @param unknown $result
+	 * @return Zend_Paginator
+	 */
+	public function paginator($result, $page){
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($result));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
 	}
 }

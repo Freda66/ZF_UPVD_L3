@@ -87,16 +87,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 		// Liste des entreprise actif
 		$requete = $this->select()->where('etatEntreprise = ?', 1);
 		
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+		return $this->paginator($requete, $page);
 	}
 	
 	/**
@@ -112,16 +103,7 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 							->joinLeft(array('s'=>'stage'), 's.idEntreprise = e.idEntreprise', array('*'))
 							->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
 							->where('res.idEnseignantTuteur = ?', $codeTuteur);
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+		return $this->paginator($requete, $page);
 	}
 	
 	/**
@@ -200,5 +182,24 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 			$this->update($data, 'idEntreprise = '. (int)$codeEntreprise);
 			return true;
 		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
+	 * Retourner le resultat sous forme de pagination
+	 * @param unknown $requete
+	 * @param unknown $page
+	 * @return Zend_Paginator
+	 */
+	public function paginator($requete, $page){
+		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
+		// Détermine le nombre d'item par page
+		$paginator ->setItemCountPerPage($this->_nbItemByPage);
+		// Détermine la page en courrante
+		$paginator ->setCurrentPageNumber($page);
+		// Indique le nombre de numéro de page qu'on affiche
+		$paginator->setPageRange($this->_nbPagePrint);
+		// Retourne le resultat
+		return $paginator;
 	}
 }

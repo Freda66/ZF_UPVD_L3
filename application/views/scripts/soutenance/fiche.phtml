@@ -1,7 +1,7 @@
 <?php 
 $this->headTitle($this->title); // Titre de la page 
-$unStage = $this->stage; // Information du stage
-$lesDemandes = $this->lesDemandes; // Les demandes de stages des etudiants
+$uneSoutenance = $this->soutenance; // Information du stage
+$lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
 ?>
 
 <div class="jumbotron">
@@ -10,13 +10,16 @@ $lesDemandes = $this->lesDemandes; // Les demandes de stages des etudiants
 			<div class="panel panel-default">
 			
 				<div class="panel-heading">
-					<h2 class="panel-title"><?php echo $unStage->libelleStage; ?>
+					<h3 class="panel-title"><?php echo "Soutenance le ".$this->toDmy($uneSoutenance['dateSoutenance'], true)."<br />
+														Salle : ".$uneSoutenance['salleSoutenance'];?>
 					 	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
-					</h2>
+					</h3>
+					<br/>
+					<h3 class="panel-title"><?php echo $uneSoutenance->libelleStage; ?></h3>
 	            </div>
 	            
 	            <div class="panel-body">
-					<?php echo $unStage->descriptionStage; ?>
+					<?php echo $uneSoutenance->descriptionStage; ?>
 					
 					<br /><br />
 					
@@ -24,76 +27,65 @@ $lesDemandes = $this->lesDemandes; // Les demandes de stages des etudiants
 					<table class="table text-center">
 						<thead>
 							<tr>
-								<?php if($unStage->idEtudiant != null) { ?><th class="text-center">Étudiant</th><?php } ?>
-								<?php if($unStage->idEnseignantTuteur != null) { ?><th class="text-center">Tuteur enseignant</th><?php } ?>
+								<?php if($uneSoutenance->idEtudiant != null) { ?><th class="text-center">Étudiant</th><?php } ?>
+								<?php if($uneSoutenance->idEnseignantTuteur != null) { ?><th class="text-center">Tuteur enseignant</th><?php } ?>
 								<th class="text-center">Tuteur entreprise</th>
 								<th class="text-center">Date début</th>
 								<th class="text-center">Date fin</th>
-								<th class="text-center">État</th>
 			          		</tr>
 		        		</thead>
 		        		
 		        		<tbody>
 							<tr>
-								<?php if($unStage->idEtudiant != null) { ?><td><?php echo $unStage->nomEtudiant.' '.$unStage->prenomEtudiant; ?></td><?php } ?>
-								<?php if($unStage->idEnseignantTuteur != null) { ?><td><?php echo $unStage->nomEnseignant.' '.$unStage->prenomEnseignant; ?></td><?php } ?>
-			            		<td><?php echo $unStage->nomPersonne.' '.$unStage->prenomPersonne; ?></td>
-					            <td><?php echo $unStage->dateDebutStage; ?></td>
-					            <td><?php echo $unStage->dateFinStage; ?></td>
-					            <td><?php 
-					            	if($unStage->etatStage == 0) echo "En attente d'activation par l'administration";
-					            	else if($unStage->etatStage == -1) echo "Refusé";
-					            	else if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur != null) echo "Validé";
-					            	else if($unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) echo "En attente de validation";
-					            	else if($unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null && $unStage->etatStage == 1) echo "Disponible";
-					            ?></td>
+								<?php if($uneSoutenance->idEtudiant != null) { ?><td><?php echo $uneSoutenance->nomEtudiant.' '.$uneSoutenance->prenomEtudiant; ?></td><?php } ?>
+								<?php if($uneSoutenance->idEnseignantTuteur != null) { ?><td><?php echo $uneSoutenance->nomEnseignant.' '.$uneSoutenance->prenomEnseignant; ?></td><?php } ?>
+			            		<td><?php echo $uneSoutenance->nomPersonne.' '.$uneSoutenance->prenomPersonne; ?></td>
+					            <td><?php echo $uneSoutenance->dateDebutStage; ?></td>
+					            <td><?php echo $uneSoutenance->dateFinStage; ?></td>
 							</tr>
 		        		</tbody>
 	      			</table>
 	      			
 	      			<?php 
-	      			// ETUDIANT 
-	      			if($this->typeSession == "Etudiant" && $unStage->idEtudiant == null && $unStage->idEnseignantTuteur == null) { ?><a id="confirmDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Faire la demande de stage &raquo;</a><?php }
-	      			else if($this->typeSession == "Etudiant" && $unStage->idEtudiant != null && $unStage->idEnseignantTuteur == null) { ?><a id="cancelDemande" href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'canceldemande', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">&laquo; Annuler la demande de stage</a><?php }
-	      			
 	      			// ENTREPRISE
-	      			if($this->typeSession == "Entreprise" && $unStage->etatStage != 1) { ?>
-		      			<?php // Modifier Stage ?>
-	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier le stage &raquo;</a>
-		      			<?php // Supprimer Stage ?>
-		      			<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'delete', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft" id="confirmerDeleteStage">Supprimer le stage &raquo;</a>
+	      			if($this->typeSession == "Entreprise") { ?>
+		      			<?php // Présent ?>
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'depot', 'code'=>$uneSoutenance->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Participer &raquo;</a>
+		      			<?php // Pas présent ?>
+		      			<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'delete', 'code'=>$uneSoutenance->codeStage),"default", true); ?>" class="btn btn-danger navbar-right stageEtudiantBtnLeft">Ne peux pas participer &raquo;</a>
 		      		<?php }
 	      			
 	      			// ENSEIGNANT RESPONSABLE
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
 	      				<?php // MODIFIER LE STAGE ?>
-	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$unStage->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modfier le stage &raquo;</a>
+	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$uneSoutenance->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier la soutenance &raquo;</a>
 	      				
-	      				<?php // LISTE DES DEMANDES DE STAGES ?>
-	      				<?php if(count($lesDemandes) > 0) { ?>
+	      				<?php // LISTE DES JURYS ?>
 					  	<!-- Table -->
 						<table class="table text-center">
-						<caption><h3><span class="label label-primary">&nbsp; Liste des demandes d'étudiants &nbsp;</span></h3></caption>
+						<caption><h3><span class="label label-primary">&nbsp; Liste des jurys &nbsp;</span></h3></caption>
 							<thead>
 								<tr>
-									<th class="text-center">Étudiant</th>
+									<th class="text-center">Jury</th>
 									<th class="text-center">Action</th>
 				          		</tr>
 			        		</thead>
 			        		<tbody>
-			        		<?php foreach($lesDemandes as $uneDemande) { ?>
-								<tr>
-									<td><?php echo $uneDemande->nomEtudiant. ' '.$uneDemande->prenomEtudiant; ?></td>
-				            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage, 'etudiant'=>$uneDemande->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Valider la demande &raquo; &nbsp;&nbsp;</a></td>
-								</tr>
+			        		<?php if(count($lesJurys) > 0) { ?>
+				        			<?php foreach($lesJurys as $unJury) { ?>
+									<tr>
+										<td><?php echo $unJury->nomPersonne. ' '.$unJury->prenomPersonne; ?></td>
+					            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$uneSoutenance->codeStage, 'etudiant'=>$unJury->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Valider la demande &raquo; &nbsp;&nbsp;</a></td>
+									</tr>
+									<?php } ?>
+							<?php } else { ?>
+								<tr><td colspan="2">Aucune composition de jury.</td></tr>
+								<tr><td colspan="2"><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$uneSoutenance->codeStage, 'etudiant'=>$unJury->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Ajouter un jury + &nbsp;&nbsp;</a></td></tr>
 							<?php } ?>
-								<tr><td></td><td></td></tr>
-								<tr><td colspan="2"><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$unStage->codeStage, 'etudiant'=>"delete")); ?>" class="btn btn-danger stageEtudiantBtnLeft" id="confirmerDeleteDemandes">&nbsp;&nbsp; Supprimer les demandes &raquo; &nbsp;&nbsp;</a></td></tr>
 			        		</tbody>
 		      			</table>
-		      			<?php 
-						} 
-					} 
+		      		<?php 
+					}	
 					?>
 	      		</div>
 	      		
