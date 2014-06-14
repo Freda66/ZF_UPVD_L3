@@ -57,6 +57,3 @@ body { padding-top: 50px; padding-bottom: 20px; }
 /* ENTREPRISE */
 .noUnderline a:hover { text-decoration: none; }
 .noUnderline a:hover .titre { text-decoration: underline; }
-
-/* SOUTENANCE */
-#btnUpdateSoutenance { margin-right: 150px; margin-top: -20px; }

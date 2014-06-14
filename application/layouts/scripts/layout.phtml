@@ -17,14 +17,16 @@ echo $this->headMeta()	->appendHttpEquiv('Content-Type', 'text/html;charset=utf-
 // CSS
 echo $this->headLink()	->prependStylesheet($this->baseUrl().'/style/bootstrap/bootstrap.css')
 						->prependStylesheet($this->baseUrl().'/style/ui/jquery-ui-1.10.4.custom.css')
+						->prependStylesheet($this->baseUrl().'/style/datetimepicker/jquery.datetimepicker.css')
 						->prependStylesheet($this->baseUrl().'/style/style.css');
 echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => 'images/icone/logo.ico'),'PREPEND');
-// JS
+// JS 
 echo $this->headScript()->appendFile($this->baseUrl().'/js/jquery.js') 
 						->appendFile($this->baseUrl().'/js/jquery.easing.js') 
 						->appendFile($this->baseUrl().'/js/jquery-ui-1.10.4.custom.js') 
 						->appendFile($this->baseUrl().'/js/bootstrap.min.js')
-						->appendFile($this->baseUrl().'/js/script.js');
+						->appendFile($this->baseUrl().'/js/script.js')
+						->appendFile($this->baseUrl().'/js/jquery.datetimepicker.js');
 
 ?>
 </head>

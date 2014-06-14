@@ -132,6 +132,31 @@ class Application_Model_DbTable_RealiserEtudiantStage extends Zend_Db_Table_Abst
 	}
 	
 	/**
+	 * Ajoute la soutenance au stage
+	 * @param integer $idSoutenance
+	 * @param integer $idStage
+	 * @return boolean
+	 */
+	public function updateSoutenance($idSoutenance, $idStage){
+		try{
+			$this->update(array('idSoutenance'=>$idSoutenance), 'idStage = '. (int)$idStage);
+			return true;
+		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
+	 * Supprime la soutenance
+	 * @param integer $idSoutenance
+	 * @return boolean
+	 */
+	public function deleteSoutenance($idSoutenance){
+		try{
+			$this->update(array('idSoutenance'=>null), 'idSoutenance = '. (int)$idSoutenance);
+			return true;
+		} catch(Exeception $e) { return false; }
+	}
+	
+	/**
 	 * Fonction qui supprime la demande de stage d'un etudiant 
 	 * @param integer $codeStage
 	 * @param integer $codeEtudiant : -1 si enseignant responsable

@@ -80,6 +80,19 @@ class Application_Model_DbTable_Soutenance extends Zend_Db_Table_Abstract
 	}
 	
 	/**
+	 * Retourne les informations minimum d'une soutenance
+	 * @param integer $idSoutenance
+	 * @return Ambigous <Zend_Db_Table_Row_Abstract, NULL, unknown>
+	 */
+	public function getSoutenanceForm($idSoutenance){
+		$result = $this	->select()->setIntegrityCheck(false);
+		$result			->from(array('so' => $this->_name), array('*'))
+						->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idSoutenance = so.idSoutenance', array('*'))
+						->where('so.idSoutenance = ?', (int)$idSoutenance);
+		return $this->fetchRow($result);
+	}
+	
+	/**
 	 * Insert une soutenance
 	 * @param integer $date
 	 * @param integer $salle
@@ -87,23 +100,44 @@ class Application_Model_DbTable_Soutenance extends Zend_Db_Table_Abstract
 	 */
 	public function insertSoutenance($date, $salle){
 		try{
-			if($this->insert(array('dateSoutenance'=>$date, 'salleSoutenance'=>$salle))) return true;
-			else return false;
+			// Crée un ligne enseignant
+			$row = $this->createRow();
+			// Prepare les colonnes de la ligne
+			$row->dateSoutenance = $date;
+			$row->salleSoutenance = $salle;
+			// Insert la ligne dans la bdd et retourne son id
+			return $row->save();
 		} catch(Exception $e){
 			return false;
 		}
 	}
 	
-	
+	/**
+	 * Modification d'une soutenance
+	 * @param integer $idSoutenance
+	 * @param string $dateSoutenance
+	 * @param string $salleSoutenance
+	 * @return boolean
+	 */
 	public function updateSoutenance($idSoutenance, $dateSoutenance, $salleSoutenance){
 		try {
-			// Param
+			// Param + Update
 			$data = array('dateSoutenance'=>$dateSoutenance, 'salleSoutenance'=>$salleSoutenance);
-			// Update
 			$this->update($data, 'idSoutenance = '. (int)$idSoutenance);
 			return true;
 		} catch(Exeception $e) { return false; }
 		 
+	}
+	
+	/**
+	 * Supprime une soutenance
+	 * @param integer $idSoutenance
+	 * @return boolean
+	 */
+	public function deleteSoutenance($idSoutenance)
+	{
+		if($this->delete(array('idSoutenance = '.$idSoutenance))) return true;
+		else return false;
 	}
 	
 }

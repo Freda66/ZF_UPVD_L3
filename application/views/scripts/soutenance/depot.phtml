@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-	              <h2 class="panel-title">Dépot d'une soutenance
+	              <h2 class="panel-title"><?php echo $this->libelleTitre; ?> d'une soutenance
 	              	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour"/></span>
 	              </h2>
 	            </div>
@@ -21,6 +21,17 @@
 
 <script>
 	$(function() {
-		$("#dateSoutenance").datepicker({ minDate: 0, maxDate: "+5Y +1D", dateFormat: 'yy-mm-dd' });
+		$('#dateSoutenance').datetimepicker({
+			lang:'fr',
+			mask:true,
+			minTime:'07:00',
+			maxTime:'20:00',
+			minDate:'-1970/01/01',
+		 	onGenerate:function( ct ){
+				jQuery(this).find('.xdsoft_date.xdsoft_weekend')
+			    .addClass('xdsoft_disabled');
+			},
+			weekends:['01.01.2014','02.01.2014','03.01.2014','04.01.2014','05.01.2014','06.01.2014'],
+		});
   	});
 </script>

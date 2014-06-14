@@ -12,8 +12,10 @@ $lesJurys = $this->jurys; // Les demandes de stages des etudiants
 				<div class="panel-heading">
 					<h3 class="panel-title"><?php echo "Soutenance le ".$this->toDmy($uneSoutenance['dateSoutenance'], true)."<br />
 														Salle : ".$uneSoutenance['salleSoutenance'];?>
+						<br />
+					 	<a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'depot', 'code'=>$uneSoutenance->idSoutenance),"default", true); ?>" class="btn btn-primary">&nbsp; Modifier &raquo; &nbsp;</a>
+					 	<a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'deletesoutenance', 'code'=>$uneSoutenance->idSoutenance),"default", true); ?>" class="btn btn-danger" id="confirmerDeleteSoutenance">Supprimer &raquo;</a>
 					 	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
-					 	<a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'depot', 'code'=>$uneSoutenance->idSoutenance),"default", true); ?>" class="btn btn-primary navbar-right" id="btnUpdateSoutenance">Modifier la soutenance &raquo;</a>
 					</h3>
 					<br/>
 					<h3 class="panel-title"><?php echo $uneSoutenance->libelleStage; ?></h3>
@@ -58,9 +60,6 @@ $lesJurys = $this->jurys; // Les demandes de stages des etudiants
 	      			
 	      			// ENSEIGNANT RESPONSABLE
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
-	      				<?php // MODIFIER LE STAGE ?>
-	      				
-	      				
 	      				<?php // LISTE DES JURYS ?>
 					  	<!-- Table -->
 						<table class="table text-center">
@@ -77,12 +76,12 @@ $lesJurys = $this->jurys; // Les demandes de stages des etudiants
 										<?php if ($unJury->idPersonne != null) { ?>
 											<tr>
 												<td><?php echo $unJury->nomPersonne. ' '.$unJury->prenomPersonne; ?></td>
-							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'delete', 'codeSoutenance'=>$unJury->codeSoutenance, 'idPersonne'=>$unJury->idPersonne)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
+							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'deleteJury', 'codeSoutenance'=>$unJury->codeSoutenance, 'idPersonne'=>$unJury->idPersonne)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
 											</tr>
 										<?php } else { ?>
 											<tr>
 												<td><?php echo $unJury->nomEnseignant. ' '.$unJury->prenomEnseignant; ?></td>
-							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'delete', 'codeSoutenance'=>$unJury->codeSoutenance, 'idEnseignant'=>$unJury->idEnseignant)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
+							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'deleteJury', 'codeSoutenance'=>$unJury->codeSoutenance, 'idEnseignant'=>$unJury->idEnseignant)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
 											</tr>
 										<?php } ?>
 									<?php } ?>
@@ -102,3 +101,40 @@ $lesJurys = $this->jurys; // Les demandes de stages des etudiants
 	</div>
 </div>
 
+
+<?php // DIALOG DE CONFIRMATION ?>
+<p id="dialog-confirm-delete-soutenance" title="Supprimer soutenance"><span class="ui-icon ui-icon-alert" id="dialogConfirm"></span>Voulez-vous vraiment supprimer la soutenance avec sa composition de jurys ?</p>
+
+
+<?php // SCRIPT JS UI POUR LE DIALOG ?>
+<script>
+$(function() {
+	var hrefDemande = ''; // Variable qui recupere le chemin url en cas de redirection
+
+	$("#dialog-confirm-delete-soutenance").dialog({
+		autoOpen: false,
+      	resizable: false,
+      	height:161,
+      	width: 660,
+      	modal: true,
+      	show: { effect: "drop", duration: 400 },
+        hide: { effect: "clip", duration: 200 },
+      	buttons: { 
+       		"Oui": function() { 
+           		$(this).dialog("close"); 
+           		window.location.href = hrefDemande; // Redirection url
+           	}, 
+			"Non": function() { 
+				$(this).dialog("close");
+			} 
+		},
+    });
+
+	$("#confirmerDeleteSoutenance").click(function(){
+		hrefDemande = $(this).attr("href"); // Recupere le lien de la balise <a>
+        $("#dialog-confirm-delete-soutenance").dialog("open"); // Ouvre la fenetre de dialog
+        return false;
+	});
+});
+</script>
+ 

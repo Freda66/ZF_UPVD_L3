@@ -62,7 +62,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 					 	->from(array('s' => $this->_name), array('*'))
 					 	->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
 					 	->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
-					 	->where('codeStage = ?', $code);
+					 	->where('codeStage = ?', (int)$code);
   		// Retourne le resultat
   		return $this->fetchAll($result);
   	}
@@ -156,11 +156,12 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 	/**
 	 * Renvoi la liste des stage qui non pas de soutenance
 	 */
-	public function getStageWithoutSoutenance(){
+	public function getStageForSoutenance(){
 		$result = $this->select()->setIntegrityCheck(false);
 		$result			->from(array('s' => $this->_name), array('*'))
-	  					->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
-	  					->where('idSoutenance is not null');
+	  					->joinInner(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+	  					->where('etatStage = 1')
+						->where('idEtudiant is not null');
 		return $this->fetchAll($result);
 	}
 	
