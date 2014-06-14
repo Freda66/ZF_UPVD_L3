@@ -72,7 +72,7 @@ class SoutenanceController extends Zend_Controller_Action
 	    	// Recupere les informations d'une soutenance
 	    	$uneSoutenance = $modelSoutenance->getSoutenanceById($codeSoutenance, $session->infoUser);
 	    	// Recupere la liste des personnes succeptible d'etre jury
-	    	$jurys = $modelSoutenanceJury->getSoutenanceJury($codeSoutenance);
+	    	$jurys = $modelSoutenanceJury->getSoutenanceJury($codeSoutenance, $session->infoUser);
 	    	
 	    	if($uneSoutenance == null){
 	    		// Message flash + Redirection
@@ -85,6 +85,7 @@ class SoutenanceController extends Zend_Controller_Action
 	    	}
 	    	
 	    	$this->view->typeSession = $session->infoUser->type;
+	    	$this->view->identifiant = $session->infoUser->identifiant;
 	    	if($session->infoUser->type == "Enseignant") $this->view->isResponsable = $session->infoUser->isResponsable;
     	} else {
     		// Message flash + Redirection
@@ -190,6 +191,52 @@ class SoutenanceController extends Zend_Controller_Action
     }
     
     /**
+     * Liste des enseignats et des personnes par entreprise qui peuvent etre selectionner pour participier au jury
+     */
+    public function ajouterjuryAction(){
+    	$this->view->title = "Sélection d'un membre du jury"; // Titre de la page
+
+    	// Recupere la session en cours
+    	$session = Zend_Auth::getInstance()->getStorage()->read();
+    	
+    	// Recupere les params
+    	$idSoutenance = $this->getRequest()->getParam('codeSoutenance');
+    	$idJuryPersonne = $this->getRequest()->getParam('codePersonne');
+    	$idJuryEnseignant = $this->getRequest()->getParam('codeEnseignant');
+    	
+    	// Si c'est un enseignant responsable
+    	if(($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true)){
+    		// Affiche la liste des jurys a selectionner pour une soutenance
+    		if($idJuryPersonne == "" && $idJuryEnseignant == ""){
+		    	// Objet model dbTable (enseignant, entreprise)
+		    	$modelEnseignant = new Application_Model_DbTable_Enseignant();
+		    	$modelEntreprise = new Application_Model_DbTable_Entreprise();
+		
+		    	// Recupere la liste des utilisateurs
+		    	$lesEnseignants = $modelEnseignant->getListeEnseignantSoutenance($idSoutenance);
+		    	$lesEntreprises = $modelEntreprise->getListeEntreprise();
+		    	 
+		    	$this->view->lesEnseignants = $lesEnseignants;
+		    	$this->view->lesEntreprises = $lesEntreprises;
+		    	$this->view->idSoutenance = $idSoutenance;
+    		} 
+    		//
+    		else {
+    			// Ajout d'une composition
+    			$modelSoutenanceJury = new Application_Model_DbTable_SoutenanceJury();
+    			if($modelSoutenanceJury->insertSoutenanceJury($idSoutenance, $idJuryPersonne, $idJuryEnseignant)){
+    				$this->_helper->flashMessenger->addMessage(array('success'=>'La composition a été ajoutée.'));
+    				$this->redirect("/soutenance/fiche/code/$idSoutenance");
+    			} else {
+    				$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'enregistrement de la composition.'));
+    				$this->redirect("/soutenance/fiche/code/$idSoutenance");
+    			}
+    		}
+    	} else {
+    	}
+    }
+    
+    /**
      * Supprime une soutenance
      */
     public function deletesoutenanceAction(){
@@ -239,7 +286,7 @@ class SoutenanceController extends Zend_Controller_Action
     	$idEnseignant = $this->getRequest()->getParam('idEnseignant');
     	
     	// Si c'est un enseignant responsable
-    	if(($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true)){
+    	if($session->infoUser->type != "Etudiant"){
     		// Cree un objet dbTable SoutenanceJury
     		$modelSoutenanceJury = new Application_Model_DbTable_SoutenanceJury();
     	

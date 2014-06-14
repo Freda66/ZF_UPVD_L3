@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 05 Juin 2014 à 23:58
+-- Généré le: Sam 14 Juin 2014 à 16:24
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -70,8 +70,7 @@ CREATE TABLE IF NOT EXISTS `demandeetudiantstage` (
 --
 
 INSERT INTO `demandeetudiantstage` (`idEtudiant`, `idStage`) VALUES
-('A48154G454', 9),
-('F47856ADSS', 9);
+('A48154G454', 6);
 
 -- --------------------------------------------------------
 
@@ -90,18 +89,18 @@ CREATE TABLE IF NOT EXISTS `enseignant` (
   `isResponsableSiteEnseignant` int(11) NOT NULL COMMENT '0 => Non & 1 => 1',
   `etatEnseignant` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idEnseignant`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
 
 --
 -- Contenu de la table `enseignant`
 --
 
 INSERT INTO `enseignant` (`idEnseignant`, `nomEnseignant`, `prenomEnseignant`, `fonctionEnseignant`, `specialiteEnseignant`, `loginEnseignant`, `mdpEnseignant`, `isResponsableSiteEnseignant`, `etatEnseignant`) VALUES
-(1, 'MADELINE', 'Blaise', 'Enseignant', 'Informatique', 'bmadeline', 'bmadeline', 1, 1),
-(2, 'SALVAT', 'Eric', 'Enseignant', 'Informatique', 'esalvat', 'esalvat', 0, 1),
-(3, 'RHARMAOUI', 'Ahmed', 'Enseignant', 'Robotique', 'arharmaoui', 'arharmaoui', 1, 1),
-(4, 'PECH-GOURG', 'Nicolas', 'Intervenant', 'Management', 'npechgourg', 'npechgourg', 0, 1),
-(5, 'JANET', 'Karine', 'Administration', 'Robotique', 'kjanet', 'kjanet', 1, 1);
+(1, 'MADELINE', 'Blaise', 'Enseignant', 'Informatique', 'bmadeline', '9ecfe277b47f4d68f32cd8b2ec170ddb', 1, 1),
+(2, 'SALVAT', 'Eric', 'Enseignant', 'Informatique', 'esalvat', 'ebda79dc9abfe58d5ad78bb589a15f82', 0, 1),
+(3, 'RHARMAOUI', 'Ahmed', 'Enseignant', 'Robotique', 'arharmaoui', '9228e1be5ec275244059029253e7d5cb', 1, 1),
+(4, 'PECH-GOURG', 'Nicolas', 'Intervenant', 'Management', 'npechgourg', 'c26218326d905927cb263c1912019062', 0, 1),
+(5, 'JANET', 'Karine', 'Administration', 'Robotique', 'kjanet', '6ab006a9ef66a8a54fb36c1a6998ce3e', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -165,9 +164,9 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
 --
 
 INSERT INTO `entreprise` (`idEntreprise`, `siretEntreprise`, `idPersonneDirigeant`, `rsEntreprise`, `adrRueEntreprise`, `adrCpEntreprise`, `adrVilleEntreprise`, `telEntreprise`, `emailEntreprise`, `loginEntreprise`, `mdpEntreprise`, `etatEntreprise`) VALUES
-(1, 32467680800045, 1, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', 'infoverte', 1),
-(2, 33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'pyrescom', 1),
-(3, 42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', 'squarepartners', 1);
+(1, 32467680800045, 8, 'INFORMATIQUE VERTE', 'Mas des Tilleuls', '66680', 'CANOHES', '04 68 51 48 48', 'infoverte@informatiqueverte.fr', 'infoverte', '8ceeea75f7d404732252066cbfa705f5', 1),
+(2, 33092574400097, 1, 'PYRESCOM', 'Mas des Tilleuls', '66680', 'CANOHES', '04-68-68-39-68', 'direct@pyres.com', 'pyrescom', 'ea1b104d27edb766e2688fc604ed2843', 1),
+(3, 42188379400032, 7, 'Square Partners', '4, rue Pierre Talrich', '66000', 'Perpignan', '04 68 34 11 77', 'contact@squarepartners.com', 'squarepartners', '497d39319ae5983d44df892e99e87faf', 1);
 
 -- --------------------------------------------------------
 
@@ -193,8 +192,8 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
 --
 
 INSERT INTO `etudiant` (`ineEtudiant`, `idFormation`, `nomEtudiant`, `prenomEtudiant`, `loginEtudiant`, `mdpEtudiant`, `emailEtudiant`, `etatEtudiant`) VALUES
-('A48154G454', 1, 'CANO', 'Frederic', 'fcano', 'fcano', 'frederic.cano@imerir.com', 1),
-('F47856ADSS', 2, 'CAMPOY', 'Mickael', 'mcampoy', 'mcampoy', 'mickael.campoy@imerir.com', 1);
+('A48154G454', 1, 'CANO', 'Frederic', 'fcano', 'f51c17586e41aa94c14004d08dbcd4a1', 'frederic.cano@imerir.com', 1),
+('F47856ADSS', 2, 'CAMPOY', 'Mickael', 'mcampoy', 'd3eae5c023b717be4a72405f88f275be', 'mickael.campoy@imerir.com', 1);
 
 -- --------------------------------------------------------
 
@@ -210,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `formation` (
   `specialiteFormation` varchar(250) COLLATE utf8_bin NOT NULL COMMENT 'Informatique,...',
   PRIMARY KEY (`codeFormation`),
   KEY `EnseignantResponsableFormation` (`idEnseignantResponsable`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
 
 --
 -- Contenu de la table `formation`
@@ -241,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `etatPersonne` int(11) NOT NULL DEFAULT '1' COMMENT '-1 => Supprimer / 0 => En attente / => 1 => Ok',
   PRIMARY KEY (`idPersonne`),
   KEY `idEntrepriseTravail` (`idEntrepriseTravail`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
 
 --
 -- Contenu de la table `personne`
@@ -249,7 +248,10 @@ CREATE TABLE IF NOT EXISTS `personne` (
 
 INSERT INTO `personne` (`idPersonne`, `idEntrepriseTravail`, `nomPersonne`, `prenomPersonne`, `fonctionPersonne`, `telPortPersonne`, `telPostePersonne`, `emailPersonne`, `etatPersonne`) VALUES
 (1, 2, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com', 1),
-(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com', 1);
+(7, 3, 'SESE', 'Stephane', 'Président', '04 68 34 11 77', '04 68 34 11 77', 'contact@squarepartners.com', 1),
+(8, 1, 'Guichet', 'Danielle', 'Présidente', '04-68-68-39-68', '04-68-68-39-68', 'd.guichet@pyres.com', 1),
+(9, 2, 'SENDRA', 'Marc', 'Cadre', '06.28.74.96.54', NULL, 'm-sendra@informatiqueverte.fr', 1),
+(10, 3, 'Fauchil', 'Paul', 'Développeur', '06.48.75.66.32', '04-68-68-39-68', 'p-fauchil@square.com', 1);
 
 -- --------------------------------------------------------
 
@@ -273,9 +275,8 @@ CREATE TABLE IF NOT EXISTS `realiseretudiantstage` (
 --
 
 INSERT INTO `realiseretudiantstage` (`idEtudiant`, `idStage`, `idEnseignantTuteur`, `idSoutenance`) VALUES
-('A48154G454', 7, 1, NULL),
-('A48154G454', 9, NULL, NULL),
-('F47856ADSS', 9, NULL, NULL);
+('A48154G454', 7, 2, 15),
+('A48154G454', 9, 2, 14);
 
 -- --------------------------------------------------------
 
@@ -285,10 +286,46 @@ INSERT INTO `realiseretudiantstage` (`idEtudiant`, `idStage`, `idEnseignantTuteu
 
 CREATE TABLE IF NOT EXISTS `soutenance` (
   `idSoutenance` int(11) NOT NULL AUTO_INCREMENT,
-  `dateSoutenance` date NOT NULL,
+  `dateSoutenance` datetime NOT NULL,
   `salleSoutenance` varchar(250) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`idSoutenance`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+--
+-- Contenu de la table `soutenance`
+--
+
+INSERT INTO `soutenance` (`idSoutenance`, `dateSoutenance`, `salleSoutenance`) VALUES
+(14, '2014-06-20 15:00:00', 'B12'),
+(15, '2014-06-25 18:00:00', 'B18');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `soutenancejury`
+--
+
+CREATE TABLE IF NOT EXISTS `soutenancejury` (
+  `idSoutenanceJury` int(11) NOT NULL AUTO_INCREMENT,
+  `codeSoutenance` int(11) NOT NULL,
+  `idPersonne` int(11) DEFAULT NULL,
+  `idEnseignant` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idSoutenanceJury`),
+  KEY `personnesoutenancejury` (`idPersonne`),
+  KEY `enseignantsoutenancejury` (`idEnseignant`),
+  KEY `codeSoutenance` (`codeSoutenance`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Composition du jury' AUTO_INCREMENT=20 ;
+
+--
+-- Contenu de la table `soutenancejury`
+--
+
+INSERT INTO `soutenancejury` (`idSoutenanceJury`, `codeSoutenance`, `idPersonne`, `idEnseignant`) VALUES
+(13, 14, NULL, 5),
+(14, 14, 9, NULL),
+(15, 14, 1, NULL),
+(17, 15, NULL, 2),
+(19, 15, 9, NULL);
 
 -- --------------------------------------------------------
 
@@ -377,6 +414,14 @@ ALTER TABLE `realiseretudiantstage`
   ADD CONSTRAINT `foreignIneEtudiant` FOREIGN KEY (`idEtudiant`) REFERENCES `etudiant` (`ineEtudiant`),
   ADD CONSTRAINT `foreignSoutenance` FOREIGN KEY (`idSoutenance`) REFERENCES `soutenance` (`idSoutenance`),
   ADD CONSTRAINT `foreignStageEtudiant` FOREIGN KEY (`idStage`) REFERENCES `stage` (`codeStage`);
+
+--
+-- Contraintes pour la table `soutenancejury`
+--
+ALTER TABLE `soutenancejury`
+  ADD CONSTRAINT `enseignantsoutenancejury` FOREIGN KEY (`idEnseignant`) REFERENCES `enseignant` (`idEnseignant`),
+  ADD CONSTRAINT `personnesoutenancejury` FOREIGN KEY (`idPersonne`) REFERENCES `personne` (`idPersonne`),
+  ADD CONSTRAINT `soutenancejury` FOREIGN KEY (`codeSoutenance`) REFERENCES `soutenance` (`idSoutenance`);
 
 --
 -- Contraintes pour la table `stage`

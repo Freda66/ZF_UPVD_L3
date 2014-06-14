@@ -26,6 +26,26 @@ class Application_Model_DbTable_Personne extends Zend_Db_Table_Abstract
 	}
 	
 	/**
+	 * Fonction qui retourne la liste des tuteurs d'un entreprise
+	 * @param integer $idEntreprise
+	 * @return Zend_Db_Table_Rowset_Abstract
+	 */
+	public function getPersonneByEntrepriseForSoutenance($idEntreprise, $idSoutenance)
+	{
+		// Crée un objet select
+		$result = $this	->select()
+		->where('idEntrepriseTravail = ?', $idEntreprise)
+		->where('etatPersonne = 1')
+		->where('idPersonne not in
+				(SELECT p.idPersonne
+				 FROM personne p
+				 LEFT JOIN soutenancejury sj ON sj.idPersonne = p.idPersonne
+				 WHERE codeSoutenance = '.(int)$idSoutenance.')');
+		// Retourne le resultat de la requete
+		return $this->fetchAll($result);
+	}
+	
+	/**
 	 * Fonction qui retourne les données d'une personne
 	 * @param integer $idPersonne
 	 * @param integer $idEntreprise

@@ -1,0 +1,60 @@
+<?php $this->headTitle($this->title); // Titre de la page ?>
+
+<div class="jumbotron" id="paddingResponsable">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel-heading">
+	              <h2 class="panel-title">
+	              		Sélection d'un membre du jury
+	              		<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
+	              </h2>
+	            </div>
+				<?php // ENSEIGNANT ?>
+				<div class="panel col-md-6">
+					<div class="panel-heading">
+		              <h3 class="panel-title">Enseignant</h3>
+		            </div>
+		            
+		            <div class="panel-body">
+		            	<?php 
+		            		foreach($this->lesEnseignants as $unEnseignant) { ?>          
+							<ul class="list-group">
+							  <li class="list-group-item list-group-item-info">
+							   <?php echo $unEnseignant["nomEnseignant"].' '.$unEnseignant['prenomEnseignant']; ?>
+							   <a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'ajouterjury', 'codeEnseignant'=>$unEnseignant->idEnseignant)); ?>" class="btn btn-success navbar-right" id="validerJurySoutenance">&nbsp; Sélectionner &raquo; &nbsp;</a>
+							  </li>
+							</ul>
+							<?php } ?>
+		            </div>
+				</div>
+				
+				<?php // ENTREPRISE ?>
+				<div class="panel col-md-6">
+					<div class="panel-heading">
+		              <h3 class="panel-title">Entreprise</h3>
+		            </div>
+		            
+		            <div class="panel-body">
+		            	<?php 
+		            	$modelPersonne = new Application_Model_DbTable_Personne();
+		            	foreach($this->lesEntreprises as $uneEntreprise) { ?>  
+		            		<h4><?php echo $uneEntreprise->rsEntreprise; ?></h4>        
+							<ul class="list-group">
+							  <?php 
+							  // Recupere la liste des personnes d'une entreprise qui peuvent faire parti de la composition du jury
+							  $lesPersonnes = $modelPersonne->getPersonneByEntrepriseForSoutenance($uneEntreprise->idEntreprise, $this->idSoutenance);
+							  foreach($lesPersonnes as $unePersonne) { ?>  
+								  <li class="list-group-item list-group-item-info">
+								   <?php echo $unePersonne->nomPersonne.' '.$unePersonne->prenomPersonne; ?>
+								   <a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'ajouterjury', 'codePersonne'=>$unePersonne->idPersonne)); ?>" class="btn btn-success navbar-right" id="validerJurySoutenance">&nbsp; Sélectionner &raquo; &nbsp;</a>
+								  </li>
+							  <?php } ?>
+							</ul>
+						<?php } ?>
+		            </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

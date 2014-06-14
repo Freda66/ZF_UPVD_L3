@@ -83,11 +83,13 @@ class Application_Model_DbTable_Entreprise extends Zend_Db_Table_Abstract
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getListeEntreprise($page){
+	public function getListeEntreprise($page = null){
 		// Liste des entreprise actif
 		$requete = $this->select()->where('etatEntreprise = ?', 1);
 		
-		return $this->paginator($requete, $page);
+		if($page == null){
+			return $this->fetchAll($requete);
+		} else return $this->paginator($requete, $page);
 	}
 	
 	/**

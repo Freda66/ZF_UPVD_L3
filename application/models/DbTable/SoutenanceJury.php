@@ -15,13 +15,19 @@ class Application_Model_DbTable_SoutenanceJury extends Zend_Db_Table_Abstract
      * @param integer $idSoutenance
      * @return Object, NULL
      */
-    public function getSoutenanceJury($idSoutenance)
+    public function getSoutenanceJury($idSoutenance, $session)
     {
     	$result = 	$this	->select()->setIntegrityCheck(false)
 					    	->from(array('sj' => $this->_name), array('*'))
 					    	->joinLeft(array('p'=>'personne'), 'sj.idPersonne = p.idPersonne', array('*'))
-					    	->joinLeft(array('en'=>'enseignant'), 'sj.idEnseignant = en.idEnseignant', array('*'))
-					    	->where('codeSoutenance = ?', $idSoutenance);
+					    	->joinLeft(array('en'=>'enseignant'), 'sj.idEnseignant = en.idEnseignant', array('*'));
+					    	
+    	if($session->type == "Entreprise") {
+    		$result->joinLeft(array('e'=>'entreprise'), 'e.idEntreprise = p.idEntrepriseTravail', array('*'));
+    	}
+		
+    	$result->where('codeSoutenance = ?', $idSoutenance);
+    	
     	return $this->fetchAll($result);
     }
     

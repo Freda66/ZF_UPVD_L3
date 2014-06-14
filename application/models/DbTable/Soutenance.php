@@ -38,7 +38,8 @@ class Application_Model_DbTable_Soutenance extends Zend_Db_Table_Abstract
 		if($session->type == "Entreprise") 	$result->where('st.idEntreprise = ?', $session->identifiant);
 		
 		// Stage actif uniquement
-		$result			->where('etatStage = 1');
+		$result			->where('etatStage = 1')
+						->order('dateSoutenance');
 		
 		// Retourne tout les soutenances
 		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator

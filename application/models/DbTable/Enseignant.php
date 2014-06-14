@@ -80,20 +80,42 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 	 * @param integer $page
 	 * @return Zend_Paginator
 	 */
-	public function getListeEnseignant($page){
+	public function getListeEnseignant($page = null){
 		// Liste des enseignants actif
 		$requete = $this->select()->where('etatEnseignant = ?', 1);
 		
-		// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
-		$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
-		// Détermine le nombre d'item par page
-		$paginator ->setItemCountPerPage($this->_nbItemByPage);
-		// Détermine la page en courrante
-		$paginator ->setCurrentPageNumber($page);
-		// Indique le nombre de numéro de page qu'on affiche
-		$paginator->setPageRange($this->_nbPagePrint);
-		// Retourne le resultat
-		return $paginator;
+		if($page == null){
+			return $this->fetchAll($requete);
+		} else {
+			// Crée un objet Pagination, en connectant la requete avec l'adaptateur de Zend Paginator
+			$paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($requete));
+			// Détermine le nombre d'item par page
+			$paginator ->setItemCountPerPage($this->_nbItemByPage);
+			// Détermine la page en courrante
+			$paginator ->setCurrentPageNumber($page);
+			// Indique le nombre de numéro de page qu'on affiche
+			$paginator->setPageRange($this->_nbPagePrint);
+			// Retourne le resultat
+			return $paginator;
+		}
+	}
+	
+	/**
+	 * Retourne la liste des enseignants disponible pour participer a la soutenance
+	 * @param integer $idSoutenance
+	 * @return Zend_Paginator
+	 */
+	public function getListeEnseignantSoutenance($idSoutenance){
+		// Liste des enseignants actif
+		$requete = 	$this	->select()
+							->where('etatEnseignant = ?', 1)
+							->where('idEnseignant not in 
+									(SELECT e.idEnseignant 
+									 FROM enseignant e
+									 LEFT JOIN soutenancejury sj ON sj.idEnseignant = e.idEnseignant  
+									 WHERE codeSoutenance = '.(int)$idSoutenance.')');
+		
+		return $this->fetchAll($requete);
 	}
 	
 	/**
@@ -111,7 +133,6 @@ class Application_Model_DbTable_Enseignant extends Zend_Db_Table_Abstract
 		}
 	}
 	
-
 	/**
 	 * Fonction qui insert un enseignant dans la bdd
 	 * @param string $nomEnseignant
