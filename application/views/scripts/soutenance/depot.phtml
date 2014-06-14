@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-	              <h2 class="panel-title">Dépot de stage
+	              <h2 class="panel-title">Dépot d'une soutenance
 	              	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour"/></span>
 	              </h2>
 	            </div>
@@ -21,6 +21,6 @@
 
 <script>
 	$(function() {
-		$("#dateHeure").datepicker({ minDate: 0, maxDate: "+1Y +1D", dateFormat: 'yy-mm-dd' });
+		$("#dateSoutenance").datepicker({ minDate: 0, maxDate: "+5Y +1D", dateFormat: 'yy-mm-dd' });
   	});
 </script>

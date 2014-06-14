@@ -62,10 +62,9 @@ class SoutenanceController extends Zend_Controller_Action
     	$codeSoutenance = $this->getRequest()->getParam('code');
     	
     	if($codeSoutenance != null){
-	    	// Crée un objet dbtable Soutenance et Stage
+	    	// Crée un objet dbtable Soutenance et SoutenanceJury
 	    	$modelSoutenance = new Application_Model_DbTable_Soutenance();
-
-	    	$modelDES = new Application_Model_DbTable_DemandeEtudiantStage();
+			$modelSoutenanceJury = new Application_Model_DbTable_SoutenanceJury();
 	    	
 	    	// Recupere la session
 	    	$session = Zend_Auth::getInstance()->getStorage()->read();
@@ -73,7 +72,7 @@ class SoutenanceController extends Zend_Controller_Action
 	    	// Recupere les informations d'une soutenance
 	    	$uneSoutenance = $modelSoutenance->getSoutenanceById($codeSoutenance, $session->infoUser);
 	    	// Recupere la liste des personnes succeptible d'etre jury
-	    	$jurys = $modelDES->getListeDemandeStage($codeSoutenance);
+	    	$jurys = $modelSoutenanceJury->getSoutenanceJury($codeSoutenance);
 	    	
 	    	if($uneSoutenance == null){
 	    		// Message flash + Redirection
@@ -103,32 +102,29 @@ class SoutenanceController extends Zend_Controller_Action
     	$this->view->title = "Depot d'une soutenance"; // Titre de la page
     	
     	// Recupere le code du stage passé en param (si exist)
-    	$codeStage = $this->getRequest()->getParam('code');
+    	$codeSoutenance = $this->getRequest()->getParam('code');
     	// Recupere la session en cours
     	$session = Zend_Auth::getInstance()->getStorage()->read();
     	// Crée un objet dbtable Stage
-    	$modelStage = new Application_Model_DbTable_Stage();
+    	$modelSoutenance = new Application_Model_DbTable_Soutenance();
     	
     	if($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true) {
-	    	if($codeStage == null){
+	    	if($codeSoutenance == null){
 		    	// Formulaire de depot d'un stage
-	    		$formDepotStage = new Application_Form_DepotStage();
-	    		$formDepotStage->setTranslator(Bootstrap::_initTranslate());
+	    		$formDepotSoutenance = new Application_Form_DepotSoutenance();
+	    		$formDepotSoutenance->setTranslator(Bootstrap::_initTranslate());
 	    	} else {
 	    		// Recupere les informations d'un stage
-	    		$unStage = $modelStage->getStage($codeStage, $session->infoUser);
+	    		$uneSoutenance = $modelSoutenance->getSoutenanceById($idSoutenance, $session->infoUser);
 	    			
-	    		if($unStage == null){
-	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucun stage ne correspond.'));
-	    			$this->redirect('/stage/index/');
-	    		} else if($unStage->etatStage == 1){
-	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Le stage ne peut pas être modifié.'));
-	    			$this->redirect('/stage/index/');
+	    		if($uneSoutenance == null){
+	    			$this->_helper->flashMessenger->addMessage(array('danger'=>'Aucune soutenance ne correspond.'));
+	    			$this->redirect('/soutenance/index/');
 	    		} else {
-	    			// Envoi le detail d'un stage a la vue
-	    			$formDepotStage = new Application_Form_DepotStage();
-	    			$formDepotStage->setTranslator(Bootstrap::_initTranslate());
-	    			$formDepotStage->populate($unStage->toArray());
+	    			// Envoi le detail d'une soutenance a la vue
+	    			$formDepotSoutenance = new Application_Form_DepotSoutenance();
+	    			$formDepotSoutenance->setTranslator(Bootstrap::_initTranslate());
+	    			$formDepotSoutenance->populate($uneSoutenance->toArray());
 	    		}
 	    	}
 	    	
@@ -139,41 +135,38 @@ class SoutenanceController extends Zend_Controller_Action
 	    		$formData = $this->getRequest()->getPost();
 	    	
 	    		// Si les informations sont valides par rapport au formulaire init (initiale)
-	    		if($formDepotStage->isValid($formData)) {
+	    		if($formDepotSoutenance->isValid($formData)) {
 	    			// Recupere les attributs dans des variables
-	    			$libelleStage = $formDepotStage->getValue('libelleStage');
-	    			$dateDebutStage = $formDepotStage->getValue('dateDebutStage');
-	    			$dateFinStage = $formDepotStage->getValue('dateFinStage');
-	    			$idTuteur = $formDepotStage->getValue('idTuteur');
-	    			$descriptionStage = $formDepotStage->getValue('descriptionStage');
+	    			$dateSoutenance = $formDepotSoutenance->getValue('dateSoutenance');
+	    			$salleSoutenance = $formDepotSoutenance->getValue('salleSoutenance');
 	    			
 	    			// Insert
-	    			if($codeStage == null) {
-	    				if($modelStage->insertStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant)){
+	    			if($codeSoutenance == null) {
+	    				if($modelSoutenance->insertSoutenance($dateSoutenance, $salleSoutenance)){
 	    					// Message + Redirection
-	    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été déposé avec succès.'));
-	    					$this->redirect("/stage/index/");
+	    					$this->_helper->flashMessenger->addMessage(array('success'=>'La soutenance a été déposé avec succès.'));
+	    					$this->redirect("/soutenance/index/");
 	    				} else {
-	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion du stage.'));
-	    					$formDepotStage->populate($formData);
+	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de l\'insertion de la soutenance.'));
+	    					$formDepotSoutenance->populate($formData);
 	    				}
 	    			}
 	    			// Update
 	    			else {
-	    				if($modelStage->updateStage($libelleStage, $dateDebutStage, $dateFinStage, $idTuteur, $descriptionStage, $session->infoUser->identifiant, $codeStage, $unStage->etatStage)) {
+	    				if($modelSoutenance->updateStage($codeSoutenance, $dateSoutenance, $salleSoutenance)) {
 	    					// Message + Redirection
-	    					$this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été modifié avec succès.'));
+	    					$this->_helper->flashMessenger->addMessage(array('success'=>'La soutenance a été modifié avec succès.'));
 	    					$this->redirect("/stage/index/");
 	    				} else {
-	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification du stage.'));
-	    					$formDepotStage->populate($formData);
+	    					$this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur est survenu lors de la modification de la soutenance.'));
+	    					$formDepotSoutenance->populate($formData);
 	    				}
 	    			}
-	    		} else $formDepotStage->populate($formData);
+	    		} else $formDepotSoutenance->populate($formData);
 	    	}
 	    	
 	    	// Envoie a la vue le formulaire de depot de stage
-	    	$this->view->formDepotStage = $formDepotStage;
+	    	$this->view->formDepotSoutenance = $formDepotSoutenance;
     	} else {
     		// Message + Redirection
     		$this->_helper->flashMessenger->addMessage(array('info'=>'Aucune page de ce nom n\'a été trouvé.'));
@@ -188,27 +181,27 @@ class SoutenanceController extends Zend_Controller_Action
     public function deleteAction(){
     	// Recupere la session en cours
     	$session = Zend_Auth::getInstance()->getStorage()->read();
-    	// Recupere le code stage
-    	$codeStage = $this->getRequest()->getParam('code');
+    	
+    	// Recupere les params
+    	$idSoutenance = $this->getRequest()->getParam('codeSoutenance');
+    	$idPersonne = $this->getRequest()->getParam('idPersonne');
+    	$idEnseignant = $this->getRequest()->getParam('idEnseignant');
     	
     	// Si c'est un enseignant responsable
     	if(($session->infoUser->type == "Enseignant" && $session->infoUser->isResponsable == true)){
-    		// Cree un objet dbTable Stage
-    		$modelStage = new Application_Model_DbTable_Stage();
+    		// Cree un objet dbTable SoutenanceJury
+    		$modelSoutenanceJury = new Application_Model_DbTable_SoutenanceJury();
     	
-    		// Recupere les informations du stage
-    		$unStage = $modelStage->getStage($codeStage, $session);
-    		
     		// Retire le stage de la bdd si il est refusé ou en attente
-    		if($unStage->etatStage != 1 && $modelStage->deleteStage($codeStage)) $this->_helper->flashMessenger->addMessage(array('success'=>'Le stage a été supprimé.'));
-    		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression du stage.'));
+    		if($modelSoutenanceJury->deleteSoutenance($idSoutenance, $idPersonne, $idEnseignant)) $this->_helper->flashMessenger->addMessage(array('success'=>'La composition a été supprimé.'));
+    		else $this->_helper->flashMessenger->addMessage(array('danger'=>'Une erreur s\'est produite lors de la suppression de la composition.'));
     	
     		// Redirection
-    		$this->redirect("/stage/");
+    		$this->redirect("/soutenance/fiche/code/$idSoutenance");
     	} else {
     		// Message + Redirection
     		$this->_helper->flashMessenger->addMessage(array('danger'=>'Vous ne pouvez pas accéder a cette fonctionnalité.'));
-    		$this->redirect("/stage/fiche/code/$codeStage");
+    		$this->redirect("/soutenance/fiche/code/$idSoutenance");
     	}
     }
     

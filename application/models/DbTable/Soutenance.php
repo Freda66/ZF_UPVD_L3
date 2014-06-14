@@ -79,4 +79,31 @@ class Application_Model_DbTable_Soutenance extends Zend_Db_Table_Abstract
 		return $this->fetchRow($result);
 	}
 	
+	/**
+	 * Insert une soutenance
+	 * @param integer $date
+	 * @param integer $salle
+	 * @return boolean
+	 */
+	public function insertSoutenance($date, $salle){
+		try{
+			if($this->insert(array('dateSoutenance'=>$date, 'salleSoutenance'=>$salle))) return true;
+			else return false;
+		} catch(Exception $e){
+			return false;
+		}
+	}
+	
+	
+	public function updateSoutenance($idSoutenance, $dateSoutenance, $salleSoutenance){
+		try {
+			// Param
+			$data = array('dateSoutenance'=>$dateSoutenance, 'salleSoutenance'=>$salleSoutenance);
+			// Update
+			$this->update($data, 'idSoutenance = '. (int)$idSoutenance);
+			return true;
+		} catch(Exeception $e) { return false; }
+		 
+	}
+	
 }

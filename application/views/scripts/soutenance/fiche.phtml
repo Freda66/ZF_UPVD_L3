@@ -1,7 +1,7 @@
 <?php 
 $this->headTitle($this->title); // Titre de la page 
 $uneSoutenance = $this->soutenance; // Information du stage
-$lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
+$lesJurys = $this->jurys; // Les demandes de stages des etudiants
 ?>
 
 <div class="jumbotron">
@@ -13,6 +13,7 @@ $lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
 					<h3 class="panel-title"><?php echo "Soutenance le ".$this->toDmy($uneSoutenance['dateSoutenance'], true)."<br />
 														Salle : ".$uneSoutenance['salleSoutenance'];?>
 					 	<span onclick="history.back()" class="navbar-right cursorHand"><img src="<?php echo $this->baseUrl();?>/images/glyphicons_free/glyphicons/glyphicons_216_circle_arrow_left.png" alt="Retour" /></span>
+					 	<a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'depot', 'code'=>$uneSoutenance->idSoutenance),"default", true); ?>" class="btn btn-primary navbar-right" id="btnUpdateSoutenance">Modifier la soutenance &raquo;</a>
 					</h3>
 					<br/>
 					<h3 class="panel-title"><?php echo $uneSoutenance->libelleStage; ?></h3>
@@ -40,8 +41,8 @@ $lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
 								<?php if($uneSoutenance->idEtudiant != null) { ?><td><?php echo $uneSoutenance->nomEtudiant.' '.$uneSoutenance->prenomEtudiant; ?></td><?php } ?>
 								<?php if($uneSoutenance->idEnseignantTuteur != null) { ?><td><?php echo $uneSoutenance->nomEnseignant.' '.$uneSoutenance->prenomEnseignant; ?></td><?php } ?>
 			            		<td><?php echo $uneSoutenance->nomPersonne.' '.$uneSoutenance->prenomPersonne; ?></td>
-					            <td><?php echo $uneSoutenance->dateDebutStage; ?></td>
-					            <td><?php echo $uneSoutenance->dateFinStage; ?></td>
+					            <td><?php echo $this->toDmy($uneSoutenance->dateDebutStage); ?></td>
+					            <td><?php echo $this->toDmy($uneSoutenance->dateFinStage); ?></td>
 							</tr>
 		        		</tbody>
 	      			</table>
@@ -58,7 +59,7 @@ $lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
 	      			// ENSEIGNANT RESPONSABLE
 	      			if($this->typeSession == "Enseignant" && $this->isResponsable == true) { ?>
 	      				<?php // MODIFIER LE STAGE ?>
-	      				<a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'stageresponsable', 'code'=>$uneSoutenance->codeStage),"default", true); ?>" class="btn btn-primary navbar-right stageEtudiantBtnLeft">Modifier la soutenance &raquo;</a>
+	      				
 	      				
 	      				<?php // LISTE DES JURYS ?>
 					  	<!-- Table -->
@@ -73,15 +74,22 @@ $lesJurys = $this->lesJurys; // Les demandes de stages des etudiants
 			        		<tbody>
 			        		<?php if(count($lesJurys) > 0) { ?>
 				        			<?php foreach($lesJurys as $unJury) { ?>
-									<tr>
-										<td><?php echo $unJury->nomPersonne. ' '.$unJury->prenomPersonne; ?></td>
-					            		<td><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$uneSoutenance->codeStage, 'etudiant'=>$unJury->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Valider la demande &raquo; &nbsp;&nbsp;</a></td>
-									</tr>
+										<?php if ($unJury->idPersonne != null) { ?>
+											<tr>
+												<td><?php echo $unJury->nomPersonne. ' '.$unJury->prenomPersonne; ?></td>
+							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'delete', 'codeSoutenance'=>$unJury->codeSoutenance, 'idPersonne'=>$unJury->idPersonne)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
+											</tr>
+										<?php } else { ?>
+											<tr>
+												<td><?php echo $unJury->nomEnseignant. ' '.$unJury->prenomEnseignant; ?></td>
+							            		<td><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'delete', 'codeSoutenance'=>$unJury->codeSoutenance, 'idEnseignant'=>$unJury->idEnseignant)); ?>"><img src="<?php echo $this->baseUrl();?>/images/icone/delete.png" class="btnCrudResponsable" alt="Supprimer" /></a></td>
+											</tr>
+										<?php } ?>
 									<?php } ?>
 							<?php } else { ?>
 								<tr><td colspan="2">Aucune composition de jury.</td></tr>
-								<tr><td colspan="2"><a href="<?php echo $this->url(array('controller'=>'stage', 'action'=>'demande', 'code'=>$uneSoutenance->codeStage, 'etudiant'=>$unJury->idEtudiant)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Ajouter un jury + &nbsp;&nbsp;</a></td></tr>
 							<?php } ?>
+								<tr><td colspan="2"><a href="<?php echo $this->url(array('controller'=>'soutenance', 'action'=>'ajouterjury', 'codeSoutenance'=>$uneSoutenance->idSoutenance)); ?>" class="btn btn-success stageEtudiantBtnLeft">&nbsp;&nbsp; Ajouter un membre au jury + &nbsp;&nbsp;</a></td></tr>
 			        		</tbody>
 		      			</table>
 		      		<?php 

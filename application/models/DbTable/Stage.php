@@ -142,7 +142,7 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		$result = $this->select()->setIntegrityCheck(false);
 		if($idFormation != null) {
   			$result		->from(array('s' => $this->_name), array('*'))
-  						->joinLeft(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
+  						->joinRight(array('cfs'=>'concernerformationstage'), 'cfs.idStage = s.codeStage', array('*'))
   						->where('idFormation = ?', (int)$idFormation);
   		}
   		if($etat != null) {
@@ -151,6 +151,17 @@ class Application_Model_DbTable_Stage extends Zend_Db_Table_Abstract
 		
   		// Renvoi le resultat formater en pagination
 		return $this->paginator($result, $page);
+	}
+	
+	/**
+	 * Renvoi la liste des stage qui non pas de soutenance
+	 */
+	public function getStageWithoutSoutenance(){
+		$result = $this->select()->setIntegrityCheck(false);
+		$result			->from(array('s' => $this->_name), array('*'))
+	  					->joinLeft(array('res'=>'realiseretudiantstage'), 'res.idStage = s.codeStage', array('*'))
+	  					->where('idSoutenance is not null');
+		return $this->fetchAll($result);
 	}
 	
 	/**

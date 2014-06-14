@@ -17,6 +17,7 @@
 							<strong>Formation</strong>(<u>codeFormation</u>, #idEnseignantResponsable, libelleFormation, niveauFormation, specialiteFormation) <br /><br />
 							<strong>Personne</strong>(<u>idPersonne</u>, #idEntrepriseTravail, nomPersonne, prenomPersonne, fonctionPersonne, telPortPersonne, telPostePersonne, emailPersonne) <br /><br />
 							<strong>Soutenance</strong>(<u>idSoutenance</u>, dateSoutenance, salleSoutenance) <br /><br />
+							<strong>SoutenanceJury</strong>(<u>#codeSoutenance, #idPersonne, #idEnseignant</u>) <br /><br />
 							<strong>Stage</strong>(<u>codeStage</u>, #idEntreprise, #idTuteur, libelleStage, descriptionStage, dateDebutStage, dateFinStage, etatStage) <br /><br />
 							<strong>EnseignerFormationEnseignant</strong>(<u>#idFormation, #idEnseignant</u>) <br /><br />
 							<strong>ConcernerFormationStage</strong>(<u>#idFormation, #idStage</u>) <br /><br />
