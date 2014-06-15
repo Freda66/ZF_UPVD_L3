@@ -38,7 +38,8 @@
 		            <div class="panel-body">
 		            	<?php 
 		            	$modelPersonne = new Application_Model_DbTable_Personne();
-		            	foreach($this->lesEntreprises as $uneEntreprise) { ?>  
+		            	foreach($this->lesEntreprises as $uneEntreprise) {
+		            	//$uneEntreprise = $this->lesEntreprises; ?>  
 		            		<h4><?php echo $uneEntreprise->rsEntreprise; ?></h4>        
 							<ul class="list-group">
 							  <?php 

@@ -211,10 +211,13 @@ class SoutenanceController extends Zend_Controller_Action
 		    	// Objet model dbTable (enseignant, entreprise)
 		    	$modelEnseignant = new Application_Model_DbTable_Enseignant();
 		    	$modelEntreprise = new Application_Model_DbTable_Entreprise();
+		    	//$modelSoutenance = new Application_Model_DbTable_Soutenance();
 		
 		    	// Recupere la liste des utilisateurs
-		    	$lesEnseignants = $modelEnseignant->getListeEnseignantSoutenance($idSoutenance);
+		    	//$uneSoutenance = $modelSoutenance->getSoutenanceById($idSoutenance, $session->infoUser);
+		    	//$lesEntreprises = $modelEntreprise->getEntreprise($uneSoutenance->idEntreprise);
 		    	$lesEntreprises = $modelEntreprise->getListeEntreprise();
+		    	$lesEnseignants = $modelEnseignant->getListeEnseignantSoutenance($idSoutenance);
 		    	 
 		    	$this->view->lesEnseignants = $lesEnseignants;
 		    	$this->view->lesEntreprises = $lesEntreprises;
