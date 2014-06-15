@@ -31,7 +31,14 @@ $session = Zend_Auth::getInstance()->getStorage()->read();
 	                	<li <?php if($controller == "index" && $action == "mld") { ?>class="active"<?php } ?>><a href="<?php echo $this->url(array('controller'=>'index', 'action'=>'mld'),"default", true); ?>">Modèle logique des données [MLD]</a></li>
 	              	</ul>
 	            </li>
-	            <li><a href="./../_Presentation/">Présentation</a></li>
+	            <li class="dropdown">
+	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Présentation <b class="caret"></b></a>
+	             	<ul class="dropdown-menu">
+	                	<li><a href="./../_Presentation/">Présentation gris</a></li>
+	                	<li class="divider"></li>
+	                	<li><a href="./../_Presentation/?theme=beige#/">Présentation beiges</a></li>
+	              	</ul>
+	            </li>
           	</ul>
           	
           	<?php if(!Zend_Auth::getInstance()->hasIdentity()) { ?>
