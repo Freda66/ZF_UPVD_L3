@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Sam 14 Juin 2014 à 16:24
+-- Généré le: Dim 15 Juin 2014 à 16:57
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -314,18 +314,17 @@ CREATE TABLE IF NOT EXISTS `soutenancejury` (
   KEY `personnesoutenancejury` (`idPersonne`),
   KEY `enseignantsoutenancejury` (`idEnseignant`),
   KEY `codeSoutenance` (`codeSoutenance`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Composition du jury' AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Composition du jury' AUTO_INCREMENT=22 ;
 
 --
 -- Contenu de la table `soutenancejury`
 --
 
 INSERT INTO `soutenancejury` (`idSoutenanceJury`, `codeSoutenance`, `idPersonne`, `idEnseignant`) VALUES
-(13, 14, NULL, 5),
-(14, 14, 9, NULL),
-(15, 14, 1, NULL),
 (17, 15, NULL, 2),
-(19, 15, 9, NULL);
+(19, 15, 9, NULL),
+(20, 14, 10, NULL),
+(21, 14, NULL, 2);
 
 -- --------------------------------------------------------
 
